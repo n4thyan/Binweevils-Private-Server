@@ -82,6 +82,10 @@ Current rewrite docs:
 - [Initial audit notes](docs/AUDIT_NOTES.md)
 - [Local setup notes](docs/SETUP_LOCAL.md)
 - [Current run flow map](docs/RUN_FLOW.md)
+- [Endpoint inventory](docs/ENDPOINTS.md)
+- [Database inventory](docs/DATABASE_INVENTORY.md)
+- [Auth and account flow notes](docs/AUTH_FLOW.md)
+- [Security notes](docs/SECURITY_NOTES.md)
 - [Runtime data cleanup plan](docs/DATA_CLEANUP.md)
 
 ## Setup
@@ -113,6 +117,7 @@ Current first pass:
 - Environment template
 - Future data cleanup checklist
 - Initial run flow and setup notes
+- Endpoint, database, auth, and security audit notes
 
 Future passes:
 
