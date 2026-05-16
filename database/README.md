@@ -82,4 +82,12 @@ Use a disposable database and follow:
 docs/database/import-test-plan.md
 ```
 
-Do not point the split files at a live database until the import path and runtime bootstrap have been tested.
+The local rebuild helper wraps the same split-file import path:
+
+```text
+tools/rebuild_clean_database.sh
+```
+
+It has destructive reset guards and should only be used with disposable database names.
+
+Do not point the split files or rebuild helper at a live database until the import path and runtime bootstrap have been tested.
