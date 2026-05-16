@@ -11,11 +11,14 @@ This checklist keeps the database rewrite safe and reversible.
 
 ## Pass 2: Verify PHP usage
 
-- [ ] Search PHP code for every table name.
-- [ ] Mark tables as required, optional, unused, or unknown.
+- [x] Search PHP code for table usage in the main legacy database helper file.
+- [x] Add `docs/database/php-table-usage.md`.
+- [x] Mark confirmed tables as required, optional, player state, admin/log state, or unknown.
+- [x] Identify tables that are read-only catalogue/reference data.
+- [x] Identify tables that are user-generated/player state.
+- [x] Record table-name casing risks before SQL extraction.
+- [ ] Continue wider endpoint-by-endpoint checks while extracting schema.
 - [ ] Identify SQL queries that rely on seed rows by ID.
-- [ ] Identify tables that are read-only catalogue data.
-- [ ] Identify tables that are user-generated/player state.
 
 ## Pass 3: Create schema-only export
 
