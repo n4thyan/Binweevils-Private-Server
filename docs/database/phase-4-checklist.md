@@ -51,6 +51,7 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add local account setup plan and non-writing tool stub.
 - [x] Inspect registration/login PHP password handling.
 - [x] Document legacy auth/session behaviour before account writes.
+- [x] Add password compatibility plan for modern local accounts.
 - [ ] Add password compatibility helper for modern local accounts.
 - [ ] Implement fresh local admin/demo account creation after auth review.
 - [ ] Extract safe level/game/puzzle definitions not already covered.
@@ -138,7 +139,13 @@ Fresh local accounts are still blocked from automatic writes until the PHP auth/
 
 Important result: the old runtime currently compares submitted passwords directly against `users.password`, then bridges the logged-in player through `users.sessionKey`, `users.loginKey`, and the `sessionId` / `weevil_name` cookies.
 
-That means the clean local account tool must not write production-style accounts blindly. The next safe step is a compatibility helper that lets new local accounts use `password_hash()` while old local legacy rows can still load during the migration.
+That means the clean local account tool must not write production-style accounts blindly. The next safe step is a compatibility helper that lets new local accounts use hashed password storage while old local legacy rows can still load during the migration.
+
+## Password compatibility status
+
+`docs/database/password-compatibility-plan.md` records the exact helper behaviour needed next.
+
+This planning pass does not change runtime auth and does not enable account writes.
 
 ## Merge rule
 
