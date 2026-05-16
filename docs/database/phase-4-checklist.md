@@ -43,8 +43,8 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add manual seed manifest commit helper.
 - [x] Commit generated `database/seeds/seed_manifest.md`.
 - [x] Fix extractor handling for phpMyAdmin comments before INSERT blocks.
-- [ ] Regenerate seed manifest after comment-handling fix.
-- [ ] Review regenerated manifest before seed SQL export.
+- [x] Regenerate seed manifest after comment-handling fix.
+- [x] Review regenerated manifest before seed SQL export.
 - [ ] Extract safe catalogue data.
 - [ ] Extract safe level/game/puzzle definitions.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
@@ -83,7 +83,31 @@ database/schema/
 
 ## Latest seed note
 
-The first seed manifest landed, but the extractor then received a phpMyAdmin comment-handling fix. Regenerate the manifest before exporting actual seed SQL.
+The regenerated seed manifest found selected catalogue/reference INSERT groups for:
+
+```text
+itemtype
+itemtypets
+appareltypes
+gardenitemtype
+seeds
+puzzletypes
+crosswords
+questtasks
+```
+
+It also detected blocked player/runtime INSERT groups for:
+
+```text
+buddyalerts
+buddylist
+nest
+nestinfo
+users
+weevilitems
+```
+
+Those blocked tables must stay out of default seed files.
 
 ## Merge rule
 
