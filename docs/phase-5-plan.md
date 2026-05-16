@@ -50,6 +50,15 @@ docs/runtime/runtime-table-usage-audit.md
 .github/workflows/runtime-table-usage-check.yml
 ```
 
+## PHP runtime syntax check
+
+The PHP syntax check gives Phase 5 a small CI safety net before auth/runtime code changes:
+
+```text
+.github/workflows/php-runtime-syntax-check.yml
+docs/runtime/php-runtime-syntax-check.md
+```
+
 ## Next safe pass after this
 
 The next runtime-changing PR should be small and focused:
