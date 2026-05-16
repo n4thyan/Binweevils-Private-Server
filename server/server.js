@@ -1,7 +1,8 @@
 const WebSocket = require('ws');
 const xmlsocket = require("./xmlsocket")();
-const host = '127.0.0.1',
-    port = 10843;
+const config = require('./config');
+const host = config.legacyShim.host,
+    port = config.legacyShim.port;
 const wss = new WebSocket.Server({ port: port, ip: host });
 var timeout = 300;
 let timerTimeout = setTimeout(() => wss.close(), timeout * 1000);
