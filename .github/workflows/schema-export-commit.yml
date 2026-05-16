@@ -1,0 +1,44 @@
+name: Commit Generated Schema
+
+on:
+  push:
+    branches:
+      - database/generated-schema-export
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit-generated-schema:
+    name: Commit generated schema files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: database/generated-schema-export
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Generate schema files
+        run: python tools/extract_schema_from_dump.py --input bwps.sql --output-dir database/schema
+
+      - name: Show generated manifest
+        run: cat database/schema/schema_manifest.md
+
+      - name: Commit generated schema files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add database/schema/001_base_schema.sql database/schema/002_keys_auto_increment.sql database/schema/schema_manifest.md
+          if git diff --cached --quiet; then
+            echo "No schema changes to commit."
+          else
+            git commit -m "database: add generated schema export [skip ci]"
+            git push origin HEAD:database/generated-schema-export
+          fi
