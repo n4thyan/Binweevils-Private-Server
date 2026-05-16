@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import re
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 
 RUNTIME_ROOTS = [
@@ -20,11 +21,11 @@ RUNTIME_ROOTS = [
 SOURCE_SUFFIXES = {".php", ".js"}
 
 TABLE_PATTERNS = [
-    re.compile(r"\bFROM\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE),
-    re.compile(r"\bJOIN\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE),
-    re.compile(r"\bUPDATE\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE),
-    re.compile(r"\bINTO\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE),
-    re.compile(r"\bDELETE\s+FROM\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE),
+    ("FROM", re.compile(r"\bFROM\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE)),
+    ("JOIN", re.compile(r"\bJOIN\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE)),
+    ("UPDATE", re.compile(r"\bUPDATE\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE)),
+    ("INSERT", re.compile(r"\bINSERT\s+INTO\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE)),
+    ("DELETE", re.compile(r"\bDELETE\s+FROM\s+`?([A-Za-z0-9_\-]+)`?", re.IGNORECASE)),
 ]
 
 RUNTIME_SENSITIVE_TABLES = {
@@ -56,6 +57,13 @@ BOOT_CRITICAL_TABLES = {
 }
 
 
+@dataclass(frozen=True, order=True)
+class TableHit:
+    path: Path
+    line_number: int
+    operation: str
+
+
 def iter_source_files(paths: list[Path]) -> list[Path]:
     files: list[Path] = []
     for root in paths:
@@ -71,16 +79,24 @@ def iter_source_files(paths: list[Path]) -> list[Path]:
     return sorted(files)
 
 
-def scan_file(path: Path) -> set[str]:
-    content = path.read_text(encoding="utf-8", errors="replace")
-    tables: set[str] = set()
-    for pattern in TABLE_PATTERNS:
-        for match in pattern.finditer(content):
-            tables.add(match.group(1))
-    return tables
+def scan_file(path: Path) -> dict[str, set[TableHit]]:
+    table_hits: dict[str, set[TableHit]] = defaultdict(set)
+
+    for line_number, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1):
+        for operation, pattern in TABLE_PATTERNS:
+            for match in pattern.finditer(line):
+                table = match.group(1)
+                table_hits[table].add(TableHit(path=path, line_number=line_number, operation=operation))
+
+    return table_hits
 
 
-def render_report(table_to_files: dict[str, set[Path]]) -> str:
+def merge_hits(destination: dict[str, set[TableHit]], source: dict[str, set[TableHit]]) -> None:
+    for table, hits in source.items():
+        destination[table].update(hits)
+
+
+def render_report(table_to_hits: dict[str, set[TableHit]]) -> str:
     lines: list[str] = [
         "# Runtime Table Usage Audit",
         "",
@@ -90,12 +106,13 @@ def render_report(table_to_files: dict[str, set[Path]]) -> str:
         "",
         "## Summary",
         "",
-        f"Tables referenced: {len(table_to_files)}",
+        f"Tables referenced: {len(table_to_hits)}",
+        f"Reference hits: {sum(len(hits) for hits in table_to_hits.values())}",
         "",
     ]
 
-    boot_hits = sorted(table for table in table_to_files if table.lower() in BOOT_CRITICAL_TABLES)
-    runtime_hits = sorted(table for table in table_to_files if table.lower() in RUNTIME_SENSITIVE_TABLES)
+    boot_hits = sorted(table for table in table_to_hits if table.lower() in BOOT_CRITICAL_TABLES)
+    runtime_hits = sorted(table for table in table_to_hits if table.lower() in RUNTIME_SENSITIVE_TABLES)
 
     lines.extend([
         "## Boot-critical table references",
@@ -103,7 +120,7 @@ def render_report(table_to_files: dict[str, set[Path]]) -> str:
     ])
     if boot_hits:
         for table in boot_hits:
-            lines.append(f"- `{table}`")
+            lines.append(f"- `{table}` ({len(table_to_hits[table])} hit(s))")
     else:
         lines.append("No boot-critical tables found by the scanner.")
     lines.append("")
@@ -114,7 +131,7 @@ def render_report(table_to_files: dict[str, set[Path]]) -> str:
     ])
     if runtime_hits:
         for table in runtime_hits:
-            lines.append(f"- `{table}`")
+            lines.append(f"- `{table}` ({len(table_to_hits[table])} hit(s))")
     else:
         lines.append("No runtime/player-state tables found by the scanner.")
     lines.append("")
@@ -124,11 +141,11 @@ def render_report(table_to_files: dict[str, set[Path]]) -> str:
         "",
     ])
 
-    for table in sorted(table_to_files, key=str.lower):
+    for table in sorted(table_to_hits, key=str.lower):
         lines.append(f"### `{table}`")
         lines.append("")
-        for path in sorted(table_to_files[table], key=lambda p: str(p).lower()):
-            lines.append(f"- `{path.as_posix()}`")
+        for hit in sorted(table_to_hits[table]):
+            lines.append(f"- `{hit.path.as_posix()}:{hit.line_number}` ({hit.operation})")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
@@ -149,13 +166,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     files = iter_source_files([Path(path) for path in args.paths])
-    table_to_files: dict[str, set[Path]] = defaultdict(set)
+    table_to_hits: dict[str, set[TableHit]] = defaultdict(set)
 
     for file_path in files:
-        for table in scan_file(file_path):
-            table_to_files[table].add(file_path)
+        merge_hits(table_to_hits, scan_file(file_path))
 
-    report = render_report(table_to_files)
+    report = render_report(table_to_hits)
     if args.output:
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
