@@ -47,4 +47,4 @@ jobs:
           grep -q "Boot-critical table references" /tmp/runtime-table-usage-report.md
           grep -q "Runtime/player-state table references" /tmp/runtime-table-usage-report.md
           grep -q "Table to file map" /tmp/runtime-table-usage-report.md
-          grep -Eq ':[0-9]+ \((FROM|JOIN|UPDATE|INSERT|DELETE)\)' /tmp/runtime-table-usage-report.md
+          grep -Eq ':[0-9]+`? \((FROM|JOIN|UPDATE|INSERT|DELETE)\)' /tmp/runtime-table-usage-report.md
