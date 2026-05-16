@@ -1,10 +1,10 @@
 # Environment Config Notes
 
-This document explains the Node-side config cleanup pass.
+This document explains the config cleanup pass.
 
-The goal of this phase is to move hardcoded local values behind a small config helper while keeping the imported localhost setup working by default.
+The goal of this phase is to move hardcoded local values behind environment-aware config while keeping the imported localhost setup working by default.
 
-## Config helper
+## Node config helper
 
 Node config is centralised in:
 
@@ -23,7 +23,7 @@ If neither file exists, it falls back to the legacy localhost defaults.
 
 No new dependency is required for this config pass.
 
-## Files covered by Node config so far
+## Files covered by config so far
 
 ```txt
 server/config.js
@@ -31,13 +31,14 @@ server/db.js
 server/Main.js
 server/server.js
 server/rest.js
+game-full/essential/config.php
 .env.example
 docs/SETUP_LOCAL.md
 ```
 
 ## Database config
 
-`server/db.js` reads database settings from `server/config.js`.
+Node and PHP both use the same database environment variable names.
 
 Default values remain:
 
@@ -49,7 +50,26 @@ DB_USER=root
 DB_PASSWORD=
 ```
 
-These are safe only as local defaults. They are not production/VPS settings.
+Node reads these through `server/config.js`.
+
+PHP reads these in:
+
+```txt
+game-full/essential/config.php
+```
+
+PHP currently reads:
+
+```txt
+DB_HOST
+DB_USER
+DB_PASSWORD
+DB_NAME
+```
+
+`DB_PORT` is documented for Node and future PHP/database cleanup, but the legacy PHP config constants currently preserve the original host/user/pass/name-only contract.
+
+These defaults are safe only as local defaults. They are not production/VPS settings.
 
 ## Main Node server config
 
@@ -110,31 +130,33 @@ The old static compatibility auth values have been replaced with local placehold
 
 ## PHP config status
 
-The PHP side still uses:
+The PHP side now supports environment overrides for database config while keeping the old XAMPP defaults.
+
+Current PHP defaults remain:
 
 ```txt
-game-full/essential/config.php
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=bwps
 ```
 
-That file was not changed in the Node config pass.
-
-PHP config should be handled separately because `game-full/` is a fragile compatibility layer.
+No PHP endpoint paths, cookies, login logic, registration logic, or SQL queries were changed in this pass.
 
 ## Compatibility rule
 
 ```txt
-No .env file = old localhost defaults.
-.env file = local override.
+No env values = old localhost defaults.
+env values = local override.
 ```
 
 This keeps the project runnable in the old local style while allowing safer config later.
 
-## Next config cleanup branches
+## Remaining config cleanup
 
-Recommended follow-up order:
+Recommended follow-up:
 
 ```txt
-config/php-env-support
 server/package-scripts
 ```
 

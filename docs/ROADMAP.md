@@ -54,7 +54,7 @@ audit/game-full-endpoints
 
 ## Phase 3: Config Cleanup
 
-Status: in progress
+Status: ready to merge
 
 - [x] Add Node `.env` loader without new dependencies
 - [x] Add `server/config.js`
@@ -64,25 +64,27 @@ Status: in progress
 - [x] Add REST shim env placeholders and discovery config values
 - [x] Update REST shim runtime code to consume config values
 - [x] Remove old static REST shim auth material in favour of local placeholders
-- [x] Keep old localhost defaults when no `.env` exists
+- [x] Add PHP database environment overrides with old XAMPP defaults preserved
+- [x] Keep old localhost defaults when no environment values exist
 - [x] Keep `.env.example` updated
-- [x] Document Node config support
-- [ ] Add PHP config support later, after Node config is stable
+- [x] Document config support
 - [ ] Document Linux/VPS setup later
 
 Current branch:
 
 ```txt
-config/rest-shim-code
-```
-
-Recommended follow-up branch:
-
-```txt
 config/php-env-support
 ```
 
+Next phase:
+
+```txt
+database/schema-seed-split
+```
+
 ## Phase 4: Database Cleanup
+
+Status: next phase
 
 - Split current SQL dump into schema and seed files
 - Remove old runtime account data
