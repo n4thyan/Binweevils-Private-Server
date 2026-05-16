@@ -87,6 +87,8 @@ Current rewrite docs:
 - [Auth and account flow notes](docs/AUTH_FLOW.md)
 - [Security notes](docs/SECURITY_NOTES.md)
 - [Runtime data cleanup plan](docs/DATA_CLEANUP.md)
+- [Foundation PR merge checklist](docs/MERGE_CHECKLIST.md)
+- [Post-merge plan](docs/POST_MERGE_PLAN.md)
 
 ## Setup
 
@@ -118,6 +120,7 @@ Current first pass:
 - Future data cleanup checklist
 - Initial run flow and setup notes
 - Endpoint, database, auth, and security audit notes
+- Merge checklist and post-merge plan
 
 Future passes:
 
