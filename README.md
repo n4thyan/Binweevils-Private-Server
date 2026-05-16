@@ -1,33 +1,92 @@
-# Binweevils Private Server [LOCAL EASY SETUP]
-A place where you can run your own local or hosted binweevils private server!
+# Binweevils Private Server Rewrite
 
+A vibe-coded rewrite of the KnowYourKnot Binweevils private server project.
 
-# Setup
+This repo is being rebuilt for preservation, learning, local testing, and easier modern setup. The aim is to clean up the old structure, make the project easier to understand, and keep the Bin Weevils private server work available in a more maintainable form.
 
-- Install XAMPP [https://www.apachefriends.org/download.html]
-- Install NodeJS [https://nodejs.org/en/download/]
-- Clone this repository
-- Start Apache & MySQL service using XAMPP Control Panel
-- Open PhpMyAdmin & import `bwps.sql`
-- Move all contents from 'game-full' to 'C:\xampp\htdocs'
-- Open a command prompt in the two folders `server` & `electron` and run the command `npm i`
+This is not the original Bin Weevils Private Server, and it is not claiming ownership of the original work.
 
-# Usage
+## Original Project
 
-- Open the command prompt in the `electron` folder & run the command `npm start`
-- Open the command prompt in the `server` folder & run the command `node Main.js`
+This rewrite is based on the public KnowYourKnot Binweevils repository:
 
-Electron should now start a browser that takes you to localhost, all you have to do from here is sign up.
+https://github.com/KnowYourKnot/Binweevils
 
-# What about flash player?
-Well, I knew you guys would wonder how you'd be able to run it, so I went out of my way to make a client to allow you to do so.
-That is what electron is used for, once you have done the following steps above, when you run electron it will start a browser allowing you to run flash player in the electron browser like before.
+That project provided a local/hosted Bin Weevils private server setup, including the original game files, server files, database, and Electron client structure.
 
-# Discord
-Join the discord for any further help setting up your private server
-[https://discord.gg/J9n8qQvKhx]
+## Credits
 
-smiley22#8888
+Full credit for the original Bin Weevils Private Server / Bin Weevils Rewritten work goes to:
 
-# Credit
-Bin Weevils Private Server / Rewritten has been made by 'Smiley' AKA 'Darkk' & HDWEEVIL anybody else who claims to have made it is lying.
+- Smiley / Darkk
+- HDWEEVIL
+- KnowYourKnot for the public reference repository
+
+This rewrite exists because of that original work. Anything carried over, referenced, restored, or rewritten from the original project should be treated as credited to the original creators first.
+
+## What This Rewrite Is
+
+This project is a modernised rewrite of the original private server setup.
+
+The goals are:
+
+- Clean up the project structure
+- Make setup easier to follow
+- Improve readability of the codebase
+- Preserve the original private server work
+- Make the project easier to run locally
+- Experiment with modern fixes and improvements
+- Document how the old setup worked
+
+This is a community preservation and learning project, not an official revival or commercial service.
+
+## What This Rewrite Is Not
+
+This project is not:
+
+- The original Bin Weevils Private Server
+- The official Bin Weevils Rewritten project
+- Affiliated with Bin Weevils, 55 Pixels, Nickelodeon, or any original rights holders
+- A claim of ownership over the original game, assets, branding, or private server work
+
+## Status
+
+This project is currently a work in progress.
+
+Expect broken files, missing features, rough code, unfinished rewrites, and experimental changes while the project is being rebuilt.
+
+## Planned Work
+
+Some of the things this rewrite may focus on:
+
+- Cleaner folder layout
+- Easier setup instructions
+- Better local development flow
+- Database cleanup
+- Server code cleanup
+- Client fixes
+- Documentation
+- Preservation notes
+- Possible modern launcher or browser-based improvements
+
+Nothing here should be treated as finished unless clearly marked.
+
+## Setup
+
+Setup instructions will be added properly once the rewrite is cleaned up.
+
+For now, this repo may contain files from the original setup, rewritten code, test files, and experimental changes.
+
+## Disclaimer
+
+This is an unofficial fan preservation project.
+
+Bin Weevils and related names, logos, characters, assets, and branding belong to their original owners. This repo is intended for local testing, education, documentation, and preservation.
+
+No affiliation with the original rights holders is implied.
+
+## Credit Notice
+
+If you fork, modify, or build from this repo, please keep credit to the original KnowYourKnot repository, Smiley / Darkk, and HDWEEVIL.
+
+Do not claim the original Bin Weevils Private Server / Rewritten work as your own.
