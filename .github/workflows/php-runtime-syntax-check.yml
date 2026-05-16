@@ -1,0 +1,33 @@
+name: PHP Runtime Syntax Check
+
+on:
+  pull_request:
+    paths:
+      - "game-full/**/*.php"
+      - "server/**/*.php"
+      - ".github/workflows/php-runtime-syntax-check.yml"
+  workflow_dispatch:
+
+jobs:
+  php-runtime-syntax-check:
+    name: Check PHP runtime syntax
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install PHP CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli
+
+      - name: List PHP files
+        run: find game-full server -type f -name '*.php' | sort
+
+      - name: Syntax-check PHP files
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            php -l "$file"
+          done < <(find game-full server -type f -name '*.php' | sort)
