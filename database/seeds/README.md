@@ -30,6 +30,42 @@ These should not be imported by default:
 - old moderation/admin logs
 - old staff or celebrity account identity records
 
+## Planned seed files
+
+The current plan is documented in:
+
+```text
+docs/database/catalogue-seed-plan.md
+```
+
+Likely future files:
+
+```text
+database/seeds/001_catalogue_items.sql
+database/seeds/002_progression_and_games.sql
+database/seeds/003_puzzles_quests_achievements.sql
+database/seeds/004_world_content_optional.sql
+database/seeds/dev/001_local_demo_accounts.sql
+```
+
+## Extraction planning tool
+
+The catalogue/reference extraction helper is:
+
+```text
+tools/extract_seed_tables.py
+```
+
+Dry-run first:
+
+```bash
+python tools/extract_seed_tables.py --input bwps.sql --manifest database/seeds/seed_manifest.md --dry-run
+```
+
+This writes a manifest without writing a seed SQL file.
+
+The tool refuses to extract known player/runtime tables such as `users`, `buddylist`, `weevilitems`, `game-logs`, and progress tables.
+
 ## Demo data rule
 
 Demo data should be obvious and disposable.
