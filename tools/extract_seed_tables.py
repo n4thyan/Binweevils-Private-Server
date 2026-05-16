@@ -120,16 +120,50 @@ def split_sql_statements(sql: str) -> list[str]:
     return statements
 
 
+def strip_leading_sql_comments(statement: str) -> str:
+    """Remove phpMyAdmin-style comments that appear immediately before INSERT.
+
+    The statement splitter returns text between semicolons. In phpMyAdmin dumps,
+    an INSERT block is often preceded by comment lines, so a chunk may look like:
+
+        -- Dumping data for table `itemtype`
+        INSERT INTO `itemtype` ...;
+
+    Without removing those comments first, the extractor under-counts valid
+    INSERT blocks because the chunk does not literally start with INSERT.
+    """
+
+    text = statement.lstrip()
+
+    while text:
+        if text.startswith('--') or text.startswith('#'):
+            lines = text.splitlines(keepends=True)
+            text = ''.join(lines[1:]).lstrip()
+            continue
+
+        if text.startswith('/*'):
+            end = text.find('*/')
+            if end == -1:
+                return ''
+            text = text[end + 2 :].lstrip()
+            continue
+
+        break
+
+    return text
+
+
 def extract_inserts(sql: str) -> list[InsertStatement]:
     inserts: list[InsertStatement] = []
     pattern = re.compile(r"(?is)^INSERT\s+INTO\s+`(?P<table>[^`]+)`")
 
     for statement in split_sql_statements(sql):
-        match = pattern.match(statement.strip())
+        cleaned_statement = strip_leading_sql_comments(statement)
+        match = pattern.match(cleaned_statement.strip())
         if not match:
             continue
 
-        inserts.append(InsertStatement(table=match.group('table'), sql=statement.rstrip(';') + ';'))
+        inserts.append(InsertStatement(table=match.group('table'), sql=cleaned_statement.rstrip(';') + ';'))
 
     return inserts
 

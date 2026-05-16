@@ -41,8 +41,10 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add dry-run CI check for seed extraction manifest.
 - [x] Add seed manifest review notes.
 - [x] Add manual seed manifest commit helper.
-- [ ] Run dry-run manifest review.
-- [ ] Commit generated `database/seeds/seed_manifest.md`.
+- [x] Commit generated `database/seeds/seed_manifest.md`.
+- [x] Fix extractor handling for phpMyAdmin comments before INSERT blocks.
+- [ ] Regenerate seed manifest after comment-handling fix.
+- [ ] Review regenerated manifest before seed SQL export.
 - [ ] Extract safe catalogue data.
 - [ ] Extract safe level/game/puzzle definitions.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
@@ -78,6 +80,10 @@ The generated schema files are now present under:
 ```text
 database/schema/
 ```
+
+## Latest seed note
+
+The first seed manifest landed, but the extractor then received a phpMyAdmin comment-handling fix. Regenerate the manifest before exporting actual seed SQL.
 
 ## Merge rule
 
