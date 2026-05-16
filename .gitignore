@@ -5,15 +5,22 @@ vendor/
 # Logs
 *.log
 logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Env / secrets
 .env
 .env.local
 .env.*.local
+*.pem
+*.key
+*.crt
 
 # OS junk
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Editor junk
 .vscode/
@@ -23,6 +30,7 @@ Thumbs.db
 dist/
 build/
 .cache/
+coverage/
 
 # Temporary files
 tmp/
@@ -35,3 +43,9 @@ temp/
 *.bak
 *.backup
 *.old
+
+# Database dumps generated during local development
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3

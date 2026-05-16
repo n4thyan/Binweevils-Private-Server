@@ -1,44 +1,42 @@
 # Binweevils Private Server Rewrite
 
-A vibe-coded rewrite of the KnowYourKnot Binweevils private server project.
+A modern rewrite and preservation-focused rebuild of the KnowYourKnot Binweevils private server project.
 
-This repo is being rebuilt for preservation, learning, local testing, and easier modern setup. The aim is to clean up the old structure, make the project easier to understand, and keep the Bin Weevils private server work available in a more maintainable form.
+This repo is being cleaned up so the old working Bin Weevils private server setup is easier to understand, safer to run locally, and easier to modernise over time. The current game files are being treated as a compatibility layer while the rewrite work happens around them in controlled passes.
 
 This is not the original Bin Weevils Private Server, and it is not claiming ownership of the original work.
 
-## Original Project
+## Current Status
+
+This repository currently contains an imported working base. The first stage of the rewrite is focused on documentation, structure, setup notes, and safe cleanup planning.
+
+The goal is not to break the existing game experience. Large game folders, Flash assets, PHP endpoint paths, SWF files, XML configs, and CDN-style paths should stay stable until they are properly mapped.
+
+## Original Project and Credits
 
 This rewrite is based on the public KnowYourKnot Binweevils repository:
 
 https://github.com/KnowYourKnot/Binweevils
 
-That project provided a local/hosted Bin Weevils private server setup, including the original game files, server files, database, and Electron client structure.
+Credit for the original Bin Weevils Private Server / Bin Weevils Rewritten work belongs to Smiley / Darkk, HDWEEVIL, and the public KnowYourKnot reference repo.
 
-## Credits
-
-Full credit for the original Bin Weevils Private Server / Bin Weevils Rewritten work goes to:
-
-- Smiley / Darkk
-- HDWEEVIL
-- KnowYourKnot for the public reference repository
-
-This rewrite exists because of that original work. Anything carried over, referenced, restored, or rewritten from the original project should be treated as credited to the original creators first.
+See [CREDITS.md](CREDITS.md) for the full credit notice.
 
 ## What This Rewrite Is
 
-This project is a modernised rewrite of the original private server setup.
+This project is a modernised rewrite of an older private server setup.
 
 The goals are:
 
-- Clean up the project structure
-- Make setup easier to follow
-- Improve readability of the codebase
-- Preserve the original private server work
-- Make the project easier to run locally
-- Experiment with modern fixes and improvements
-- Document how the old setup worked
-
-This is a community preservation and learning project, not an official revival or commercial service.
+- Preserve the working game experience
+- Clean up the public project identity
+- Document how the current files fit together
+- Make local setup easier to follow
+- Remove hardcoded secrets and unsafe defaults over time
+- Split database schema from old runtime/player data
+- Replace old private-server staff/player seed data with clean demo data
+- Modernise the launcher and developer flow
+- Rewrite backend pieces gradually without breaking Flash compatibility
 
 ## What This Rewrite Is Not
 
@@ -48,38 +46,95 @@ This project is not:
 - The official Bin Weevils Rewritten project
 - Affiliated with Bin Weevils, 55 Pixels, Nickelodeon, or any original rights holders
 - A claim of ownership over the original game, assets, branding, or private server work
+- A finished public service ready for production hosting
 
-## Status
+## Repo Layout
 
-This project is currently a work in progress.
+The current layout is being kept mostly intact for compatibility.
 
-Expect broken files, missing features, rough code, unfinished rewrites, and experimental changes while the project is being rebuilt.
+```txt
+electron/      Legacy desktop launcher/client wrapper
+game-full/     Preserved Flash/site compatibility layer
+server/        Node/socket/private server layer
+bwps.sql       Current imported database dump
+.env.example   Future environment/config template
+docs/          Rewrite planning and technical notes
+```
 
-## Planned Work
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more detail.
 
-Some of the things this rewrite may focus on:
+## Safe Modernisation Rule
 
-- Cleaner folder layout
-- Easier setup instructions
-- Better local development flow
-- Database cleanup
-- Server code cleanup
-- Client fixes
-- Documentation
-- Preservation notes
-- Possible modern launcher or browser-based improvements
+```txt
+Preserve first. Modernise second. Rewrite only when the old behaviour is understood.
+```
 
-Nothing here should be treated as finished unless clearly marked.
+This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, and old CDN-style URLs.
+
+## Documentation
+
+Current rewrite docs:
+
+- [Credits](CREDITS.md)
+- [Disclaimer](DISCLAIMER.md)
+- [Architecture notes](docs/ARCHITECTURE.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Initial audit notes](docs/AUDIT_NOTES.md)
+- [Local setup notes](docs/SETUP_LOCAL.md)
+- [Current run flow map](docs/RUN_FLOW.md)
+- [Endpoint inventory](docs/ENDPOINTS.md)
+- [Database inventory](docs/DATABASE_INVENTORY.md)
+- [Auth and account flow notes](docs/AUTH_FLOW.md)
+- [Security notes](docs/SECURITY_NOTES.md)
+- [Runtime data cleanup plan](docs/DATA_CLEANUP.md)
+- [Foundation PR merge checklist](docs/MERGE_CHECKLIST.md)
+- [Post-merge plan](docs/POST_MERGE_PLAN.md)
 
 ## Setup
 
-Setup instructions will be added properly once the rewrite is cleaned up.
+Full setup instructions are still being written.
 
-For now, this repo may contain files from the original setup, rewritten code, test files, and experimental changes.
+For now, treat this repo as a working imported base. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, the imported database dump, and the existing legacy file paths.
+
+See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) for the current local setup notes.
+
+Future setup docs will be split into:
+
+- Windows/XAMPP setup
+- Linux/VPS setup
+- Database import notes
+- Local development flow
+- Launcher/browser/Ruffle notes
+
+## Rewrite Roadmap
+
+See [docs/ROADMAP.md](docs/ROADMAP.md).
+
+Current first pass:
+
+- Project identity cleanup
+- Credits and disclaimer files
+- Architecture notes
+- Safe working rules
+- Environment template
+- Future data cleanup checklist
+- Initial run flow and setup notes
+- Endpoint, database, auth, and security audit notes
+- Merge checklist and post-merge plan
+
+Future passes:
+
+- Database sanitisation
+- Schema and seed split
+- Hardcoded config cleanup
+- Server code cleanup
+- Ruffle/browser launch option
+- Admin and moderation tooling
+- Safer local setup scripts
 
 ## Disclaimer
 
-This is an unofficial fan preservation project.
+This is an unofficial fan preservation and rewrite project.
 
 Bin Weevils and related names, logos, characters, assets, and branding belong to their original owners. This repo is intended for local testing, education, documentation, and preservation.
 
@@ -87,6 +142,6 @@ No affiliation with the original rights holders is implied.
 
 ## Credit Notice
 
-If you fork, modify, or build from this repo, please keep credit to the original KnowYourKnot repository, Smiley / Darkk, and HDWEEVIL.
+If you fork, modify, or build from this repo, keep credit to the original KnowYourKnot repository, Smiley / Darkk, and HDWEEVIL.
 
-Do not claim the original Bin Weevils Private Server / Rewritten work as your own.
+Credits stay in the docs. Old runtime player/staff/demo account data can be cleaned from configs, SQL, and seed files as part of the rewrite.
