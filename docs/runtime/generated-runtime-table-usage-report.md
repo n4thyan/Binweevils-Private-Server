@@ -10,6 +10,26 @@ python tools/audit_runtime_table_usage.py --output docs/runtime/generated-runtim
 
 For now, the workflow uploads the generated report as a GitHub Actions artifact named `runtime-table-usage-report`. That keeps generated output reviewable without forcing noisy commits every time PHP, Node, or schema-adjacent runtime files move.
 
+## Report shape
+
+The generated report includes:
+
+```text
+table name
+source file
+line number
+SQL operation type
+```
+
+Example shape:
+
+```text
+### users
+
+- game-full/login/login.php:10 (FROM)
+- game-full/login/login.php:31 (UPDATE)
+```
+
 ## Why this exists
 
 Phase 5 is preparing the runtime/database layer for safer local bootstrapping and later schema modernisation.
