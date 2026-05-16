@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""
+Extract schema-only SQL files from the legacy bwps.sql dump.
+
+This intentionally does not edit bwps.sql. It reads the legacy dump and writes
+new files under database/schema/ so the database can be split cautiously.
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass
+class ExtractedSchema:
+    create_blocks: list[str]
+    alter_statements: list[str]
+    table_names: list[str]
+
+
+def split_sql_statements(sql: str) -> list[str]:
+    """Split SQL into statements without breaking on semicolons inside strings."""
+    statements: list[str] = []
+    current: list[str] = []
+    in_single = False
+    in_double = False
+    in_backtick = False
+    escaped = False
+
+    for char in sql:
+        current.append(char)
+
+        if escaped:
+            escaped = False
+            continue
+
+        if char == "\\" and in_single:
+            escaped = True
+            continue
+
+        if char == "'" and not in_double and not in_backtick:
+            in_single = not in_single
+            continue
+
+        if char == '"' and not in_single and not in_backtick:
+            in_double = not in_double
+            continue
+
+        if char == '`' and not in_single and not in_double:
+            in_backtick = not in_backtick
+            continue
+
+        if char == ';' and not in_single and not in_double and not in_backtick:
+            statement = ''.join(current).strip()
+            if statement:
+                statements.append(statement)
+            current = []
+
+    trailing = ''.join(current).strip()
+    if trailing:
+        statements.append(trailing)
+
+    return statements
+
+
+def normalise_statement(statement: str) -> str:
+    return statement.strip().rstrip(';').strip() + ';'
+
+
+def extract_create_table_blocks(sql: str) -> tuple[list[str], list[str]]:
+    """Extract CREATE TABLE statements with their phpMyAdmin table comments."""
+    blocks: list[str] = []
+    table_names: list[str] = []
+
+    pattern = re.compile(
+        r"(?ms)"
+        r"(?:--\n-- Table structure for table `(?P<comment_name>[^`]+)`\n--\n\n)?"
+        r"(?P<create>CREATE TABLE `(?P<table_name>[^`]+)` \(.*?\) ENGINE=.*?;)"
+    )
+
+    for match in pattern.finditer(sql):
+        table_name = match.group('table_name')
+        comment_name = match.group('comment_name') or table_name
+        table_names.append(table_name)
+        blocks.append(
+            "-- --------------------------------------------------------\n\n"
+            "--\n"
+            f"-- Table structure for table `{comment_name}`\n"
+            "--\n\n"
+            f"{normalise_statement(match.group('create'))}\n"
+        )
+
+    return blocks, table_names
+
+
+def extract_alter_table_statements(sql: str) -> list[str]:
+    statements = split_sql_statements(sql)
+    alter_statements: list[str] = []
+
+    for statement in statements:
+        stripped = statement.strip()
+        if re.match(r"(?is)^ALTER\s+TABLE\s+`[^`]+`", stripped):
+            alter_statements.append(normalise_statement(stripped))
+
+    return alter_statements
+
+
+def extract_schema(sql: str) -> ExtractedSchema:
+    create_blocks, table_names = extract_create_table_blocks(sql)
+    alter_statements = extract_alter_table_statements(sql)
+
+    return ExtractedSchema(
+        create_blocks=create_blocks,
+        alter_statements=alter_statements,
+        table_names=table_names,
+    )
+
+
+def build_schema_file(extracted: ExtractedSchema, source_name: str) -> str:
+    header = f"""-- Binweevils Private Server Rewrite
+-- Schema-only export generated from {source_name}
+--
+-- This file contains CREATE TABLE statements only.
+-- It intentionally excludes all INSERT/player/catalogue data.
+-- Keep legacy table names until PHP/runtime compatibility has been tested.
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+"""
+
+    return header + "\n".join(extracted.create_blocks).rstrip() + "\n"
+
+
+def build_keys_file(extracted: ExtractedSchema, source_name: str) -> str:
+    header = f"""-- Binweevils Private Server Rewrite
+-- Keys/indexes/auto-increment export generated from {source_name}
+--
+-- Import this after 001_base_schema.sql.
+-- It intentionally excludes all INSERT/player/catalogue data.
+
+"""
+
+    body = "\n\n".join(extracted.alter_statements)
+    return header + body.rstrip() + "\n"
+
+
+def build_manifest(extracted: ExtractedSchema, source_name: str) -> str:
+    table_lines = "\n".join(f"- `{name}`" for name in extracted.table_names)
+
+    return f"""# Generated Schema Manifest
+
+Generated from `{source_name}`.
+
+## Counts
+
+- CREATE TABLE blocks: {len(extracted.create_blocks)}
+- ALTER TABLE statements: {len(extracted.alter_statements)}
+
+## Tables
+
+{table_lines}
+
+## Notes
+
+This manifest is generated by `tools/extract_schema_from_dump.py`.
+
+It is a schema extraction aid only. It does not decide which tables should receive safe seed data.
+"""
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description='Extract schema-only SQL from the legacy bwps.sql dump.')
+    parser.add_argument('--input', default='bwps.sql', help='Path to the legacy SQL dump.')
+    parser.add_argument('--output-dir', default='database/schema', help='Directory for generated schema files.')
+    args = parser.parse_args()
+
+    input_path = Path(args.input)
+    output_dir = Path(args.output_dir)
+
+    if not input_path.exists():
+        raise SystemExit(f'Input SQL dump not found: {input_path}')
+
+    sql = input_path.read_text(encoding='utf-8', errors='replace')
+    extracted = extract_schema(sql)
+
+    if not extracted.create_blocks:
+        raise SystemExit('No CREATE TABLE blocks found. Aborting.')
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    schema_path = output_dir / '001_base_schema.sql'
+    keys_path = output_dir / '002_keys_auto_increment.sql'
+    manifest_path = output_dir / 'schema_manifest.md'
+
+    schema_path.write_text(build_schema_file(extracted, input_path.name), encoding='utf-8')
+    keys_path.write_text(build_keys_file(extracted, input_path.name), encoding='utf-8')
+    manifest_path.write_text(build_manifest(extracted, input_path.name), encoding='utf-8')
+
+    print(f'Wrote {schema_path}')
+    print(f'Wrote {keys_path}')
+    print(f'Wrote {manifest_path}')
+    print(f'CREATE TABLE blocks: {len(extracted.create_blocks)}')
+    print(f'ALTER TABLE statements: {len(extracted.alter_statements)}')
+
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
