@@ -61,23 +61,24 @@ Status: in progress
 - [x] Move Node database config behind `server/config.js`
 - [x] Move main Node game/web socket ports behind config
 - [x] Move older legacy shim host/port behind config
+- [x] Add REST shim env placeholders and discovery config values
 - [x] Keep old localhost defaults when no `.env` exists
 - [x] Keep `.env.example` updated
 - [x] Document Node config support
-- [ ] Move REST shim host/port/discovery values behind config in a separate small pass
+- [ ] Update REST shim runtime code in a separate small pass
 - [ ] Add PHP config support later, after Node config is stable
 - [ ] Document Linux/VPS setup later
 
 Current branch:
 
 ```txt
-config/env-support
+config/rest-shim-env
 ```
 
 Recommended follow-up branches:
 
 ```txt
-config/rest-shim-env
+config/rest-shim-code
 config/php-env-support
 ```
 
