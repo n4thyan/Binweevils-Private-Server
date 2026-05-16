@@ -85,6 +85,43 @@ The workflow runs the seed extractor in dry-run mode, writes `database/seeds/see
 
 It does not write seed SQL.
 
+## Manual catalogue seed commit helper
+
+The repository includes a manual helper workflow for the first reviewed seed SQL export:
+
+```text
+.github/workflows/catalogue-seed-commit.yml
+```
+
+Suggested inputs:
+
+```text
+target_branch: database/catalogue-reference-seed
+commit_message: database: add catalogue reference seed [skip ci]
+```
+
+The workflow writes:
+
+```text
+database/seeds/001_catalogue_reference.sql
+database/seeds/seed_manifest.md
+```
+
+It only extracts these reviewed catalogue/reference tables:
+
+```text
+itemtype
+itemtypets
+appareltypes
+gardenitemtype
+seeds
+puzzletypes
+crosswords
+questtasks
+```
+
+It also refuses obvious blocked-table inserts before committing.
+
 ## Demo data rule
 
 Demo data should be obvious and disposable.

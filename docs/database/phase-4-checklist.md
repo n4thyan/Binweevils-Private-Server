@@ -45,8 +45,10 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Fix extractor handling for phpMyAdmin comments before INSERT blocks.
 - [x] Regenerate seed manifest after comment-handling fix.
 - [x] Review regenerated manifest before seed SQL export.
-- [ ] Extract safe catalogue data.
-- [ ] Extract safe level/game/puzzle definitions.
+- [x] Add manual catalogue seed SQL commit helper.
+- [ ] Generate `database/seeds/001_catalogue_reference.sql`.
+- [ ] Review generated catalogue seed SQL before default import use.
+- [ ] Extract safe level/game/puzzle definitions not already covered.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
 - [ ] Replace any required demo account data with obvious local fixtures.
 - [ ] Keep seed files importable in deterministic order.
