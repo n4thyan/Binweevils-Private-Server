@@ -49,7 +49,9 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Generate `database/seeds/001_catalogue_reference.sql`.
 - [x] Document generated catalogue seed SQL before default import use.
 - [x] Add local account setup plan and non-writing tool stub.
-- [ ] Inspect registration/login PHP password handling.
+- [x] Inspect registration/login PHP password handling.
+- [x] Document legacy auth/session behaviour before account writes.
+- [ ] Add password compatibility helper for modern local accounts.
 - [ ] Implement fresh local admin/demo account creation after auth review.
 - [ ] Extract safe level/game/puzzle definitions not already covered.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
@@ -128,7 +130,15 @@ database/schema/002_keys_auto_increment.sql
 database/seeds/001_catalogue_reference.sql
 ```
 
-Fresh local accounts are still planning-only until PHP auth/password handling is reviewed.
+Fresh local accounts are still blocked from automatic writes until the PHP auth/password compatibility helper is added.
+
+## Auth review status
+
+`docs/database/auth-flow-review.md` records the current legacy auth flow.
+
+Important result: the old runtime currently compares submitted passwords directly against `users.password`, then bridges the logged-in player through `users.sessionKey`, `users.loginKey`, and the `sessionId` / `weevil_name` cookies.
+
+That means the clean local account tool must not write production-style accounts blindly. The next safe step is a compatibility helper that lets new local accounts use `password_hash()` while old local legacy rows can still load during the migration.
 
 ## Merge rule
 
