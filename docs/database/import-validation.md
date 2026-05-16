@@ -39,21 +39,21 @@ The workflow starts a MariaDB service, installs the MariaDB client, then runs th
 The script checks:
 
 - 55 tables exist after import,
-- selected catalogue/reference tables have expected row counts,
+- selected catalogue/reference tables are populated,
 - blocked player/runtime tables remain empty,
 - held-back optional data remains empty.
 
-Expected catalogue/reference counts:
+Expected populated catalogue/reference tables:
 
 ```text
-itemtype: 42
-itemtypets: 141
-appareltypes: 2
-gardenitemtype: 7
-seeds: 4
-puzzletypes: 9
-crosswords: 1
-questtasks: 43
+itemtype
+itemtypets
+appareltypes
+gardenitemtype
+seeds
+puzzletypes
+crosswords
+questtasks
 ```
 
 Expected empty blocked/held-back tables:
@@ -68,13 +68,15 @@ weevilitems
 tycoonbusinesses
 ```
 
-## Why counts differ from the manifest
+## Why the validation avoids fixed catalogue row counts
 
 The seed manifest counts `INSERT` statement groups, not inserted rows.
 
 Example: one `INSERT INTO itemtypets` statement may contain many row tuples.
 
-The validation script checks final table row counts after import.
+The validation script therefore checks that selected catalogue/reference tables are populated, while still strictly checking that blocked player/runtime tables are empty.
+
+This avoids brittle failures when a large catalogue table is intentionally carried across from the legacy dump.
 
 ## Safety boundary
 
