@@ -1,0 +1,40 @@
+name: Runtime Table Usage Check
+
+on:
+  pull_request:
+    paths:
+      - "game-full/**"
+      - "server/**"
+      - "tools/audit_runtime_table_usage.py"
+      - "docs/runtime/runtime-table-usage-audit.md"
+      - ".github/workflows/runtime-table-usage-check.yml"
+  workflow_dispatch:
+
+jobs:
+  runtime-table-usage-check:
+    name: Check runtime table usage scanner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check scanner
+        run: python -m py_compile tools/audit_runtime_table_usage.py
+
+      - name: Generate runtime table usage report
+        run: >-
+          python tools/audit_runtime_table_usage.py
+          --output /tmp/runtime-table-usage-report.md
+
+      - name: Confirm report contains expected sections
+        run: |
+          grep -q "Runtime Table Usage Audit" /tmp/runtime-table-usage-report.md
+          grep -q "Boot-critical table references" /tmp/runtime-table-usage-report.md
+          grep -q "Runtime/player-state table references" /tmp/runtime-table-usage-report.md
+          grep -q "Table to file map" /tmp/runtime-table-usage-report.md
