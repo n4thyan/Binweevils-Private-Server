@@ -1,12 +1,12 @@
 # Environment Config Notes
 
-This document explains the first Node-side config cleanup pass.
+This document explains the Node-side config cleanup pass.
 
 The goal of this phase is to move hardcoded local values behind a small config helper while keeping the imported localhost setup working by default.
 
 ## Config helper
 
-Node config is now centralised in:
+Node config is centralised in:
 
 ```txt
 server/config.js
@@ -21,9 +21,9 @@ server/.env
 
 If neither file exists, it falls back to the legacy localhost defaults.
 
-No new dependency is required for this first pass.
+No new dependency is required for this config pass.
 
-## Files changed in this pass
+## Files covered by Node config so far
 
 ```txt
 server/config.js
@@ -36,7 +36,7 @@ docs/SETUP_LOCAL.md
 
 ## Database config
 
-`server/db.js` now reads database settings from `server/config.js`.
+`server/db.js` reads database settings from `server/config.js`.
 
 Default values remain:
 
@@ -52,7 +52,7 @@ These are safe only as local defaults. They are not production/VPS settings.
 
 ## Main Node server config
 
-`server/Main.js` now reads its bind host and ports from config.
+`server/Main.js` reads its bind host and ports from config.
 
 Defaults remain:
 
@@ -71,7 +71,7 @@ BinWeevilsWeb socket bridge  -> 2087
 
 ## Older shim config
 
-`server/server.js` now reads its host and port from config.
+`server/server.js` reads its host and port from config.
 
 Defaults remain:
 
@@ -82,20 +82,22 @@ LEGACY_SHIM_PORT=10843
 
 This file is still marked as uncertain because it imports a missing `./xmlsocket` helper.
 
-## REST shim config status
+## REST shim config
 
-`server/config.js` and `.env.example` include REST shim settings for a follow-up pass:
+`server/config.js` and `.env.example` include REST shim settings:
 
 ```txt
 REST_HOST=
 REST_PORT=1122
 REST_GET_SERVER_RESPONSE=127-0-0-1:10843
 REST_GET_SERVER_EX_RESPONSE=127-0-0-1:10842
+REST_DEV_AUTH_A=dev-auth-a
+REST_DEV_AUTH_B=dev-auth-b
 ```
 
-`server/rest.js` should be updated in a separate small PR after this one.
+The discovery responses are now represented as config values.
 
-Reason: the current file contains old static auth-shim material. It is better to update and review that file on its own rather than mixing it into the first config pass.
+The old token/profile compatibility shim still needs a careful runtime code pass. For now, placeholder values are in config so the old hardcoded material can be replaced cleanly without adding real secrets.
 
 ## PHP config status
 
@@ -105,7 +107,7 @@ The PHP side still uses:
 game-full/essential/config.php
 ```
 
-That file was not changed in this PR.
+That file was not changed in the Node config pass.
 
 PHP config should be handled separately because `game-full/` is a fragile compatibility layer.
 
@@ -123,7 +125,7 @@ This keeps the project runnable in the old local style while allowing safer conf
 Recommended follow-up order:
 
 ```txt
-config/rest-shim-env
+config/rest-shim-code
 config/php-env-support
 server/package-scripts
 ```
