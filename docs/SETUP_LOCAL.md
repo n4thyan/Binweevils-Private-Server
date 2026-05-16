@@ -28,9 +28,36 @@ This has not been fully verified in this pass, but the current structure suggest
 6. Start the Node compatibility services as needed.
 7. Start the legacy Electron launcher from `electron/`.
 
+## Environment config
+
+Node now has a small local config helper at:
+
+```txt
+server/config.js
+```
+
+It loads optional `.env` values from:
+
+```txt
+.env
+server/.env
+```
+
+If no `.env` file exists, the imported localhost defaults are still used.
+
+To customise local settings:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` for your machine.
+
+Do not commit `.env`.
+
 ## Database
 
-Current hardcoded local database defaults are:
+Default local database settings are:
 
 ```txt
 DB_HOST=localhost
@@ -40,7 +67,7 @@ DB_USER=root
 DB_PASSWORD=
 ```
 
-These are old local development defaults. They should become environment-based config later.
+These are old local development defaults. Node can now override them through `.env`, but the PHP side still has its own legacy config in `game-full/essential/config.php`.
 
 Do not use these defaults for a public VPS or production-style deployment.
 
@@ -51,7 +78,7 @@ The server folder currently has multiple entry points that need mapping.
 Known files:
 
 ```txt
-server/db.js
+server/Main.js
 server/server.js
 server/rest.js
 server/package.json
@@ -63,14 +90,45 @@ Install dependencies from inside `server/`:
 npm install
 ```
 
-Potential manual commands:
+Likely manual commands:
 
 ```bash
-node server.js
+node Main.js
 node rest.js
 ```
 
-These commands are documented as current guesses from the imported structure. A later pass should confirm the exact working startup sequence and then add proper package scripts.
+The older `server.js` shim is still uncertain because it imports `./xmlsocket`, which was not found during audit.
+
+## Node config values
+
+Current Node environment keys:
+
+```txt
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+NODE_BIND_HOST
+GAME_SOCKET_PORT
+WEB_SOCKET_PORT
+REST_HOST
+REST_PORT
+REST_GET_SERVER_RESPONSE
+REST_GET_SERVER_EX_RESPONSE
+LEGACY_SHIM_HOST
+LEGACY_SHIM_PORT
+```
+
+The defaults preserve the old local behaviour:
+
+```txt
+GAME_SOCKET_PORT=9339
+WEB_SOCKET_PORT=2087
+REST_PORT=1122
+LEGACY_SHIM_HOST=127.0.0.1
+LEGACY_SHIM_PORT=10843
+```
 
 ## Electron Launcher
 
