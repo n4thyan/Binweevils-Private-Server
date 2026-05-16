@@ -48,6 +48,9 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add manual catalogue seed SQL commit helper.
 - [x] Generate `database/seeds/001_catalogue_reference.sql`.
 - [x] Document generated catalogue seed SQL before default import use.
+- [x] Add local account setup plan and non-writing tool stub.
+- [ ] Inspect registration/login PHP password handling.
+- [ ] Implement fresh local admin/demo account creation after auth review.
 - [ ] Extract safe level/game/puzzle definitions not already covered.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
 - [ ] Replace any required demo account data with obvious local fixtures.
@@ -60,7 +63,7 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add reset/reseed notes.
 - [x] Add warnings about not using the old dump in production.
 - [x] Add validation script and workflow for import testing.
-- [ ] Run import validation workflow and review result.
+- [x] Run import validation workflow and review result.
 
 ## Pass 6: Optional migration tooling
 
@@ -115,7 +118,7 @@ Those blocked tables must stay out of default seed files.
 
 ## Current clean path status
 
-The clean path is experimental and should be import-tested in a disposable database before use with the legacy PHP runtime.
+The clean path is experimental but now has CI import validation for schema plus catalogue/reference seed data.
 
 Current import order:
 
@@ -124,6 +127,8 @@ database/schema/001_base_schema.sql
 database/schema/002_keys_auto_increment.sql
 database/seeds/001_catalogue_reference.sql
 ```
+
+Fresh local accounts are still planning-only until PHP auth/password handling is reviewed.
 
 ## Merge rule
 

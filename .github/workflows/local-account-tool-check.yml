@@ -1,0 +1,35 @@
+name: Local Account Tool Check
+
+on:
+  pull_request:
+    paths:
+      - "tools/create_local_account.py"
+      - ".github/workflows/local-account-tool-check.yml"
+  workflow_dispatch:
+
+jobs:
+  check-local-account-tool:
+    name: Check local account setup stub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check tool
+        run: python -m py_compile tools/create_local_account.py
+
+      - name: Validate dry-run plan
+        env:
+          BWPS_ADMIN_PASSWORD: local-only-placeholder
+        run: >-
+          python tools/create_local_account.py
+          --database-url mysql://root:root@127.0.0.1:3306/bwps_clean_test
+          --username local_admin
+          --password-from-env BWPS_ADMIN_PASSWORD
+          --moderator
