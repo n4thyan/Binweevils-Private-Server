@@ -22,11 +22,13 @@ This checklist keeps the database rewrite safe and reversible.
 
 ## Pass 3: Create schema-only export
 
-- [ ] Extract `CREATE TABLE` statements.
-- [ ] Extract index statements.
-- [ ] Extract auto-increment statements.
-- [ ] Preserve legacy table names for compatibility.
-- [ ] Add comments for weird names and risky columns.
+- [x] Add schema extraction tool.
+- [x] Document expected generated schema files.
+- [x] Preserve legacy table names for compatibility.
+- [ ] Run schema extraction and commit generated `001_base_schema.sql`.
+- [ ] Run schema extraction and commit generated `002_keys_auto_increment.sql`.
+- [ ] Commit generated `schema_manifest.md`.
+- [ ] Review weird names and risky columns after generation.
 
 ## Pass 4: Create clean seed files
 
@@ -52,4 +54,4 @@ This checklist keeps the database rewrite safe and reversible.
 
 ## Merge rule
 
-Only merge each pass after the repo still loads and the docs make sense. The actual SQL split should be its own PR, because it is much riskier than documentation.
+Only merge each pass after the repo still loads and the docs make sense. The actual generated SQL split should be its own PR if the diff is large or hard to review.
