@@ -4,7 +4,7 @@ This roadmap keeps the current working experience safe while the repo is cleaned
 
 ## Phase 1: Foundation
 
-Status: in progress
+Status: ready to merge
 
 - [x] Rewrite public README
 - [x] Add credits and disclaimer files
@@ -13,19 +13,33 @@ Status: in progress
 - [x] Define safe modernisation rules
 - [x] Keep fragile game paths untouched
 - [x] Add initial audit notes
+- [x] Add local setup notes
+- [x] Add current run flow notes
+- [x] Add endpoint inventory
+- [x] Add database inventory
+- [x] Add auth/account flow notes
+- [x] Add security notes
+- [x] Add runtime data cleanup plan
+- [x] Add merge checklist
+- [x] Add post-merge plan
 
 ## Phase 2: Audit
 
-Status: started
+Status: next after merge
 
-- [ ] Map the current launch flow
+- [ ] Map the current launch flow fully
 - [ ] Map PHP endpoints called by the client
-- [ ] Map Node/socket events
-- [ ] Map database tables and relationships
-- [x] Identify first hardcoded local database config
-- [x] Identify first hardcoded REST/socket host config
+- [ ] Map Node/socket events fully
+- [ ] Map database tables and relationships fully
 - [ ] Identify old runtime account/staff/demo data fully
 - [ ] Identify files that are genuinely unused
+- [ ] Create `docs/LEGACY_FILE_MAP.md`
+
+Recommended branch:
+
+```txt
+audit/legacy-file-map
+```
 
 ## Phase 3: Config Cleanup
 
@@ -35,6 +49,12 @@ Status: started
 - Replace real/default secrets with placeholders
 - Document Windows/XAMPP setup
 - Document Linux/VPS setup
+
+Recommended branch:
+
+```txt
+config/env-support
+```
 
 ## Phase 4: Database Cleanup
 
@@ -48,7 +68,14 @@ Target structure:
 
 ```txt
 database/schema.sql
-database/seed.example.sql
+database/seeds/catalogue.sql
+database/seeds/dev.sql
+```
+
+Recommended branch:
+
+```txt
+database/schema-seed-split
 ```
 
 ## Phase 5: Server Rewrite
@@ -60,12 +87,28 @@ database/seed.example.sql
 - Keep client-facing responses compatible
 - Replace one endpoint or module at a time
 
+Recommended branches:
+
+```txt
+server/package-scripts
+server/config-cleanup
+server/socket-protocol-map
+```
+
 ## Phase 6: Launcher and Play Flow
 
 - Document existing Electron launcher
+- Clean Electron package identity
 - Add browser launch notes
 - Explore Ruffle support
 - Keep the original working launcher until a replacement is tested
+
+Recommended branches:
+
+```txt
+electron/launcher-identity
+launcher/ruffle-experiment
+```
 
 ## Phase 7: Tooling
 
