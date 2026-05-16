@@ -30,6 +30,7 @@ server/config.js
 server/db.js
 server/Main.js
 server/server.js
+server/rest.js
 .env.example
 docs/SETUP_LOCAL.md
 ```
@@ -84,7 +85,9 @@ This file is still marked as uncertain because it imports a missing `./xmlsocket
 
 ## REST shim config
 
-`server/config.js` and `.env.example` include REST shim settings:
+`server/rest.js` now consumes REST shim settings from `server/config.js`.
+
+Current keys:
 
 ```txt
 REST_HOST=
@@ -95,9 +98,15 @@ REST_DEV_AUTH_A=dev-auth-a
 REST_DEV_AUTH_B=dev-auth-b
 ```
 
-The discovery responses are now represented as config values.
+Preserved defaults:
 
-The old token/profile compatibility shim still needs a careful runtime code pass. For now, placeholder values are in config so the old hardcoded material can be replaced cleanly without adding real secrets.
+```txt
+/getServer   -> 127-0-0-1:10843
+/getServerEx -> 127-0-0-1:10842
+REST port    -> 1122
+```
+
+The old static compatibility auth values have been replaced with local placeholder config values. This is not real authentication yet. A later auth rewrite should replace the whole compatibility shim with proper account-backed logic while preserving the legacy route contract.
 
 ## PHP config status
 
@@ -125,7 +134,6 @@ This keeps the project runnable in the old local style while allowing safer conf
 Recommended follow-up order:
 
 ```txt
-config/rest-shim-code
 config/php-env-support
 server/package-scripts
 ```

@@ -62,23 +62,23 @@ Status: in progress
 - [x] Move main Node game/web socket ports behind config
 - [x] Move older legacy shim host/port behind config
 - [x] Add REST shim env placeholders and discovery config values
+- [x] Update REST shim runtime code to consume config values
+- [x] Remove old static REST shim auth material in favour of local placeholders
 - [x] Keep old localhost defaults when no `.env` exists
 - [x] Keep `.env.example` updated
 - [x] Document Node config support
-- [ ] Update REST shim runtime code in a separate small pass
 - [ ] Add PHP config support later, after Node config is stable
 - [ ] Document Linux/VPS setup later
 
 Current branch:
 
 ```txt
-config/rest-shim-env
+config/rest-shim-code
 ```
 
-Recommended follow-up branches:
+Recommended follow-up branch:
 
 ```txt
-config/rest-shim-code
 config/php-env-support
 ```
 
