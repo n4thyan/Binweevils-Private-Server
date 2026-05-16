@@ -4,7 +4,7 @@ This roadmap keeps the current working experience safe while the repo is cleaned
 
 ## Phase 1: Foundation
 
-Status: ready to merge
+Status: merged
 
 - [x] Rewrite public README
 - [x] Add credits and disclaimer files
@@ -25,23 +25,36 @@ Status: ready to merge
 
 ## Phase 2: Audit
 
-Status: next after merge
+Status: ready to merge
 
-- [ ] Map the current launch flow fully
-- [ ] Map PHP endpoints called by the client
+- [x] Map the current launch flow at a high level
+- [x] Map the main boot/login/game path
+- [x] Map known Node/server entry points
+- [x] Map known client-facing cookies, ports, and paths
+- [x] Map important fragile `game-full` files at a high level
+- [x] Create `docs/LEGACY_FILE_MAP.md`
+- [x] Create `docs/SERVER_ENTRYPOINTS.md`
+- [x] Create `docs/GAME_FULL_MAP.md`
+- [x] Create `docs/CLIENT_CONTRACT.md`
+- [x] Create `docs/GAME_ENDPOINTS_TODO.md`
+
+Still needs deeper follow-up audit later:
+
+- [ ] Map all PHP endpoints called by the client
 - [ ] Map Node/socket events fully
 - [ ] Map database tables and relationships fully
 - [ ] Identify old runtime account/staff/demo data fully
 - [ ] Identify files that are genuinely unused
-- [ ] Create `docs/LEGACY_FILE_MAP.md`
 
-Recommended branch:
+Recommended follow-up branch:
 
 ```txt
-audit/legacy-file-map
+audit/game-full-endpoints
 ```
 
 ## Phase 3: Config Cleanup
+
+Status: next phase
 
 - Add `.env` support where safe
 - Keep `.env.example` updated
