@@ -67,7 +67,9 @@ module.exports = {
         host: stringValue('REST_HOST', ''),
         port: intValue('REST_PORT', 1122),
         getServerResponse: stringValue('REST_GET_SERVER_RESPONSE', '127-0-0-1:10843'),
-        getServerExResponse: stringValue('REST_GET_SERVER_EX_RESPONSE', '127-0-0-1:10842')
+        getServerExResponse: stringValue('REST_GET_SERVER_EX_RESPONSE', '127-0-0-1:10842'),
+        devAuthA: stringValue('REST_DEV_AUTH_A', 'dev-auth-a'),
+        devAuthB: stringValue('REST_DEV_AUTH_B', 'dev-auth-b')
     },
 
     legacyShim: {
