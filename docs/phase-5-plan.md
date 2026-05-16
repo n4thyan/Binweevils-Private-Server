@@ -32,12 +32,22 @@ tools/audit_schema_debt.py
 .github/workflows/schema-debt-audit-check.yml
 ```
 
-## Current Phase 5 pass
+## Runtime boot dependency map
 
 The runtime boot dependency map records which tables are needed before local clean database login can work:
 
 ```text
 docs/runtime/runtime-boot-dependency-map.md
+```
+
+## Runtime table usage scanner
+
+The table usage scanner maps runtime source files to database tables before auth/bootstrap changes are made:
+
+```text
+tools/audit_runtime_table_usage.py
+docs/runtime/runtime-table-usage-audit.md
+.github/workflows/runtime-table-usage-check.yml
 ```
 
 ## Next safe pass after this
