@@ -25,8 +25,12 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add schema extraction tool.
 - [x] Document expected generated schema files.
 - [x] Preserve legacy table names for compatibility.
-- [ ] Run schema extraction and commit generated `001_base_schema.sql`.
-- [ ] Run schema extraction and commit generated `002_keys_auto_increment.sql`.
+- [x] Run schema extraction in CI.
+- [x] Confirm extraction produced 55 `CREATE TABLE` blocks.
+- [x] Confirm extraction produced no separate `ALTER TABLE` statements from the legacy dump.
+- [x] Confirm generated schema artifact uploads from GitHub Actions.
+- [ ] Commit generated `001_base_schema.sql`.
+- [ ] Commit generated `002_keys_auto_increment.sql`.
 - [ ] Commit generated `schema_manifest.md`.
 - [ ] Review weird names and risky columns after generation.
 
@@ -51,6 +55,18 @@ This checklist keeps the database rewrite safe and reversible.
 - [ ] Add a script to create a local admin account.
 - [ ] Add a script to validate required tables exist.
 - [ ] Add a script to check for unsafe seed data before commit.
+
+## Latest export result
+
+The first CI export completed successfully from PR #10.
+
+```text
+CREATE TABLE blocks: 55
+ALTER TABLE statements: 0
+Artifact: generated-schema
+```
+
+The lack of separate `ALTER TABLE` statements means the original dump appears to store table definitions inline, without a later key/index pass that the extractor could separate out.
 
 ## Merge rule
 
