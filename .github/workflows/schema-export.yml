@@ -1,0 +1,47 @@
+name: Schema Export
+
+on:
+  pull_request:
+    paths:
+      - "bwps.sql"
+      - "tools/extract_schema_from_dump.py"
+      - ".github/workflows/schema-export.yml"
+  workflow_dispatch:
+
+jobs:
+  export-schema:
+    name: Export schema from legacy dump
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check extractor
+        run: python -m py_compile tools/extract_schema_from_dump.py
+
+      - name: Generate schema files
+        run: python tools/extract_schema_from_dump.py --input bwps.sql --output-dir database/schema
+
+      - name: Show generated manifest
+        run: cat database/schema/schema_manifest.md
+
+      - name: Verify generated files exist
+        run: |
+          test -s database/schema/001_base_schema.sql
+          test -s database/schema/002_keys_auto_increment.sql
+          test -s database/schema/schema_manifest.md
+
+      - name: Upload generated schema artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-schema
+          path: |
+            database/schema/001_base_schema.sql
+            database/schema/002_keys_auto_increment.sql
+            database/schema/schema_manifest.md
