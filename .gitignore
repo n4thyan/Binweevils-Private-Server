@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Logs
+*.log
+logs/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor junk
+.vscode/
+.idea/
+
+# Build/cache
+dist/
+build/
+.cache/
+
+# Temporary files
+tmp/
+temp/
+
+# Backups and archives
+*.zip
+*.rar
+*.7z
+*.bak
+*.backup
+*.old
