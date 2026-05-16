@@ -66,6 +66,25 @@ This writes a manifest without writing a seed SQL file.
 
 The tool refuses to extract known player/runtime tables such as `users`, `buddylist`, `weevilitems`, `game-logs`, and progress tables.
 
+## Manual manifest commit helper
+
+The repository includes a manual helper workflow:
+
+```text
+.github/workflows/seed-manifest-commit.yml
+```
+
+Suggested inputs:
+
+```text
+target_branch: database/seed-manifest-review
+commit_message: database: add seed extraction manifest [skip ci]
+```
+
+The workflow runs the seed extractor in dry-run mode, writes `database/seeds/seed_manifest.md`, and commits only that manifest back to the target branch.
+
+It does not write seed SQL.
+
 ## Demo data rule
 
 Demo data should be obvious and disposable.

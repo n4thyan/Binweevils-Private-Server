@@ -39,7 +39,10 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add catalogue/reference seed split plan.
 - [x] Add seed extraction planning helper.
 - [x] Add dry-run CI check for seed extraction manifest.
+- [x] Add seed manifest review notes.
+- [x] Add manual seed manifest commit helper.
 - [ ] Run dry-run manifest review.
+- [ ] Commit generated `database/seeds/seed_manifest.md`.
 - [ ] Extract safe catalogue data.
 - [ ] Extract safe level/game/puzzle definitions.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
