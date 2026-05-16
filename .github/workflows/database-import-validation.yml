@@ -1,0 +1,47 @@
+name: Database Import Validation
+
+on:
+  pull_request:
+    paths:
+      - "database/schema/**"
+      - "database/seeds/**"
+      - "tools/validate_clean_database_import.sh"
+      - ".github/workflows/database-import-validation.yml"
+  workflow_dispatch:
+
+jobs:
+  validate-clean-import:
+    name: Validate clean schema and seed import
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: bwps_clean_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+
+      - name: Validate clean database import
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: bwps_clean_test
+        run: bash tools/validate_clean_database_import.sh
