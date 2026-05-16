@@ -256,6 +256,7 @@ game-full/php/
 game-full/php2/
 game-full/login/
 game-full/register/
+game-full/essential/
 game-full/externalUIs/
 game-full/fixedCam/
 game-full/cdn.binw.net/
@@ -266,6 +267,12 @@ SWF files
 XML files
 crossdomain.xml
 flashpolicy.xml
+```
+
+Detailed notes are now split into:
+
+```txt
+docs/GAME_FULL_MAP.md
 ```
 
 ### Treatment
