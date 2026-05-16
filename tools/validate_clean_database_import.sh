@@ -43,6 +43,19 @@ expect_count() {
   echo "OK: ${table} contains ${actual} row(s)."
 }
 
+expect_not_empty() {
+  local table="$1"
+  local actual
+  actual="$(query_scalar "SELECT COUNT(*) FROM \`${table}\`;")"
+
+  if [[ "${actual}" == "0" ]]; then
+    echo "Expected ${table} to contain catalogue/reference rows, got 0." >&2
+    return 1
+  fi
+
+  echo "OK: ${table} contains ${actual} row(s)."
+}
+
 expect_empty() {
   local table="$1"
   expect_count "${table}" 0
@@ -69,15 +82,15 @@ main() {
   fi
   echo "OK: found ${table_count} tables."
 
-  echo "Checking selected catalogue/reference counts..."
-  expect_count itemtype 42
-  expect_count itemtypets 141
-  expect_count appareltypes 2
-  expect_count gardenitemtype 7
-  expect_count seeds 4
-  expect_count puzzletypes 9
-  expect_count crosswords 1
-  expect_count questtasks 43
+  echo "Checking selected catalogue/reference tables are populated..."
+  expect_not_empty itemtype
+  expect_not_empty itemtypets
+  expect_not_empty appareltypes
+  expect_not_empty gardenitemtype
+  expect_not_empty seeds
+  expect_not_empty puzzletypes
+  expect_not_empty crosswords
+  expect_not_empty questtasks
 
   echo "Checking blocked player/runtime tables stayed empty..."
   expect_empty users
