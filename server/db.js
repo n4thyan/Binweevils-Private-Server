@@ -1,12 +1,7 @@
 var mysql = require('mysql');
+var config = require('./config');
 
-var pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'bwps',
-    port: 3306
-});
+var pool = mysql.createPool(config.db);
 
 module.exports = {
     query: function() {
