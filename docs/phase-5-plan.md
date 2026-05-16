@@ -21,15 +21,23 @@ Known examples include packed list storage, packed runtime defaults, username-ba
 
 These issues should be handled carefully. Do not normalise tables directly under the old PHP/Flash runtime without a compatibility layer.
 
-## First Phase 5 pass
+## Completed Phase 5 starter pass
 
-This starter pass adds:
+The first Phase 5 pass added:
 
 ```text
 docs/database/runtime-data-modernisation-notes.md
 docs/database/runtime-schema-debt-report.md
 tools/audit_schema_debt.py
 .github/workflows/schema-debt-audit-check.yml
+```
+
+## Current Phase 5 pass
+
+The runtime boot dependency map records which tables are needed before local clean database login can work:
+
+```text
+docs/runtime/runtime-boot-dependency-map.md
 ```
 
 ## Next safe pass after this

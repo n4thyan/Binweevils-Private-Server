@@ -1,0 +1,30 @@
+name: Runtime Boot Map Check
+
+on:
+  pull_request:
+    paths:
+      - "docs/runtime/runtime-boot-dependency-map.md"
+      - "docs/phase-5-plan.md"
+      - ".github/workflows/runtime-boot-map-check.yml"
+  workflow_dispatch:
+
+jobs:
+  runtime-boot-map-check:
+    name: Check runtime boot dependency docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Confirm boot map exists
+        run: test -s docs/runtime/runtime-boot-dependency-map.md
+
+      - name: Confirm required sections are documented
+        run: |
+          grep -q "Login page flow" docs/runtime/runtime-boot-dependency-map.md
+          grep -q "Registration flow" docs/runtime/runtime-boot-dependency-map.md
+          grep -q "Session bridge" docs/runtime/runtime-boot-dependency-map.md
+          grep -q "Buddy list dependency" docs/runtime/runtime-boot-dependency-map.md
+          grep -q "Nest and inventory dependency" docs/runtime/runtime-boot-dependency-map.md
+          grep -q "Next safe runtime pass" docs/runtime/runtime-boot-dependency-map.md
