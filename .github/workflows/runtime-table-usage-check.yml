@@ -7,6 +7,7 @@ on:
       - "server/**"
       - "tools/audit_runtime_table_usage.py"
       - "docs/runtime/runtime-table-usage-audit.md"
+      - "docs/runtime/generated-runtime-table-usage-report.md"
       - ".github/workflows/runtime-table-usage-check.yml"
   workflow_dispatch:
 
@@ -31,6 +32,14 @@ jobs:
         run: >-
           python tools/audit_runtime_table_usage.py
           --output /tmp/runtime-table-usage-report.md
+
+      - name: Upload generated runtime table usage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-table-usage-report
+          path: /tmp/runtime-table-usage-report.md
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Confirm report contains expected sections
         run: |
