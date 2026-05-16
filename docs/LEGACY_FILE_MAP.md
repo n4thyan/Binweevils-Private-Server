@@ -273,6 +273,7 @@ Detailed notes are now split into:
 
 ```txt
 docs/GAME_FULL_MAP.md
+docs/CLIENT_CONTRACT.md
 ```
 
 ### Treatment
