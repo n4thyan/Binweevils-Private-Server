@@ -1,10 +1,16 @@
 name: Commit Schema Files
 
 on:
-  push:
-    branches:
-      - database/schema-files
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: "Branch to receive generated schema files"
+        required: true
+        default: "database/schema-files"
+      commit_message:
+        description: "Commit message for generated schema files"
+        required: true
+        default: "database: add generated schema files [skip ci]"
 
 permissions:
   contents: write
@@ -15,10 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out branch
+      - name: Check out target branch
         uses: actions/checkout@v4
         with:
-          ref: database/schema-files
+          ref: ${{ inputs.target_branch }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,6 +52,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No schema changes to commit."
           else
-            git commit -m "database: add generated schema files [skip ci]"
-            git push origin HEAD:database/schema-files
+            git commit -m "${{ inputs.commit_message }}"
+            git push origin HEAD:${{ inputs.target_branch }}
           fi
