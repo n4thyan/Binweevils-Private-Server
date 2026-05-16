@@ -59,13 +59,14 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Add phpMyAdmin import notes.
 - [x] Add reset/reseed notes.
 - [x] Add warnings about not using the old dump in production.
-- [ ] Add validation script or workflow for import testing.
+- [x] Add validation script and workflow for import testing.
+- [ ] Run import validation workflow and review result.
 
 ## Pass 6: Optional migration tooling
 
 - [ ] Add a script to rebuild a clean database from schema plus seeds.
 - [ ] Add a script to create a local admin account.
-- [ ] Add a script to validate required tables exist.
+- [x] Add a script to validate required tables exist.
 - [ ] Add a script to check for unsafe seed data before commit.
 
 ## Latest export result
