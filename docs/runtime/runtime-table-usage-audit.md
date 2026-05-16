@@ -11,7 +11,7 @@ tools/audit_runtime_table_usage.py
 Default use:
 
 ```bash
-python tools/audit_runtime_table_usage.py --output docs/runtime/generated-table-usage-report.md
+python tools/audit_runtime_table_usage.py --output docs/runtime/generated-runtime-table-usage-report.md
 ```
 
 By default it scans:
@@ -29,14 +29,23 @@ The scanner looks for simple SQL table references in PHP/JS runtime files:
 FROM table
 JOIN table
 UPDATE table
-INTO table
+INSERT INTO table
 DELETE FROM table
 ```
 
 It then produces a markdown report mapping:
 
 ```text
-table -> files that reference it
+table -> file:line references and operation type
+```
+
+Example output shape:
+
+```text
+### users
+
+- game-full/login/login.php:10 (FROM)
+- game-full/login/login.php:31 (UPDATE)
 ```
 
 ## Why this exists
