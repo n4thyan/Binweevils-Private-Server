@@ -1,0 +1,42 @@
+name: Seed Extraction Check
+
+on:
+  pull_request:
+    paths:
+      - "bwps.sql"
+      - "tools/extract_seed_tables.py"
+      - "docs/database/catalogue-seed-plan.md"
+      - ".github/workflows/seed-extraction-check.yml"
+  workflow_dispatch:
+
+jobs:
+  dry-run-seed-extraction:
+    name: Dry-run catalogue seed extraction
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check seed extractor
+        run: python -m py_compile tools/extract_seed_tables.py
+
+      - name: Dry-run catalogue seed extraction
+        run: python tools/extract_seed_tables.py --input bwps.sql --manifest database/seeds/seed_manifest.md --dry-run
+
+      - name: Show generated seed manifest
+        run: cat database/seeds/seed_manifest.md
+
+      - name: Verify manifest exists
+        run: test -s database/seeds/seed_manifest.md
+
+      - name: Upload seed manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seed-extraction-manifest
+          path: database/seeds/seed_manifest.md
