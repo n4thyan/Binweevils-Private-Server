@@ -59,6 +59,16 @@ The PHP syntax check gives Phase 5 a small CI safety net before auth/runtime cod
 docs/runtime/php-runtime-syntax-check.md
 ```
 
+## Auth readiness check
+
+The auth readiness check records where legacy direct credential handling still needs review before clean local account writes are enabled:
+
+```text
+tools/check_auth_readiness.py
+docs/runtime/auth-readiness-check.md
+.github/workflows/auth-readiness-check.yml
+```
+
 ## Next safe pass after this
 
 The next runtime-changing PR should be small and focused:
