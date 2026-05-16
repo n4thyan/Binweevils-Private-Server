@@ -2,6 +2,18 @@
 
 This checklist keeps the database rewrite safe and reversible.
 
+## Phase 4 wrap-up status
+
+Phase 4 is complete for database split, clean catalogue seed extraction, import validation, seed safety scanning, and local disposable rebuild tooling.
+
+Runtime auth/bootstrap work remains intentionally separate and should start the next phase.
+
+See:
+
+```text
+docs/database/phase-4-summary.md
+```
+
 ## Pass 1: Map only
 
 - [x] Create `database/` workspace.
