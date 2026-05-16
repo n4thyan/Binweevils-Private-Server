@@ -1,6 +1,9 @@
 var BinWeevils = require("./BinWeevils");
 var BinWeevilsWeb = require("./BinWeevilsWeb");
-var s = new BinWeevils("", 9339);
-var x = new BinWeevilsWeb("", 2087);
+var config = require("./config");
+
+var s = new BinWeevils(config.server.bindHost, config.server.gameSocketPort);
+var x = new BinWeevilsWeb(config.server.bindHost, config.server.webSocketPort);
+
 s.runServer();
 x.runServer();

@@ -25,7 +25,7 @@ Status: merged
 
 ## Phase 2: Audit
 
-Status: ready to merge
+Status: merged
 
 - [x] Map the current launch flow at a high level
 - [x] Map the main boot/login/game path
@@ -54,19 +54,31 @@ audit/game-full-endpoints
 
 ## Phase 3: Config Cleanup
 
-Status: next phase
+Status: in progress
 
-- Add `.env` support where safe
-- Keep `.env.example` updated
-- Move hardcoded local settings into config files
-- Replace real/default secrets with placeholders
-- Document Windows/XAMPP setup
-- Document Linux/VPS setup
+- [x] Add Node `.env` loader without new dependencies
+- [x] Add `server/config.js`
+- [x] Move Node database config behind `server/config.js`
+- [x] Move main Node game/web socket ports behind config
+- [x] Move older legacy shim host/port behind config
+- [x] Keep old localhost defaults when no `.env` exists
+- [x] Keep `.env.example` updated
+- [x] Document Node config support
+- [ ] Move REST shim host/port/discovery values behind config in a separate small pass
+- [ ] Add PHP config support later, after Node config is stable
+- [ ] Document Linux/VPS setup later
 
-Recommended branch:
+Current branch:
 
 ```txt
 config/env-support
+```
+
+Recommended follow-up branches:
+
+```txt
+config/rest-shim-env
+config/php-env-support
 ```
 
 ## Phase 4: Database Cleanup
