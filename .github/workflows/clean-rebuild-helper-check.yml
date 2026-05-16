@@ -1,0 +1,42 @@
+name: Clean Rebuild Helper Check
+
+on:
+  pull_request:
+    paths:
+      - "tools/rebuild_clean_database.sh"
+      - ".github/workflows/clean-rebuild-helper-check.yml"
+  workflow_dispatch:
+
+jobs:
+  check-clean-rebuild-helper:
+    name: Check clean rebuild helper
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Syntax-check helper
+        run: bash -n tools/rebuild_clean_database.sh
+
+      - name: Confirm destructive guard refuses without confirmation
+        run: |
+          set +e
+          DB_NAME=bwps_clean_test bash tools/rebuild_clean_database.sh >out.txt 2>err.txt
+          status=$?
+          set -e
+          cat out.txt
+          cat err.txt
+          test "$status" -eq 2
+          grep -q "without explicit confirmation" err.txt
+
+      - name: Confirm destructive guard refuses unsafe database name
+        run: |
+          set +e
+          DB_NAME=production CONFIRM_RESET=production bash tools/rebuild_clean_database.sh >out.txt 2>err.txt
+          status=$?
+          set -e
+          cat out.txt
+          cat err.txt
+          test "$status" -eq 2
+          grep -q "Refusing to rebuild database" err.txt

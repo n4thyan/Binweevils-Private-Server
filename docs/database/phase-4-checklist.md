@@ -58,7 +58,7 @@ This checklist keeps the database rewrite safe and reversible.
 - [ ] Extract safe level/game/puzzle definitions not already covered.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
 - [ ] Replace any required demo account data with obvious local fixtures.
-- [ ] Keep seed files importable in deterministic order.
+- [x] Keep seed files importable in deterministic order.
 
 ## Pass 5: Add setup/import docs
 
@@ -71,7 +71,7 @@ This checklist keeps the database rewrite safe and reversible.
 
 ## Pass 6: Optional migration tooling
 
-- [ ] Add a script to rebuild a clean database from schema plus seeds.
+- [x] Add a script to rebuild a clean database from schema plus seeds.
 - [ ] Add a script to create a local admin account.
 - [x] Add a script to validate required tables exist.
 - [x] Add a script to check for unsafe seed data before commit.
@@ -130,6 +130,12 @@ Current import order:
 database/schema/001_base_schema.sql
 database/schema/002_keys_auto_increment.sql
 database/seeds/001_catalogue_reference.sql
+```
+
+The local rebuild helper wraps that same import order for disposable databases only:
+
+```text
+tools/rebuild_clean_database.sh
 ```
 
 Fresh local accounts are still blocked from automatic writes until the PHP auth/password compatibility helper is added.
