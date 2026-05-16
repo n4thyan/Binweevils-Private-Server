@@ -1,0 +1,46 @@
+name: Auth Readiness Check
+
+on:
+  pull_request:
+    paths:
+      - "game-full/login/login.php"
+      - "game-full/register/create-new-weevil.php"
+      - "tools/check_auth_readiness.py"
+      - "docs/runtime/auth-readiness-check.md"
+      - ".github/workflows/auth-readiness-check.yml"
+  workflow_dispatch:
+
+jobs:
+  auth-readiness-check:
+    name: Generate auth readiness report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check scanner
+        run: python -m py_compile tools/check_auth_readiness.py
+
+      - name: Generate auth readiness report
+        run: >-
+          python tools/check_auth_readiness.py
+          --output /tmp/auth-readiness-report.md
+
+      - name: Upload auth readiness report
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-readiness-report
+          path: /tmp/auth-readiness-report.md
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Confirm report was generated
+        run: |
+          grep -q "Auth Readiness Report" /tmp/auth-readiness-report.md
+          grep -q "Findings" /tmp/auth-readiness-report.md
