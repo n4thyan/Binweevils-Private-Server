@@ -29,13 +29,17 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Confirm extraction produced 55 `CREATE TABLE` blocks.
 - [x] Confirm extraction produced no separate `ALTER TABLE` statements from the legacy dump.
 - [x] Confirm generated schema artifact uploads from GitHub Actions.
-- [ ] Commit generated `001_base_schema.sql`.
-- [ ] Commit generated `002_keys_auto_increment.sql`.
-- [ ] Commit generated `schema_manifest.md`.
+- [x] Commit generated `001_base_schema.sql`.
+- [x] Commit generated `002_keys_auto_increment.sql`.
+- [x] Commit generated `schema_manifest.md`.
 - [ ] Review weird names and risky columns after generation.
 
 ## Pass 4: Create clean seed files
 
+- [x] Add catalogue/reference seed split plan.
+- [x] Add seed extraction planning helper.
+- [x] Add dry-run CI check for seed extraction manifest.
+- [ ] Run dry-run manifest review.
 - [ ] Extract safe catalogue data.
 - [ ] Extract safe level/game/puzzle definitions.
 - [ ] Remove old users, sessions, login keys, IPs, and demo account rows.
@@ -66,8 +70,12 @@ ALTER TABLE statements: 0
 Artifact: generated-schema
 ```
 
-The lack of separate `ALTER TABLE` statements means the original dump appears to store table definitions inline, without a later key/index pass that the extractor could separate out.
+The generated schema files are now present under:
+
+```text
+database/schema/
+```
 
 ## Merge rule
 
-Only merge each pass after the repo still loads and the docs make sense. The actual generated SQL split should be its own PR if the diff is large or hard to review.
+Only merge each pass after the repo still loads and the docs make sense. Seed extraction should be reviewed table-by-table before old runtime data is excluded from the default import path.
