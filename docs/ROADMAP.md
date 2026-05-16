@@ -4,24 +4,28 @@ This roadmap keeps the current working experience safe while the repo is cleaned
 
 ## Phase 1: Foundation
 
-Status: started
+Status: in progress
 
-- Rewrite public README
-- Add credits and disclaimer files
-- Add architecture notes
-- Add environment template
-- Define safe modernisation rules
-- Keep fragile game paths untouched
+- [x] Rewrite public README
+- [x] Add credits and disclaimer files
+- [x] Add architecture notes
+- [x] Add environment template
+- [x] Define safe modernisation rules
+- [x] Keep fragile game paths untouched
+- [x] Add initial audit notes
 
 ## Phase 2: Audit
 
-- Map the current launch flow
-- Map PHP endpoints called by the client
-- Map Node/socket events
-- Map database tables and relationships
-- Identify hardcoded credentials and paths
-- Identify old runtime account/staff/demo data
-- Identify files that are genuinely unused
+Status: started
+
+- [ ] Map the current launch flow
+- [ ] Map PHP endpoints called by the client
+- [ ] Map Node/socket events
+- [ ] Map database tables and relationships
+- [x] Identify first hardcoded local database config
+- [x] Identify first hardcoded REST/socket host config
+- [ ] Identify old runtime account/staff/demo data fully
+- [ ] Identify files that are genuinely unused
 
 ## Phase 3: Config Cleanup
 
