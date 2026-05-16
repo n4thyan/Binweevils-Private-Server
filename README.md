@@ -71,11 +71,26 @@ Preserve first. Modernise second. Rewrite only when the old behaviour is underst
 
 This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, and old CDN-style URLs.
 
+## Documentation
+
+Current rewrite docs:
+
+- [Credits](CREDITS.md)
+- [Disclaimer](DISCLAIMER.md)
+- [Architecture notes](docs/ARCHITECTURE.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Initial audit notes](docs/AUDIT_NOTES.md)
+- [Local setup notes](docs/SETUP_LOCAL.md)
+- [Current run flow map](docs/RUN_FLOW.md)
+- [Runtime data cleanup plan](docs/DATA_CLEANUP.md)
+
 ## Setup
 
 Full setup instructions are still being written.
 
 For now, treat this repo as a working imported base. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, the imported database dump, and the existing legacy file paths.
+
+See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) for the current local setup notes.
 
 Future setup docs will be split into:
 
@@ -97,6 +112,7 @@ Current first pass:
 - Safe working rules
 - Environment template
 - Future data cleanup checklist
+- Initial run flow and setup notes
 
 Future passes:
 
