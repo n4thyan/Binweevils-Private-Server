@@ -1,0 +1,57 @@
+name: Commit Seed Manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: "Branch to receive generated seed manifest"
+        required: true
+        default: "database/seed-manifest-review"
+      commit_message:
+        description: "Commit message for generated seed manifest"
+        required: true
+        default: "database: add seed extraction manifest [skip ci]"
+
+permissions:
+  contents: write
+
+jobs:
+  commit-seed-manifest:
+    name: Commit generated seed manifest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check seed extractor
+        run: python -m py_compile tools/extract_seed_tables.py
+
+      - name: Generate seed manifest only
+        run: python tools/extract_seed_tables.py --input bwps.sql --manifest database/seeds/seed_manifest.md --dry-run
+
+      - name: Show generated seed manifest
+        run: cat database/seeds/seed_manifest.md
+
+      - name: Verify generated manifest exists
+        run: test -s database/seeds/seed_manifest.md
+
+      - name: Commit generated seed manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add database/seeds/seed_manifest.md
+          if git diff --cached --quiet; then
+            echo "No seed manifest changes to commit."
+          else
+            git commit -m "${{ inputs.commit_message }}"
+            git push origin HEAD:${{ inputs.target_branch }}
+          fi
