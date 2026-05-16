@@ -52,6 +52,22 @@ database/schema/schema_manifest.md
 
 `schema_manifest.md` records the extracted table count and table names.
 
+## GitHub Actions export check
+
+The repository also includes a manual/PR workflow:
+
+```text
+.github/workflows/schema-export.yml
+```
+
+It runs the extraction tool, verifies the generated files exist, prints the manifest, and uploads the generated schema as a workflow artifact named:
+
+```text
+generated-schema
+```
+
+This is useful before committing the generated SQL files, because it proves the extractor still works against `bwps.sql`.
+
 ## Compatibility approach
 
 This rewrite is still tied to legacy PHP endpoints. Keep the old table and column names until the code has been modernised enough to support migrations safely.
