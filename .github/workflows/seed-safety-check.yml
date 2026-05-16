@@ -1,0 +1,29 @@
+name: Seed Safety Check
+
+on:
+  pull_request:
+    paths:
+      - "database/seeds/**"
+      - "tools/check_seed_safety.py"
+      - ".github/workflows/seed-safety-check.yml"
+  workflow_dispatch:
+
+jobs:
+  seed-safety-check:
+    name: Check seed SQL safety
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check scanner
+        run: python -m py_compile tools/check_seed_safety.py
+
+      - name: Scan seed SQL files
+        run: python tools/check_seed_safety.py database/seeds

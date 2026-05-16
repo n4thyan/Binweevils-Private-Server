@@ -52,6 +52,7 @@ This checklist keeps the database rewrite safe and reversible.
 - [x] Inspect registration/login PHP password handling.
 - [x] Document legacy auth/session behaviour before account writes.
 - [x] Add password compatibility plan for modern local accounts.
+- [x] Add seed safety scanner for future seed files.
 - [ ] Add password compatibility helper for modern local accounts.
 - [ ] Implement fresh local admin/demo account creation after auth review.
 - [ ] Extract safe level/game/puzzle definitions not already covered.
@@ -73,7 +74,7 @@ This checklist keeps the database rewrite safe and reversible.
 - [ ] Add a script to rebuild a clean database from schema plus seeds.
 - [ ] Add a script to create a local admin account.
 - [x] Add a script to validate required tables exist.
-- [ ] Add a script to check for unsafe seed data before commit.
+- [x] Add a script to check for unsafe seed data before commit.
 
 ## Latest export result
 
@@ -146,6 +147,10 @@ That means the clean local account tool must not write production-style accounts
 `docs/database/password-compatibility-plan.md` records the exact helper behaviour needed next.
 
 This planning pass does not change runtime auth and does not enable account writes.
+
+## Seed safety status
+
+`tools/check_seed_safety.py` and `.github/workflows/seed-safety-check.yml` protect future seed SQL changes from accidentally adding blocked account/player/runtime tables or sensitive account/session columns.
 
 ## Merge rule
 
