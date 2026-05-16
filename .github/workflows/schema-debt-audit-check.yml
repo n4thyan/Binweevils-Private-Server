@@ -1,0 +1,40 @@
+name: Schema Debt Audit Check
+
+on:
+  pull_request:
+    paths:
+      - "database/schema/**"
+      - "tools/audit_schema_debt.py"
+      - "docs/database/runtime-data-modernisation-notes.md"
+      - "docs/database/runtime-schema-debt-report.md"
+      - ".github/workflows/schema-debt-audit-check.yml"
+  workflow_dispatch:
+
+jobs:
+  schema-debt-audit-check:
+    name: Check schema debt audit helper
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check audit helper
+        run: python -m py_compile tools/audit_schema_debt.py
+
+      - name: Generate schema debt report
+        run: >-
+          python tools/audit_schema_debt.py
+          --schema database/schema/001_base_schema.sql
+          --output /tmp/runtime-schema-debt-report.md
+
+      - name: Confirm report contains known audit sections
+        run: |
+          grep -q "Runtime Schema Debt Report" /tmp/runtime-schema-debt-report.md
+          grep -q "buddylist" /tmp/runtime-schema-debt-report.md
+          grep -q "users" /tmp/runtime-schema-debt-report.md
