@@ -10,7 +10,7 @@ This is not the original Bin Weevils Private Server, and it is not claiming owne
 
 The repository now contains a preserved working legacy base plus a growing clean rewrite support layer around it.
 
-Phases 1 to 4 are merged. Phase 5 is close to finished, and Phase 6 has started through the Ruffle/socket-proxy proof plus small compatibility feature passes.
+Phases 1 to 5 are complete for the current local boot milestone. Phase 6 has started through the Ruffle/socket-proxy proof, small compatibility feature passes, and database rewrite planning.
 
 Recent progress includes:
 
@@ -30,6 +30,7 @@ Recent progress includes:
 - Session/logout hardening after the CoDCrafted session-key exploit report
 - Banked XP level-up support up to level 80
 - Prestige progression after level 80 with scaled thresholds
+- Database normalisation rewrite planning with an adapter-first rule
 
 The clean local account path can now create a fresh `local_demo` account in a disposable MySQL database and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
 
@@ -72,6 +73,7 @@ The goals are:
 - Harden known unsafe legacy behaviours
 - Restore missing or rough gameplay systems gradually
 - Rewrite backend pieces gradually without breaking Flash compatibility
+- Normalise database debt behind compatibility adapters
 
 ## What This Rewrite Is Not
 
@@ -110,6 +112,15 @@ Preserve first. Modernise second. Rewrite only when the old behaviour is underst
 
 This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, and old CDN-style URLs.
 
+## Database Rewrite Rule
+
+```txt
+Do not normalise old runtime tables directly underneath the Flash client.
+Add compatibility adapters first, then move reads/writes gradually.
+```
+
+See [docs/database/database-normalisation-rewrite-plan.md](docs/database/database-normalisation-rewrite-plan.md).
+
 ## Documentation
 
 Core rewrite docs:
@@ -129,7 +140,7 @@ Core rewrite docs:
 - [Foundation PR merge checklist](docs/MERGE_CHECKLIST.md)
 - [Post-merge plan](docs/POST_MERGE_PLAN.md)
 
-Current runtime and Phase 5 docs:
+Current runtime and database rewrite docs:
 
 - [Phase 5 plan](docs/phase-5-plan.md)
 - [Current runtime status](docs/runtime/current-runtime-status.md)
@@ -139,6 +150,7 @@ Current runtime and Phase 5 docs:
 - [Auth readiness check](docs/runtime/auth-readiness-check.md)
 - [Runtime data modernisation notes](docs/database/runtime-data-modernisation-notes.md)
 - [Runtime schema debt report](docs/database/runtime-schema-debt-report.md)
+- [Database normalisation rewrite plan](docs/database/database-normalisation-rewrite-plan.md)
 - [Users password column notes](docs/database/users-column.md)
 - [Local account bootstrap notes](docs/database/local-account-bootstrap.md)
 - [Local account database smoke test](docs/database/local-account-db-smoke-test.md)
@@ -175,15 +187,15 @@ Current progress:
 - Phase 2 Audit: merged
 - Phase 3 Config cleanup: merged
 - Phase 4 Database cleanup/split: merged
-- Phase 5 Runtime bootstrap and database modernisation audit: close to finished
-- Phase 6 Launcher, play flow, and compatibility features: started
+- Phase 5 Runtime bootstrap and database modernisation audit: complete for current local boot milestone
+- Phase 6 Launcher, play flow, compatibility features, and database rewrite planning: started
 
 Current focus:
 
 - Keep the old runtime compatible
 - Keep the clean local boot path stable
 - Add only boot-critical compatibility shims when needed
-- Keep full database normalisation behind later compatibility adapters
+- Keep full database normalisation behind compatibility adapters
 - Rebuild missing gameplay systems in small, isolated passes
 - Keep security hardening visible in docs
 
