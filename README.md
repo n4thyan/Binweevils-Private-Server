@@ -1,6 +1,6 @@
 # Binweevils Private Server Rewrite
 
-A modern rewrite and preservation-focused rebuild of the KnowYourKnot Binweevils private server project.
+A vibe-coded, modernised rewrite and preservation-focused rebuild of the KnowYourKnot Binweevils private server project.
 
 This repo is being cleaned up so the old working Bin Weevils private server setup is easier to understand, safer to run locally, and easier to modernise over time. The current game files are being treated as a compatibility layer while the rewrite work happens around them in controlled passes.
 
@@ -8,9 +8,26 @@ This is not the original Bin Weevils Private Server, and it is not claiming owne
 
 ## Current Status
 
-This repository currently contains an imported working base. The first stage of the rewrite is focused on documentation, structure, setup notes, and safe cleanup planning.
+The repository now contains a preserved working legacy base plus a growing clean rewrite support layer around it.
 
-The goal is not to break the existing game experience. Large game folders, Flash assets, PHP endpoint paths, SWF files, XML configs, and CDN-style paths should stay stable until they are properly mapped.
+Phases 1 to 4 are merged. The project is currently in Phase 5: runtime bootstrap and database modernisation audit.
+
+Current Phase 5 work has focused on making the clean database path usable without carrying old player/staff/demo data forward. The repo now includes:
+
+- Runtime/database debt notes
+- Runtime boot dependency mapping
+- Runtime table usage scanning
+- PHP syntax checks
+- Auth readiness checks
+- PHP auth compatibility helpers for login/register
+- A guarded local account bootstrap tool
+- A disposable MySQL account smoke test in GitHub Actions
+- A MySQL 8 schema import-copy builder for smoke tests
+- Local auth verification and login endpoint review notes
+
+The clean local account path can now create a fresh `local_demo` account in a disposable MySQL database and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create nest, inventory, hats, old users, old moderator names, old celebrity accounts, or imported production/player state.
+
+The project is still not production-ready. The game runtime, database relationships, old packed-list tables, starter player state, and endpoint behaviour still need careful compatibility work.
 
 ## Original Project and Credits
 
@@ -34,7 +51,9 @@ The goals are:
 - Make local setup easier to follow
 - Remove hardcoded secrets and unsafe defaults over time
 - Split database schema from old runtime/player data
-- Replace old private-server staff/player seed data with clean demo data
+- Replace old private-server staff/player seed data with clean demo/local data
+- Add guarded local bootstrap tools
+- Build smoke tests before changing fragile runtime behaviour
 - Modernise the launcher and developer flow
 - Rewrite backend pieces gradually without breaking Flash compatibility
 
@@ -56,8 +75,11 @@ The current layout is being kept mostly intact for compatibility.
 electron/      Legacy desktop launcher/client wrapper
 game-full/     Preserved Flash/site compatibility layer
 server/        Node/socket/private server layer
-bwps.sql       Current imported database dump
-.env.example   Future environment/config template
+database/      Clean schema split, key layer, and future seed/reset structure
+tools/         Audit, compatibility, and local bootstrap helper scripts
+.github/       CI checks and disposable database smoke tests
+bwps.sql       Original imported database dump kept for reference
+.env.example   Environment/config template
 docs/          Rewrite planning and technical notes
 ```
 
@@ -73,7 +95,7 @@ This matters because the Flash client may depend on exact folder names, endpoint
 
 ## Documentation
 
-Current rewrite docs:
+Core rewrite docs:
 
 - [Credits](CREDITS.md)
 - [Disclaimer](DISCLAIMER.md)
@@ -90,11 +112,28 @@ Current rewrite docs:
 - [Foundation PR merge checklist](docs/MERGE_CHECKLIST.md)
 - [Post-merge plan](docs/POST_MERGE_PLAN.md)
 
+Current Phase 5 docs:
+
+- [Phase 5 plan](docs/phase-5-plan.md)
+- [Runtime boot dependency map](docs/runtime/runtime-boot-dependency-map.md)
+- [Runtime table usage audit](docs/runtime/runtime-table-usage-audit.md)
+- [PHP runtime syntax check](docs/runtime/php-runtime-syntax-check.md)
+- [Auth readiness check](docs/runtime/auth-readiness-check.md)
+- [Runtime data modernisation notes](docs/database/runtime-data-modernisation-notes.md)
+- [Runtime schema debt report](docs/database/runtime-schema-debt-report.md)
+- [Users password column notes](docs/database/users-column.md)
+- [Local account bootstrap notes](docs/database/local-account-bootstrap.md)
+- [Local account database smoke test](docs/database/local-account-db-smoke-test.md)
+- [MySQL 8 schema copy tool](docs/database/mysql8-schema-copy-tool.md)
+- [Verification database smoke test plan](docs/database/verification-db-smoke-test.md)
+- [Local auth verification runbook](docs/runtime/local-auth-verification-runbook.md)
+- [Clean login endpoint review](docs/runtime/login-endpoint-review.md)
+
 ## Setup
 
 Full setup instructions are still being written.
 
-For now, treat this repo as a working imported base. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, the imported database dump, and the existing legacy file paths.
+For now, treat this repo as a working imported base plus rewrite scaffolding. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, the imported database dump or clean schema path, and the existing legacy file paths.
 
 See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) for the current local setup notes.
 
@@ -102,7 +141,7 @@ Future setup docs will be split into:
 
 - Windows/XAMPP setup
 - Linux/VPS setup
-- Database import notes
+- Clean database import/reset notes
 - Local development flow
 - Launcher/browser/Ruffle notes
 
@@ -110,24 +149,29 @@ Future setup docs will be split into:
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-Current first pass:
+Current progress:
 
-- Project identity cleanup
-- Credits and disclaimer files
-- Architecture notes
-- Safe working rules
-- Environment template
-- Future data cleanup checklist
-- Initial run flow and setup notes
-- Endpoint, database, auth, and security audit notes
-- Merge checklist and post-merge plan
+- Phase 1 Foundation: merged
+- Phase 2 Audit: merged
+- Phase 3 Config cleanup: merged
+- Phase 4 Database cleanup/split: merged
+- Phase 5 Runtime bootstrap and database modernisation audit: in progress
+
+Current Phase 5 focus:
+
+- Keep the old runtime compatible
+- Make fresh local accounts possible on a clean database path
+- Add CI smoke tests before changing endpoint behaviour
+- Map database debt before normalising tables
+- Add starter rows only when runtime evidence proves they are needed
 
 Future passes:
 
-- Database sanitisation
-- Schema and seed split
-- Hardcoded config cleanup
-- Server code cleanup
+- Login decision/update helper
+- Clean login endpoint smoke tests
+- First-boot missing-row mapper
+- Minimal starter fixtures for clean local accounts
+- Server/runtime module rewrite
 - Ruffle/browser launch option
 - Admin and moderation tooling
 - Safer local setup scripts
