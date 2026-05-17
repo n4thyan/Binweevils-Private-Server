@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include('../essential/backbone.php');
+include('../essential/auth_compat.php');
 include('../essential/BanBuilder/CensorWords.php');
 include('../essential/ProfanityFilter/Check.php');
 
@@ -26,6 +27,7 @@ $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
 $recaptcha_secret = '6LcvFZAaAAAAAJzGrFPQpDqVFCNxsBZtJYRzgaWQ';
 
 function checkUserExists($username) {
+
     $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	$q = $db->prepare("SELECT * FROM `users` WHERE `username` = ? LIMIT 1;");
 	$q->bind_param('s', $username);
@@ -51,9 +53,12 @@ function createWeevil($username, $password) {
     $timestamp = time();
     $regIP = $_SERVER['REMOTE_ADDR'];
 
+    $storedCredential = bwps_auth_hash($password);
+
+
     $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 	$q = $db->prepare("INSERT INTO `users` (`username`, `password`, `sessionKey`, `loginKey`, `lastLogin`, `createdAt`, `regIP`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-	$q->bind_param('sssssss', $username, $password, $sessKey, $logKey, $timestamp, $timestamp, $regIP);
+	$q->bind_param('sssssss', $username, $storedCredential, $sessKey, $logKey, $timestamp, $timestamp, $regIP);
 	$q->execute();
 
     if($q->affected_rows == 1) {
@@ -85,3 +90,4 @@ if(isset($_POST['userID']) && isset($_POST['password']) && isset($_POST['recap']
 else
 echo 'responseCode=999';
 ?>
+
