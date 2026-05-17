@@ -119,6 +119,17 @@ docs/database/local-account-db-smoke-test.md
 
 The smoke test imports the clean schema, creates `local_demo`, confirms `users` and `buddylist` rows exist, confirms the stored credential is hash-shaped, and confirms nest/item starter rows are not created yet.
 
+## MySQL 8 schema copy tool
+
+The current Phase 5 pass extracts the smoke-test schema compatibility logic into a reusable tool:
+
+```text
+tools/build_mysql8_schema_copy.py
+docs/database/mysql8-schema-copy-tool.md
+```
+
+The local account database smoke test now calls this tool instead of carrying inline Python inside the workflow.
+
 ## Verification database smoke test
 
 The verification database smoke test planning pass documents the next smoke test layer:
@@ -131,7 +142,7 @@ This test should connect the Python bootstrap tool, clean MySQL row, and PHP run
 
 ## Clean login endpoint review
 
-The current Phase 5 pass documents the existing login endpoint boundary and the safest next implementation point:
+The clean login endpoint review documents the existing login endpoint boundary and the safest next implementation point:
 
 ```text
 docs/runtime/login-endpoint-review.md
@@ -141,7 +152,7 @@ The review confirms the endpoint already uses the auth compatibility helper, but
 
 ## Next safe pass after this
 
-After the login endpoint review lands, implement a small login decision/update helper that can be called by both the endpoint and CI tests.
+After the schema copy tool lands, retry the small login decision/update helper implementation or add a local/manual verification script outside connector-filtered workflow content.
 
 ## Later Phase 5 work
 
