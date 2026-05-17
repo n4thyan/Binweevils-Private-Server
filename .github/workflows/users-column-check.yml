@@ -1,0 +1,30 @@
+name: Users Column Check
+
+on:
+  pull_request:
+    paths:
+      - "database/schema/001_base_schema.sql"
+      - "tools/check_credential_column.py"
+      - "docs/database/users-column.md"
+      - ".github/workflows/users-column-check.yml"
+  workflow_dispatch:
+
+jobs:
+  users-column-check:
+    name: Check users.password capacity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Syntax-check scanner
+        run: python -m py_compile tools/check_credential_column.py
+
+      - name: Check clean schema users column
+        run: python tools/check_credential_column.py
