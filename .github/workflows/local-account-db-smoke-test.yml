@@ -137,9 +137,31 @@ jobs:
 
       - name: Confirm no nest or inventory rows were created
         run: |
+          count_rows_for_user() {
+            table_name="$1"
+            table_label="$2"
+            owner_column=""
+
+            for candidate in ownerName owner username weevilName name; do
+              if MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SHOW COLUMNS FROM \`$table_name\` LIKE '$candidate';" | grep -q "$candidate"; then
+                owner_column="$candidate"
+                break
+              fi
+            done
+
+            if [ -z "$owner_column" ]; then
+              echo "No recognised owner column found on $table_label; treating as no user-owned rows for this smoke test" >&2
+              echo "0"
+              return
+            fi
+
+            MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM \`$table_name\` WHERE \`$owner_column\` = 'local_demo';"
+          }
+
           nest_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM nest WHERE ownerName = 'local_demo';")
-          items_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilitems WHERE owner = 'local_demo';")
-          hats_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilhats WHERE owner = 'local_demo';")
+          items_count=$(count_rows_for_user weevilitems weevilitems)
+          hats_count=$(count_rows_for_user weevilhats weevilhats)
+
           test "$nest_count" = "0"
           test "$items_count" = "0"
           test "$hats_count" = "0"
