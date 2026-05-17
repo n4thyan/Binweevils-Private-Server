@@ -69,20 +69,33 @@ jobs:
               "tinyblob", "blob", "mediumblob", "longblob",
               "json", "geometry"
           )
+          temporal_value_types = (
+              "date", "datetime", "timestamp", "time", "year"
+          )
 
-          column_type_pattern = re.compile(
+          large_column_pattern = re.compile(
               r"^\s*`[^`]+`\s+(?:" + "|".join(large_value_types) + r")\b",
+              re.IGNORECASE,
+          )
+          temporal_column_pattern = re.compile(
+              r"^\s*`[^`]+`\s+(?:" + "|".join(temporal_value_types) + r")\b",
               re.IGNORECASE,
           )
           default_pattern = re.compile(
               r"\s+DEFAULT\s+(?:NULL|CURRENT_TIMESTAMP(?:\(\))?|'(?:[^'\\]|\\.)*'|-?\d+(?:\.\d+)?)",
               re.IGNORECASE,
           )
+          zero_temporal_default_pattern = re.compile(
+              r"\s+DEFAULT\s+'(?:0000-00-00(?: 00:00:00)?|00:00:00|0)'",
+              re.IGNORECASE,
+          )
 
           output_lines = []
           for line in source.read_text(encoding="utf-8").splitlines():
-              if column_type_pattern.search(line):
+              if large_column_pattern.search(line):
                   line = default_pattern.sub("", line)
+              if temporal_column_pattern.search(line):
+                  line = zero_temporal_default_pattern.sub("", line)
               output_lines.append(line)
 
           target.write_text("\n".join(output_lines) + "\n", encoding="utf-8")
