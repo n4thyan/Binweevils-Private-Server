@@ -132,6 +132,7 @@ Completed so far:
 - [x] Add local auth verification runbook
 - [x] Add clean login endpoint review
 - [x] Add clean first-boot review
+- [x] Add first-boot trace runbook
 
 Known database debt still present:
 
@@ -147,7 +148,8 @@ Next Phase 5 targets:
 
 - [ ] Add login decision/update helper once connector/local workflow allows it
 - [ ] Add clean login endpoint smoke test
-- [ ] Add local/manual first-boot trace plan
+- [x] Add local/manual first-boot trace plan
+- [ ] Run local/manual first-boot trace
 - [ ] Map missing first-boot rows from real runtime errors
 - [ ] Add minimal starter fixtures only when runtime evidence proves they are needed
 - [ ] Keep full database normalisation behind compatibility adapters
