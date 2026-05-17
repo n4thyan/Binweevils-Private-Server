@@ -4,7 +4,7 @@ This roadmap keeps the current working experience safe while the repo is cleaned
 
 ## Overall Progress
 
-Current phase: Phase 5 - Runtime Bootstrap and Database Modernisation Audit.
+Current phase: Phase 5 is close to finished. Phase 6 has started through the Ruffle socket proxy proof and small gameplay/progression compatibility passes.
 
 ```text
 Phase 1 Foundation: merged
@@ -12,7 +12,7 @@ Phase 2 Audit: merged
 Phase 3 Config Cleanup: merged
 Phase 4 Database Cleanup and Split: merged
 Phase 5 Runtime Bootstrap and Database Modernisation Audit: close to finished
-Phase 6 Launcher and Play Flow: started with Ruffle socket proxy proof
+Phase 6 Launcher, Play Flow, and Compatibility Features: started
 Phase 7 Tooling: not started
 Phase 8 Public Polish: not started
 ```
@@ -136,6 +136,11 @@ Completed so far:
 - [x] Prove clean local database plus local account plus login path
 - [x] Prove Ruffle/browser boot reaches the starting Nest / room view
 - [x] Add current runtime status note
+- [x] Harden logout so session/login keys are rotated instead of cleared
+- [x] Reject blank usernames or blank session keys in `confirmSessionKey()`
+- [x] Credit CoDCrafted for finding the session-key exploit class
+- [x] Allow banked XP to apply multiple levels in one pass up to level 80
+- [x] Add prestige progression after level 80 with scaled thresholds
 
 Current Phase 5 finish line:
 
@@ -145,6 +150,8 @@ Current Phase 5 finish line:
 - [x] Browser/Ruffle path can load the SWF
 - [x] Ruffle socket proxy can bridge to the local Node game socket
 - [x] Missing old features are documented as future work instead of being treated as core blockers
+- [x] Session-key exploit class has been hardened against
+- [x] XP progression now supports banked XP and prestige after level 80
 - [ ] Add only tiny boot-critical compatibility shims if a missing endpoint blocks boot
 - [ ] Keep full database normalisation behind later compatibility adapters
 
@@ -172,10 +179,12 @@ Next Phase 5 targets:
 
 - [x] Add local/manual first-boot trace plan
 - [x] Run local/manual first-boot trace enough to prove Nest / room boot
+- [x] Add session hardening follow-ups after exploit discovery
+- [x] Add XP quality-of-life and prestige progression passes
 - [ ] Add minimal boot-critical compatibility shims only if needed
 - [ ] Keep achievements/bin pets/custom systems for a later feature phase
 
-## Phase 6: Launcher and Play Flow
+## Phase 6: Launcher, Play Flow, and Compatibility Features
 
 Status: started
 
@@ -183,6 +192,8 @@ Status: started
 - [ ] Clean Electron package identity
 - [x] Add browser/Ruffle socket proxy notes
 - [x] Explore Ruffle support enough to prove local boot
+- [x] Add first gameplay compatibility pass for banked XP level-ups
+- [x] Add prestige progression after level 80
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
 
@@ -191,6 +202,8 @@ Recommended branches:
 ```text
 electron/launcher-identity
 launcher/ruffle-experiment
+feature/achievements-api
+feature/bin-pets-api
 ```
 
 ## Phase 7: Missing Gameplay APIs and Tooling
