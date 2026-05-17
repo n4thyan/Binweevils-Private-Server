@@ -10,11 +10,11 @@ This is not the original Bin Weevils Private Server, and it is not claiming owne
 
 The repository now contains a preserved working legacy base plus a growing clean rewrite support layer around it.
 
-Phases 1 to 4 are merged. The project is currently in Phase 5: runtime bootstrap and database modernisation audit.
+Phases 1 to 4 are merged. Phase 5 is close to finished, and Phase 6 has started through the Ruffle/socket-proxy proof plus small compatibility feature passes.
 
-Current Phase 5 work has focused on making the clean database path usable without carrying old player/staff/demo data forward. The repo now includes:
+Recent progress includes:
 
-- Runtime/database debt notes
+- Clean database and runtime debt notes
 - Runtime boot dependency mapping
 - Runtime table usage scanning
 - PHP syntax checks
@@ -24,10 +24,22 @@ Current Phase 5 work has focused on making the clean database path usable withou
 - A disposable MySQL account smoke test in GitHub Actions
 - A MySQL 8 schema import-copy builder for smoke tests
 - Local auth verification and login endpoint review notes
+- Clean local account plus PHP login/session path proof
+- Browser/Ruffle SWF loading proof
+- Ruffle socket proxy bridge proof to the local Node game socket
+- Session/logout hardening after the CoDCrafted session-key exploit report
+- Banked XP level-up support up to level 80
+- Prestige progression after level 80 with scaled thresholds
 
-The clean local account path can now create a fresh `local_demo` account in a disposable MySQL database and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create nest, inventory, hats, old users, old moderator names, old celebrity accounts, or imported production/player state.
+The clean local account path can now create a fresh `local_demo` account in a disposable MySQL database and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
 
-The project is still not production-ready. The game runtime, database relationships, old packed-list tables, starter player state, and endpoint behaviour still need careful compatibility work.
+The core local boot target has also been proven:
+
+```txt
+clean local database -> fresh local account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
+```
+
+The project is still not production-ready. The game runtime, database relationships, old packed-list tables, starter player state, missing gameplay APIs, and endpoint behaviour still need careful compatibility work.
 
 ## Original Project and Credits
 
@@ -36,6 +48,8 @@ This rewrite is based on the public KnowYourKnot Binweevils repository:
 https://github.com/KnowYourKnot/Binweevils
 
 Credit for the original Bin Weevils Private Server / Bin Weevils Rewritten work belongs to Smiley / Darkk, HDWEEVIL, and the public KnowYourKnot reference repo.
+
+Thanks to CoDCrafted for finding and flagging the session-key exploit class fixed during the Phase 5 security hardening passes.
 
 See [CREDITS.md](CREDITS.md) for the full credit notice.
 
@@ -55,6 +69,8 @@ The goals are:
 - Add guarded local bootstrap tools
 - Build smoke tests before changing fragile runtime behaviour
 - Modernise the launcher and developer flow
+- Harden known unsafe legacy behaviours
+- Restore missing or rough gameplay systems gradually
 - Rewrite backend pieces gradually without breaking Flash compatibility
 
 ## What This Rewrite Is Not
@@ -76,6 +92,7 @@ electron/      Legacy desktop launcher/client wrapper
 game-full/     Preserved Flash/site compatibility layer
 server/        Node/socket/private server layer
 database/      Clean schema split, key layer, and future seed/reset structure
+migrations/    Runtime database migrations added during the rewrite
 tools/         Audit, compatibility, and local bootstrap helper scripts
 .github/       CI checks and disposable database smoke tests
 bwps.sql       Original imported database dump kept for reference
@@ -112,9 +129,10 @@ Core rewrite docs:
 - [Foundation PR merge checklist](docs/MERGE_CHECKLIST.md)
 - [Post-merge plan](docs/POST_MERGE_PLAN.md)
 
-Current Phase 5 docs:
+Current runtime and Phase 5 docs:
 
 - [Phase 5 plan](docs/phase-5-plan.md)
+- [Current runtime status](docs/runtime/current-runtime-status.md)
 - [Runtime boot dependency map](docs/runtime/runtime-boot-dependency-map.md)
 - [Runtime table usage audit](docs/runtime/runtime-table-usage-audit.md)
 - [PHP runtime syntax check](docs/runtime/php-runtime-syntax-check.md)
@@ -128,6 +146,8 @@ Current Phase 5 docs:
 - [Verification database smoke test plan](docs/database/verification-db-smoke-test.md)
 - [Local auth verification runbook](docs/runtime/local-auth-verification-runbook.md)
 - [Clean login endpoint review](docs/runtime/login-endpoint-review.md)
+- [Ruffle socket proxy runbook](docs/runtime/ruffle-socket-proxy-runbook.md)
+- [Prestige system notes](docs/runtime/prestige-system.md)
 
 ## Setup
 
@@ -155,26 +175,34 @@ Current progress:
 - Phase 2 Audit: merged
 - Phase 3 Config cleanup: merged
 - Phase 4 Database cleanup/split: merged
-- Phase 5 Runtime bootstrap and database modernisation audit: in progress
+- Phase 5 Runtime bootstrap and database modernisation audit: close to finished
+- Phase 6 Launcher, play flow, and compatibility features: started
 
-Current Phase 5 focus:
+Current focus:
 
 - Keep the old runtime compatible
-- Make fresh local accounts possible on a clean database path
-- Add CI smoke tests before changing endpoint behaviour
-- Map database debt before normalising tables
-- Add starter rows only when runtime evidence proves they are needed
+- Keep the clean local boot path stable
+- Add only boot-critical compatibility shims when needed
+- Keep full database normalisation behind later compatibility adapters
+- Rebuild missing gameplay systems in small, isolated passes
+- Keep security hardening visible in docs
+
+Recent gameplay/runtime passes:
+
+- Banked XP can now apply multiple levels in one pass
+- Level 80 remains the normal cap for a single run
+- Prestige progression can continue after level 80
+- Lifetime XP is kept instead of being reset on prestige
+- Prestige thresholds scale upward per prestige count
 
 Future passes:
 
-- Login decision/update helper
-- Clean login endpoint smoke tests
-- First-boot missing-row mapper
-- Minimal starter fixtures for clean local accounts
-- Server/runtime module rewrite
-- Ruffle/browser launch option
+- Cleaner repeatable Ruffle/browser start flow
+- Achievements API rebuild
+- Bin pets API rebuild
 - Admin and moderation tooling
 - Safer local setup scripts
+- Server/runtime module rewrite
 
 ## Disclaimer
 
@@ -186,6 +214,6 @@ No affiliation with the original rights holders is implied.
 
 ## Credit Notice
 
-If you fork, modify, or build from this repo, keep credit to the original KnowYourKnot repository, Smiley / Darkk, and HDWEEVIL.
+If you fork, modify, or build from this repo, keep credit to the original KnowYourKnot repository, Smiley / Darkk, HDWEEVIL, and credited security/testing contributors where relevant.
 
 Credits stay in the docs. Old runtime player/staff/demo account data can be cleaned from configs, SQL, and seed files as part of the rewrite.
