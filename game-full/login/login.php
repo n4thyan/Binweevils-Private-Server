@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include('../essential/backbone.php');
+include('../essential/auth_compat.php');
 
 function verifyUser($username, $password) {
     $aes = new AES256();
@@ -20,7 +21,7 @@ function verifyUser($username, $password) {
         $res = $q->get_result();
         
         if($res = $res->fetch_array()) {
-            if($password == $res['password']) {
+            if(bwps_auth_verify($password, $res['password'])) {
                 if($res["active"] == 1) {
                     $bannedUntil = json_decode(time_until(time(), $res['bannedUntil']));
 
