@@ -16,6 +16,12 @@ https://github.com/KnowYourKnot/Binweevils
 
 This rewrite exists because that work was made public and preserved.
 
+## Security and Testing Credit
+
+Thanks to CoDCrafted for finding and flagging the session-key exploit class that was fixed during the Phase 5 security hardening passes.
+
+That report helped confirm the need to rotate session/login keys on logout and reject blank usernames or blank session keys inside the session checker.
+
 ## Original Game and Rights Holders
 
 Bin Weevils, its characters, branding, artwork, names, logos, and related assets belong to their original rights holders.
@@ -26,7 +32,7 @@ This project is unofficial and is not affiliated with Bin Weevils, 55 Pixels, Ni
 
 This repository is being maintained as a separate modern rewrite and cleanup project.
 
-The rewrite focuses on documentation, safer setup, cleaner config handling, database cleanup, modern developer workflow, compatibility-preserving backend cleanup, and optional launcher/browser improvements.
+The rewrite focuses on documentation, safer setup, cleaner config handling, database cleanup, modern developer workflow, compatibility-preserving backend cleanup, security hardening, progression fixes, and optional launcher/browser improvements.
 
 ## Data Cleanup Note
 
@@ -38,4 +44,4 @@ Credits and source attribution stay in docs. Old runtime data gets cleaned from 
 
 ## Forking Notice
 
-If you fork or build from this repository, keep attribution to the original project and this rewrite project.
+If you fork or build from this repository, keep attribution to the original project, this rewrite project, and credited security/testing contributors where relevant.
