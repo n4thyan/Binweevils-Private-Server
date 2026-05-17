@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "database/schema/001_base_schema.sql"
+      - "database/schema/002_keys_auto_increment.sql"
       - "tools/create_local_account.py"
       - "docs/database/local-account-db-smoke-test.md"
       - ".github/workflows/local-account-db-smoke-test.yml"
@@ -53,8 +54,44 @@ jobs:
           echo "MySQL did not become ready in time"
           exit 1
 
-      - name: Import clean base schema
-        run: MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < database/schema/001_base_schema.sql
+      - name: Build MySQL 8-compatible schema import copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("database/schema/001_base_schema.sql")
+          target = Path("tmp/001_base_schema.mysql8.sql")
+          target.parent.mkdir(parents=True, exist_ok=True)
+
+          large_value_types = (
+              "tinytext", "text", "mediumtext", "longtext",
+              "tinyblob", "blob", "mediumblob", "longblob",
+              "json", "geometry"
+          )
+
+          column_type_pattern = re.compile(
+              r"^\s*`[^`]+`\s+(?:" + "|".join(large_value_types) + r")\b",
+              re.IGNORECASE,
+          )
+          default_pattern = re.compile(
+              r"\s+DEFAULT\s+(?:NULL|CURRENT_TIMESTAMP(?:\(\))?|'(?:[^'\\]|\\.)*'|-?\d+(?:\.\d+)?)",
+              re.IGNORECASE,
+          )
+
+          output_lines = []
+          for line in source.read_text(encoding="utf-8").splitlines():
+              if column_type_pattern.search(line):
+                  line = default_pattern.sub("", line)
+              output_lines.append(line)
+
+          target.write_text("\n".join(output_lines) + "\n", encoding="utf-8")
+          PY
+
+      - name: Import clean schema and keys
+        run: |
+          MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < tmp/001_base_schema.mysql8.sql
+          MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < database/schema/002_keys_auto_increment.sql
 
       - name: Run local account bootstrap tool
         env:
@@ -91,7 +128,7 @@ jobs:
 
       - name: Confirm no nest or inventory rows were created
         run: |
-          nest_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM nest WHERE weevil = 'local_demo';")
+          nest_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM nest WHERE ownerName = 'local_demo';")
           items_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilitems WHERE owner = 'local_demo';")
           hats_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilhats WHERE owner = 'local_demo';")
           test "$nest_count" = "0"
