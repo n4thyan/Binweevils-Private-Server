@@ -91,7 +91,7 @@ docs/database/users-column.md
 
 ## Local account bootstrap
 
-The current Phase 5 pass enables guarded local-only account creation for disposable clean databases:
+The local account bootstrap pass enables guarded local-only account creation for disposable clean databases:
 
 ```text
 tools/create_local_account.py
@@ -108,9 +108,20 @@ buddylist
 
 It deliberately avoids old users, old moderator names, nest rows, inventory rows, progress rows, and production data.
 
+## Local account database smoke test
+
+The current Phase 5 pass proves the clean schema and local account bootstrap tool work together against a disposable MySQL service in CI:
+
+```text
+.github/workflows/local-account-db-smoke-test.yml
+docs/database/local-account-db-smoke-test.md
+```
+
+The smoke test imports the clean schema, creates `local_demo`, confirms `users` and `buddylist` rows exist, confirms the stored credential is hash-shaped, and confirms nest/item starter rows are not created yet.
+
 ## Next safe pass after this
 
-After local account bootstrap lands, test the clean database login path and map any missing first-boot runtime rows from real errors instead of guessing.
+After the database smoke test lands, test the clean database login path and map any missing first-boot runtime rows from real errors instead of guessing.
 
 ## Later Phase 5 work
 

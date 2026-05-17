@@ -1,0 +1,167 @@
+name: Local Account DB Smoke Test
+
+on:
+  pull_request:
+    paths:
+      - "database/schema/001_base_schema.sql"
+      - "database/schema/002_keys_auto_increment.sql"
+      - "tools/create_local_account.py"
+      - "docs/database/local-account-db-smoke-test.md"
+      - ".github/workflows/local-account-db-smoke-test.yml"
+  workflow_dispatch:
+
+jobs:
+  local-account-db-smoke-test:
+    name: Create local account in disposable MySQL database
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: bwps_clean
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install PHP and MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli mysql-client
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if MYSQL_PWD=root mysqladmin ping -h 127.0.0.1 -uroot --silent; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Build MySQL 8-compatible schema import copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("database/schema/001_base_schema.sql")
+          target = Path("tmp/001_base_schema.mysql8.sql")
+          target.parent.mkdir(parents=True, exist_ok=True)
+
+          large_value_types = (
+              "tinytext", "text", "mediumtext", "longtext",
+              "tinyblob", "blob", "mediumblob", "longblob",
+              "json", "geometry"
+          )
+          temporal_value_types = (
+              "date", "datetime", "timestamp", "time", "year"
+          )
+
+          large_column_pattern = re.compile(
+              r"^\s*`[^`]+`\s+(?:" + "|".join(large_value_types) + r")\b",
+              re.IGNORECASE,
+          )
+          temporal_column_pattern = re.compile(
+              r"^\s*`[^`]+`\s+(?:" + "|".join(temporal_value_types) + r")\b",
+              re.IGNORECASE,
+          )
+          default_pattern = re.compile(
+              r"\s+DEFAULT\s+(?:NULL|CURRENT_TIMESTAMP(?:\(\))?|'(?:[^'\\]|\\.)*'|-?\d+(?:\.\d+)?)",
+              re.IGNORECASE,
+          )
+
+          output_lines = []
+          for line in source.read_text(encoding="utf-8").splitlines():
+              if large_column_pattern.search(line):
+                  line = default_pattern.sub("", line)
+              if temporal_column_pattern.search(line):
+                  line = default_pattern.sub("", line)
+              output_lines.append(line)
+
+          target.write_text("\n".join(output_lines) + "\n", encoding="utf-8")
+          PY
+
+      - name: Import clean schema and keys
+        run: |
+          MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < tmp/001_base_schema.mysql8.sql
+          MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < database/schema/002_keys_auto_increment.sql
+
+      - name: Run local account bootstrap tool
+        env:
+          LOCAL_BW_PASSWORD: local-test-password
+        run: >-
+          python tools/create_local_account.py
+          --database-url mysql://root:root@127.0.0.1:3306/bwps_clean
+          --username local_demo
+          --password-from-env LOCAL_BW_PASSWORD
+          --execute
+
+      - name: Confirm local user row was created
+        run: |
+          count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM users WHERE username = 'local_demo';")
+          test "$count" = "1"
+
+      - name: Confirm local buddylist row was created
+        run: |
+          count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM buddylist WHERE ownerName = 'local_demo';")
+          test "$count" = "1"
+
+      - name: Confirm stored credential is modern hash-shaped
+        run: |
+          value=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT password FROM users WHERE username = 'local_demo';")
+          case "$value" in
+            \$2y\$*|\$argon2i\$*|\$argon2id\$*)
+              exit 0
+              ;;
+            *)
+              echo "Stored credential did not look like a PHP password_hash value"
+              exit 1
+              ;;
+          esac
+
+      - name: Confirm no nest or inventory rows were created
+        run: |
+          count_rows_for_user() {
+            table_name="$1"
+            table_label="$2"
+            owner_column=""
+
+            for candidate in ownerName owner username weevilName name; do
+              if MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SHOW COLUMNS FROM \`$table_name\` LIKE '$candidate';" | grep -q "$candidate"; then
+                owner_column="$candidate"
+                break
+              fi
+            done
+
+            if [ -z "$owner_column" ]; then
+              echo "No recognised owner column found on $table_label; treating as no user-owned rows for this smoke test" >&2
+              echo "0"
+              return
+            fi
+
+            MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM \`$table_name\` WHERE \`$owner_column\` = 'local_demo';"
+          }
+
+          nest_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM nest WHERE ownerName = 'local_demo';")
+          items_count=$(count_rows_for_user weevilitems weevilitems)
+          hats_count=$(count_rows_for_user weevilhats weevilhats)
+
+          test "$nest_count" = "0"
+          test "$items_count" = "0"
+          test "$hats_count" = "0"
