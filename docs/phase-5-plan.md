@@ -121,7 +121,7 @@ The smoke test imports the clean schema, creates `local_demo`, confirms `users` 
 
 ## Verification database smoke test
 
-The current Phase 5 planning pass documents the next smoke test layer:
+The verification database smoke test planning pass documents the next smoke test layer:
 
 ```text
 docs/database/verification-db-smoke-test.md
@@ -129,9 +129,19 @@ docs/database/verification-db-smoke-test.md
 
 This test should connect the Python bootstrap tool, clean MySQL row, and PHP runtime helper before the project moves on to full login endpoint testing.
 
+## Clean login endpoint review
+
+The current Phase 5 pass documents the existing login endpoint boundary and the safest next implementation point:
+
+```text
+docs/runtime/login-endpoint-review.md
+```
+
+The review confirms the endpoint already uses the auth compatibility helper, but still mixes verification, database updates, cookies, redirects, and logout fallback behaviour. The next runtime-code pass should split the login decision/update logic behind a small helper before direct endpoint smoke tests are added.
+
 ## Next safe pass after this
 
-After the verification smoke test is implemented, test the clean login endpoint path and map any missing first-boot runtime rows from real errors instead of guessing.
+After the login endpoint review lands, implement a small login decision/update helper that can be called by both the endpoint and CI tests.
 
 ## Later Phase 5 work
 
