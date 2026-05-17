@@ -182,17 +182,25 @@ The runbook explains how to capture browser console output, network requests, PH
 
 ## Local first-boot checklist
 
-The current Phase 5 pass adds a practical checklist for the local trace:
+The local first-boot checklist gives practical copy/paste commands, browser filters, account row checks, and an evidence template so local trace output can be turned into the next small PR:
 
 ```text
 docs/runtime/local-first-boot-checklist.md
 ```
 
-This checklist gives copy/paste commands, browser filters, account row checks, and an evidence template so local trace output can be turned into the next small PR.
+## Windows/XAMPP clean local setup
+
+The current Phase 5 pass adds the setup guide needed before the first local trace can be run:
+
+```text
+docs/setup/windows-xampp-clean-local.md
+```
+
+This guide walks through XAMPP, `bwps_clean`, clean schema import, local account creation, Node dependency setup, and the first local test boundary without using the VPS or importing old player/staff/demo data.
 
 ## Next safe pass after this
 
-After the local first-boot checklist lands, the next safest step is to run the local clean-account boot trace and use the first real error to decide whether a minimal local fixture, endpoint compatibility fix, or socket/runtime note is needed.
+After the Windows/XAMPP setup guide lands, the next safest step is to follow it locally, report the first setup/runtime blocker, and then make the next small PR from evidence.
 
 ## Later Phase 5 work
 
