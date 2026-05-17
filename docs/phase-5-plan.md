@@ -172,7 +172,7 @@ The review confirms `game-full/game.php` mainly checks the session cookies/sessi
 
 ## First-boot trace runbook
 
-The current Phase 5 pass adds the manual trace procedure for the first real clean-account boot attempt:
+The first-boot trace runbook records the manual trace procedure for the first real clean-account boot attempt:
 
 ```text
 docs/runtime/first-boot-trace-runbook.md
@@ -180,9 +180,19 @@ docs/runtime/first-boot-trace-runbook.md
 
 The runbook explains how to capture browser console output, network requests, PHP logs, and Node/socket logs so starter rows can be added from evidence rather than guesses.
 
+## Local first-boot checklist
+
+The current Phase 5 pass adds a practical checklist for the local trace:
+
+```text
+docs/runtime/local-first-boot-checklist.md
+```
+
+This checklist gives copy/paste commands, browser filters, account row checks, and an evidence template so local trace output can be turned into the next small PR.
+
 ## Next safe pass after this
 
-After the first-boot trace runbook lands, the next safest step is to run a local clean-account boot trace and use the first real error to decide whether a minimal local fixture or compatibility adapter is needed.
+After the local first-boot checklist lands, the next safest step is to run the local clean-account boot trace and use the first real error to decide whether a minimal local fixture, endpoint compatibility fix, or socket/runtime note is needed.
 
 ## Later Phase 5 work
 
