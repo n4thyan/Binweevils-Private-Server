@@ -110,7 +110,7 @@ It deliberately avoids old users, old moderator names, nest rows, inventory rows
 
 ## Local account database smoke test
 
-The current Phase 5 pass proves the clean schema and local account bootstrap tool work together against a disposable MySQL service in CI:
+The local account database smoke test proves the clean schema and local account bootstrap tool work together against a disposable MySQL service in CI:
 
 ```text
 .github/workflows/local-account-db-smoke-test.yml
@@ -119,9 +119,19 @@ docs/database/local-account-db-smoke-test.md
 
 The smoke test imports the clean schema, creates `local_demo`, confirms `users` and `buddylist` rows exist, confirms the stored credential is hash-shaped, and confirms nest/item starter rows are not created yet.
 
+## Verification database smoke test
+
+The current Phase 5 planning pass documents the next smoke test layer:
+
+```text
+docs/database/verification-db-smoke-test.md
+```
+
+This test should connect the Python bootstrap tool, clean MySQL row, and PHP runtime helper before the project moves on to full login endpoint testing.
+
 ## Next safe pass after this
 
-After the database smoke test lands, test the clean database login path and map any missing first-boot runtime rows from real errors instead of guessing.
+After the verification smoke test is implemented, test the clean login endpoint path and map any missing first-boot runtime rows from real errors instead of guessing.
 
 ## Later Phase 5 work
 
