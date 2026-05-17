@@ -142,7 +142,7 @@ This test should connect the Python bootstrap tool, clean MySQL row, and PHP run
 
 ## Local auth verification runbook
 
-The current Phase 5 pass records the manual/local verification boundary after the connector blocked the executable helper script:
+The local auth verification runbook records the manual/local verification boundary after the connector blocked the executable helper script:
 
 ```text
 docs/runtime/local-auth-verification-runbook.md
@@ -158,11 +158,21 @@ The clean login endpoint review documents the existing login endpoint boundary a
 docs/runtime/login-endpoint-review.md
 ```
 
-The review confirms the endpoint already uses the auth compatibility helper, but still mixes verification, database updates, cookies, redirects, and logout fallback behaviour. The next runtime-code pass should split the login decision/update logic behind a small helper before direct endpoint smoke tests are added.
+The review confirms the endpoint already uses the auth compatibility helper, but still mixes verification, database updates, cookies, redirects, and logout fallback behaviour. A future runtime-code pass should split the login decision/update logic behind a small helper before direct endpoint smoke tests are added.
+
+## Clean first-boot review
+
+The current Phase 5 pass documents the immediate post-login boot boundary:
+
+```text
+docs/runtime/clean-first-boot-review.md
+```
+
+The review confirms `game-full/game.php` mainly checks the session cookies/session bridge and embeds the Flash runtime. It does not directly prove nest, inventory, hats, tasks, or progress rows are required. Those should only be added after PHP endpoint, SWF, or socket traces prove the exact missing-row dependency.
 
 ## Next safe pass after this
 
-After the local auth verification runbook lands, continue with either a local-only helper script added manually from the checkout or a small endpoint-adjacent cleanup that does not trip connector filtering.
+After the clean first-boot review lands, the next safest step is a local/manual boot trace plan or a tiny endpoint-adjacent cleanup that avoids connector-filtered content.
 
 ## Later Phase 5 work
 
