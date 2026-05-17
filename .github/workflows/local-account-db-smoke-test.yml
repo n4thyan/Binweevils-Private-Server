@@ -1,0 +1,99 @@
+name: Local Account DB Smoke Test
+
+on:
+  pull_request:
+    paths:
+      - "database/schema/001_base_schema.sql"
+      - "tools/create_local_account.py"
+      - "docs/database/local-account-db-smoke-test.md"
+      - ".github/workflows/local-account-db-smoke-test.yml"
+  workflow_dispatch:
+
+jobs:
+  local-account-db-smoke-test:
+    name: Create local account in disposable MySQL database
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: bwps_clean
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install PHP and MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli mysql-client
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if MYSQL_PWD=root mysqladmin ping -h 127.0.0.1 -uroot --silent; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Import clean base schema
+        run: MYSQL_PWD=root mysql -h 127.0.0.1 -uroot bwps_clean < database/schema/001_base_schema.sql
+
+      - name: Run local account bootstrap tool
+        env:
+          LOCAL_BW_PASSWORD: local-test-password
+        run: >-
+          python tools/create_local_account.py
+          --database-url mysql://root:root@127.0.0.1:3306/bwps_clean
+          --username local_demo
+          --password-from-env LOCAL_BW_PASSWORD
+          --execute
+
+      - name: Confirm local user row was created
+        run: |
+          count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM users WHERE username = 'local_demo';")
+          test "$count" = "1"
+
+      - name: Confirm local buddylist row was created
+        run: |
+          count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM buddylist WHERE ownerName = 'local_demo';")
+          test "$count" = "1"
+
+      - name: Confirm stored credential is modern hash-shaped
+        run: |
+          value=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT password FROM users WHERE username = 'local_demo';")
+          case "$value" in
+            \$2y\$*|\$argon2i\$*|\$argon2id\$*)
+              exit 0
+              ;;
+            *)
+              echo "Stored credential did not look like a PHP password_hash value"
+              exit 1
+              ;;
+          esac
+
+      - name: Confirm no nest or inventory rows were created
+        run: |
+          nest_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM nest WHERE weevil = 'local_demo';")
+          items_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilitems WHERE owner = 'local_demo';")
+          hats_count=$(MYSQL_PWD=root mysql -N -B -h 127.0.0.1 -uroot bwps_clean -e "SELECT COUNT(*) FROM weevilhats WHERE owner = 'local_demo';")
+          test "$nest_count" = "0"
+          test "$items_count" = "0"
+          test "$hats_count" = "0"
