@@ -69,6 +69,14 @@ docs/runtime/auth-readiness-check.md
 .github/workflows/auth-readiness-check.yml
 ```
 
+## Manual auth compatibility patch plan
+
+The connected GitHub tool is currently blocking direct writes to the runtime auth helper, so the manual patch plan records the exact safe route for applying the first runtime auth compatibility change locally:
+
+```text
+docs/runtime/auth-compatibility-manual-patch.md
+```
+
 ## Next safe pass after this
 
 The next runtime-changing PR should be small and focused:
