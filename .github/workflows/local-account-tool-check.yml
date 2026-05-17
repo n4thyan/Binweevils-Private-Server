@@ -4,12 +4,13 @@ on:
   pull_request:
     paths:
       - "tools/create_local_account.py"
+      - "docs/database/local-account-bootstrap.md"
       - ".github/workflows/local-account-tool-check.yml"
   workflow_dispatch:
 
 jobs:
-  check-local-account-tool:
-    name: Check local account setup stub
+  local-account-tool-check:
+    name: Check local account bootstrap tool
     runs-on: ubuntu-latest
 
     steps:
@@ -21,15 +22,38 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Syntax-check tool
+      - name: Install PHP CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli
+
+      - name: Syntax-check local account tool
         run: python -m py_compile tools/create_local_account.py
 
-      - name: Validate dry-run plan
+      - name: Validate plan-only mode
         env:
-          BWPS_ADMIN_PASSWORD: local-only-placeholder
+          LOCAL_BW_PASSWORD: local-test-password
         run: >-
           python tools/create_local_account.py
-          --database-url mysql://root:root@127.0.0.1:3306/bwps_clean_test
-          --username local_admin
-          --password-from-env BWPS_ADMIN_PASSWORD
-          --moderator
+          --database-url mysql://root:password@127.0.0.1/bwps_clean
+          --username local_demo
+          --password-from-env LOCAL_BW_PASSWORD
+
+      - name: Generate SQL for review
+        env:
+          LOCAL_BW_PASSWORD: local-test-password
+        run: >-
+          python tools/create_local_account.py
+          --database-url mysql://root:password@127.0.0.1/bwps_clean
+          --username local_demo
+          --password-from-env LOCAL_BW_PASSWORD
+          --output-sql /tmp/local_demo.sql
+
+      - name: Confirm generated SQL shape
+        run: |
+          grep -q "INSERT INTO \`users\`" /tmp/local_demo.sql
+          grep -q "INSERT INTO \`buddylist\`" /tmp/local_demo.sql
+          grep -q "local_demo" /tmp/local_demo.sql
+          grep -q "local-bootstrap" /tmp/local_demo.sql
+          grep -q "START TRANSACTION" /tmp/local_demo.sql
+          grep -q "COMMIT" /tmp/local_demo.sql

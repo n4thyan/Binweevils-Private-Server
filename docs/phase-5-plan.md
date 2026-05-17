@@ -69,29 +69,54 @@ docs/runtime/auth-readiness-check.md
 .github/workflows/auth-readiness-check.yml
 ```
 
-## Manual auth compatibility patch plan
+## Runtime auth compatibility
 
-The connected GitHub tool is currently blocking direct writes to the runtime auth helper, so the manual patch plan records the exact safe route for applying the first runtime auth compatibility change locally:
+The runtime login/register flow now uses a compatibility helper so new local accounts can use modern stored credentials while temporary legacy verification remains available during migration:
 
 ```text
-docs/runtime/auth-compatibility-manual-patch.md
+game-full/essential/auth_compat.php
+game-full/login/login.php
+game-full/register/create-new-weevil.php
 ```
+
+## Users password column guard
+
+The clean schema is guarded so `users.password` remains wide enough for modern stored credential values:
+
+```text
+tools/check_credential_column.py
+.github/workflows/users-column-check.yml
+docs/database/users-column.md
+```
+
+## Local account bootstrap
+
+The current Phase 5 pass enables guarded local-only account creation for disposable clean databases:
+
+```text
+tools/create_local_account.py
+docs/database/local-account-bootstrap.md
+.github/workflows/local-account-tool-check.yml
+```
+
+This creates only:
+
+```text
+users
+buddylist
+```
+
+It deliberately avoids old users, old moderator names, nest rows, inventory rows, progress rows, and production data.
 
 ## Next safe pass after this
 
-The next runtime-changing PR should be small and focused:
-
-```text
-add password compatibility helper
-update login/register/admin auth to use it
-do not enable local account writes until checks pass
-```
+After local account bootstrap lands, test the clean database login path and map any missing first-boot runtime rows from real errors instead of guessing.
 
 ## Later Phase 5 work
 
 ```text
-enable tools/create_local_account.py --execute for local_admin/local_demo only
-map required buddy/nest/inventory starter rows
+map required buddy/nest/inventory starter rows from runtime evidence
 add local bootstrap fixtures outside default SQL seeds
-test clean database login path
+test clean database first game boot
+keep full schema normalisation for a later phase
 ```
