@@ -1,6 +1,6 @@
 # Current Runtime Status
 
-This note records the current local runtime position after the clean database, auth compatibility, and Ruffle socket proxy passes.
+This note records the current local runtime position after the clean database, auth compatibility, session hardening, Ruffle socket proxy, banked XP, and prestige passes.
 
 ## Current local milestone
 
@@ -28,6 +28,51 @@ Current local trace has shown:
 - Ruffle can load the SWF in the browser.
 - The Ruffle socket proxy can bridge the SWF socket path to the local Node game socket.
 - The game can reach the starting Nest / room view using the local account.
+- Logout now rotates session/login keys instead of leaving blank session data behind.
+- Blank usernames and blank session keys are rejected by `confirmSessionKey()`.
+- Banked XP can apply multiple level-ups in one pass up to level 80.
+- Prestige progression exists after level 80 using lifetime XP, visible level reset, and scaled thresholds.
+
+## Security hardening note
+
+CoDCrafted found and flagged the session-key exploit class fixed during the Phase 5 hardening passes.
+
+The current protection relies on both sides of the fix:
+
+- logout rotates old session/login keys instead of writing blank values
+- `confirmSessionKey()` rejects blank usernames or blank session keys before checking the database
+
+Both behaviours should be kept if the auth system is later replaced.
+
+## Progression status
+
+The old single-level XP flow has been improved.
+
+Current progression behaviour:
+
+```text
+banked XP gained
+        ↓
+multiple level-ups can apply in one pass
+        ↓
+level 80 remains the normal run cap
+        ↓
+prestige can trigger after level 80
+        ↓
+visible level resets to 1
+        ↓
+prestige_count increases
+        ↓
+next thresholds scale upward
+```
+
+`users.xp` is treated as lifetime/banked XP. It is not reset when prestige triggers.
+
+The prestige system requires the migration in:
+
+```text
+migrations/2026_05_17_add_prestige_system.sql
+```
 
 ## What is intentionally not solved yet
 
@@ -70,6 +115,7 @@ Treat these as core blockers:
 - Ruffle cannot load the SWF at all.
 - The socket proxy cannot connect to the local game socket.
 - A missing local endpoint fully stops the boot path.
+- A security regression allows blank session keys to authenticate.
 
 Treat these as future feature gaps unless they block boot:
 
@@ -91,6 +137,7 @@ It has completed the important groundwork:
 - Local account bootstrap exists.
 - CI smoke tests cover the clean account bootstrap path.
 - Major schema debt is documented.
+- Prestige migration exists as a small runtime feature migration.
 
 Known database debt remains for a later normalisation phase:
 
@@ -112,4 +159,5 @@ Keep the core boot path stable.
 Document incomplete systems clearly.
 Stub only when a missing endpoint blocks boot.
 Save proper feature rebuilding for later phases.
+Keep security fixes visible and credited.
 ```
