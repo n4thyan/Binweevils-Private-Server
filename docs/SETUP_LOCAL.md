@@ -4,21 +4,30 @@ These notes describe the current imported setup as observed from the repo.
 
 They are not final polished setup instructions yet. The current priority is to document the working assumptions without changing fragile game files.
 
+## Current Recommended Windows Guide
+
+For the current Phase 5 clean local setup path, use:
+
+```text
+docs/setup/windows-xampp-clean-local.md
+```
+
+That guide is the practical Windows/XAMPP path for setting up a clean `bwps_clean` database, creating `local_demo`, and preparing for the first local boot trace without importing old player/staff/demo data.
+
 ## Current Assumptions
 
 The imported project appears to expect:
 
 - A local web server serving the game files from `http://localhost`
 - PHP support for legacy endpoints inside `game-full/`
-- MySQL or MariaDB with a database named `bwps`
-- The imported `bwps.sql` loaded into that database
+- MySQL or MariaDB with a database named `bwps` for the old imported path, or `bwps_clean` for the current clean Phase 5 path
 - Node.js for the socket/REST compatibility layer
 - The legacy Electron launcher loading `http://localhost`
 - Pepper Flash plugin support for the legacy Electron client
 
-## Likely Windows/XAMPP Flow
+## Legacy Imported Database Flow
 
-This has not been fully verified in this pass, but the current structure suggests this flow:
+The old imported project expected:
 
 1. Install XAMPP or another local Apache/PHP/MySQL stack.
 2. Create a MySQL/MariaDB database named `bwps`.
@@ -27,6 +36,8 @@ This has not been fully verified in this pass, but the current structure suggest
 5. Install Node dependencies inside `server/`.
 6. Start the Node compatibility services as needed.
 7. Start the legacy Electron launcher from `electron/`.
+
+The current clean Phase 5 path should not import `bwps.sql` as the default answer. Use the clean setup guide instead.
 
 ## Environment config
 
@@ -67,9 +78,15 @@ DB_USER=root
 DB_PASSWORD=
 ```
 
-These are old local development defaults. Node can now override them through `.env`, but the PHP side still has its own legacy config in `game-full/essential/config.php`.
+These are old local development defaults. Node can now override them through `.env`, and PHP can read environment overrides through `game-full/essential/config.php`.
 
-Do not use these defaults for a public VPS or production-style deployment.
+For current clean Phase 5 testing, use a separate local database such as:
+
+```txt
+bwps_clean
+```
+
+Do not use old local defaults for a public VPS or production-style deployment.
 
 ## Node Server Layer
 
@@ -163,11 +180,11 @@ Before VPS deployment, the project needs:
 
 ## Next Setup Tasks
 
+- Run the Windows/XAMPP clean local setup guide
 - Confirm exact Windows/XAMPP steps
 - Confirm exact Node startup order
 - Add proper `npm` scripts after entry points are verified
 - Add Linux/VPS setup later
-- Split database into schema and safe seed files later
 
 ## Rule
 
