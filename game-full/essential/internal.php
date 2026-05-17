@@ -1276,43 +1276,70 @@
         return $res;
     }
     
-    function levelWeevil($weevil) {
-        if(isset($_COOKIE['weevil_name']) && isset($_COOKIE['sessionId'])) {
-			$loggedIn = confirmSessionKey($_COOKIE['weevil_name'], $_COOKIE['sessionId']);
-
-            $currentData = getAllWeevilStatsByName($weevil);
-            $newXP2 = getXPDataByLevel($currentData['level'] + 2);
-            $newXP = $newXP2['xpRequired'];
-
-			if($loggedIn == true) {
-                if($currentData['xp'] >= $currentData['xp2']) {
-                    $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-					
-					if($currentData['level'] + 1 >= 80) { // force people to be top level unless changed by admins
-						$q = $db->prepare("UPDATE `users` SET `level` = 80, `xp1` = `xp2` WHERE `users`.`username` = ?;");
-						$q->bind_param('s', $weevil);
-						$q->execute();
-		
-						$res = $q->get_result();
-		
-						if($q->affected_rows == 1)
-						return true;
-					}
-					else {
-						$q = $db->prepare("UPDATE `users` SET `level` = `level` + 1, `xp1` = `xp2`, `xp2` = ? WHERE `users`.`username` = ?;");
-						$q->bind_param('ss', $newXP, $weevil);
-						$q->execute();
-		
-						$res = $q->get_result();
-		
-						if($q->affected_rows == 1)
-						return true;
-					}
-                }
-			}
-		}
-
-		return false;
+    function levelWeevil($weevil)
+    {
+        $currentData = getUserByName($weevil);
+    
+        if(!$currentData || !is_array($currentData)) {
+            return false;
+        }
+    
+        $currentLevel = intval($currentData['level']);
+        $currentXp = intval($currentData['xp']);
+        $nextRequiredXp = intval($currentData['xp2']);
+    
+        if($currentLevel >= 80 || $nextRequiredXp <= 0 || $currentXp < $nextRequiredXp) {
+            return false;
+        }
+    
+        $targetLevel = $currentLevel;
+        $newXp1 = intval($currentData['xp1']);
+        $newXp2 = $nextRequiredXp;
+    
+        while($targetLevel < 80 && $currentXp >= $nextRequiredXp) {
+            $targetLevel++;
+            $newXp1 = $nextRequiredXp;
+    
+            if($targetLevel >= 80) {
+                $newXp2 = $newXp1;
+                break;
+            }
+    
+            $nextXpData = getXPDataByLevel($targetLevel + 1);
+    
+            if(!is_array($nextXpData) || !isset($nextXpData['xpRequired'])) {
+                $newXp2 = $newXp1;
+                break;
+            }
+    
+            $nextRequiredXp = intval($nextXpData['xpRequired']);
+    
+            if($nextRequiredXp <= $newXp1) {
+                $newXp2 = $newXp1;
+                break;
+            }
+    
+            $newXp2 = $nextRequiredXp;
+        }
+    
+        if($targetLevel <= $currentLevel) {
+            return false;
+        }
+    
+        $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $q = $db->prepare("UPDATE `users` SET `level` = ?, `xp1` = ?, `xp2` = ? WHERE `users`.`username` = ?;");
+        $q->bind_param('iiis', $targetLevel, $newXp1, $newXp2, $weevil);
+        $q->execute();
+    
+        if($q->affected_rows == 1) {
+            for($level = $currentLevel + 1; $level <= $targetLevel; $level++) {
+                rewardUserTrophy($weevil, $currentData['id'], $level);
+            }
+    
+            return true;
+        }
+    
+        return false;
     }
 
     function itemCountById($itemId, $weevilId, $colour) {
