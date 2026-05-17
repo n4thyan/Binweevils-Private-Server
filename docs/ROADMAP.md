@@ -2,6 +2,21 @@
 
 This roadmap keeps the current working experience safe while the repo is cleaned up.
 
+## Overall Progress
+
+Current phase: Phase 5 - Runtime Bootstrap and Database Modernisation Audit.
+
+```text
+Phase 1 Foundation: merged
+Phase 2 Audit: merged
+Phase 3 Config Cleanup: merged
+Phase 4 Database Cleanup and Split: merged
+Phase 5 Runtime Bootstrap and Database Modernisation Audit: in progress
+Phase 6 Launcher and Play Flow: not started
+Phase 7 Tooling: not started
+Phase 8 Public Polish: not started
+```
+
 ## Phase 1: Foundation
 
 Status: merged
@@ -46,15 +61,9 @@ Still needs deeper follow-up audit later:
 - [ ] Identify old runtime account/staff/demo data fully
 - [ ] Identify files that are genuinely unused
 
-Recommended follow-up branch:
-
-```txt
-audit/game-full-endpoints
-```
-
 ## Phase 3: Config Cleanup
 
-Status: ready to merge
+Status: merged
 
 - [x] Add Node `.env` loader without new dependencies
 - [x] Add `server/config.js`
@@ -70,88 +79,112 @@ Status: ready to merge
 - [x] Document config support
 - [ ] Document Linux/VPS setup later
 
-Current branch:
+## Phase 4: Database Cleanup and Split
 
-```txt
-config/php-env-support
+Status: merged
+
+- [x] Split current SQL dump into schema and seed-focused files
+- [x] Keep original `bwps.sql` available for reference
+- [x] Create clean database folder structure
+- [x] Separate base schema from key/auto-increment layer
+- [x] Add clean database documentation
+- [x] Remove old account/player import assumptions from the clean path
+- [x] Document that old staff/mod/celebrity/demo rows should not be carried forward as default local data
+- [x] Prepare the repo for guarded local-only account bootstrap work
+
+Current clean database structure includes:
+
+```text
+database/schema/001_base_schema.sql
+database/schema/002_keys_auto_increment.sql
+database/seeds/
+database/README.md
 ```
 
-Next phase:
+## Phase 5: Runtime Bootstrap and Database Modernisation Audit
 
-```txt
-database/schema-seed-split
-```
+Status: in progress
 
-## Phase 4: Database Cleanup
+Phase 5 is focused on making the clean database path usable by the runtime without blindly importing old account/player data.
 
-Status: next phase
+Completed so far:
 
-- Split current SQL dump into schema and seed files
-- Remove old runtime account data
-- Replace old staff/mod/celeb/demo accounts with safe examples
-- Add clean admin/test accounts for local development
-- Document import/reset steps
+- [x] Add runtime data modernisation notes
+- [x] Add runtime schema debt report
+- [x] Add schema debt audit tool
+- [x] Add schema debt CI check
+- [x] Add runtime boot dependency map
+- [x] Add runtime table usage scanner
+- [x] Add runtime table usage CI check
+- [x] Add PHP runtime syntax check
+- [x] Add auth readiness check
+- [x] Add runtime auth compatibility helper
+- [x] Update login/register flow to use auth compatibility helpers
+- [x] Add users password column guard
+- [x] Add guarded local account bootstrap tool
+- [x] Add local account bootstrap docs
+- [x] Add local account tool check
+- [x] Add disposable MySQL local account database smoke test
+- [x] Add account-bootstrap keys for `users` and `buddylist`
+- [x] Add reusable MySQL 8 schema import-copy builder
+- [x] Refactor local account DB smoke test to use the schema copy tool
+- [x] Add verification database smoke test plan
+- [x] Add local auth verification runbook
+- [x] Add clean login endpoint review
 
-Target structure:
+Known database debt still present:
 
-```txt
-database/schema.sql
-database/seeds/catalogue.sql
-database/seeds/dev.sql
-```
+- [ ] Packed buddy/list storage such as comma-separated names
+- [ ] Username-based links instead of stable numeric relationships
+- [ ] Mixed account, player, inventory, and runtime state
+- [ ] Inconsistent owner column names across runtime tables
+- [ ] Legacy date/default values in the old schema shape
+- [ ] Missing indexes/foreign keys beyond the narrow bootstrap layer
+- [ ] Starter state requirements for clean first boot still unknown
 
-Recommended branch:
+Next Phase 5 targets:
 
-```txt
-database/schema-seed-split
-```
-
-## Phase 5: Server Rewrite
-
-- Map current server entry points
-- Add logging
-- Clean database access
-- Clean room/socket handling
-- Keep client-facing responses compatible
-- Replace one endpoint or module at a time
-
-Recommended branches:
-
-```txt
-server/package-scripts
-server/config-cleanup
-server/socket-protocol-map
-```
+- [ ] Add login decision/update helper once connector/local workflow allows it
+- [ ] Add clean login endpoint smoke test
+- [ ] Map missing first-boot rows from real runtime errors
+- [ ] Add minimal starter fixtures only when runtime evidence proves they are needed
+- [ ] Keep full database normalisation behind compatibility adapters
 
 ## Phase 6: Launcher and Play Flow
 
-- Document existing Electron launcher
-- Clean Electron package identity
-- Add browser launch notes
-- Explore Ruffle support
-- Keep the original working launcher until a replacement is tested
+Status: not started
+
+- [ ] Document existing Electron launcher
+- [ ] Clean Electron package identity
+- [ ] Add browser launch notes
+- [ ] Explore Ruffle support
+- [ ] Keep the original working launcher until a replacement is tested
 
 Recommended branches:
 
-```txt
+```text
 electron/launcher-identity
 launcher/ruffle-experiment
 ```
 
 ## Phase 7: Tooling
 
-- Add setup scripts
-- Add database reset scripts
-- Add local dev start scripts
-- Add basic checks for missing config
+Status: not started
+
+- [ ] Add setup scripts
+- [ ] Add database reset scripts
+- [ ] Add local dev start scripts
+- [ ] Add basic checks for missing config
 
 ## Phase 8: Public Polish
 
-- Clean project branding
-- Add screenshots or setup images if useful
-- Add issue templates
-- Add contributing notes
-- Add release notes once a stable local setup exists
+Status: not started
+
+- [ ] Clean project branding
+- [ ] Add screenshots or setup images if useful
+- [ ] Add issue templates
+- [ ] Add contributing notes
+- [ ] Add release notes once a stable local setup exists
 
 ## Do Not Do Yet
 
@@ -159,6 +192,7 @@ launcher/ruffle-experiment
 - Do not move SWF files blindly
 - Do not mass rename PHP endpoints
 - Do not delete old XML/config files until mapped
+- Do not normalise packed tables directly under the old runtime without a compatibility layer
 - Do not rewrite the backend in one giant pass
 - Do not remove credits from documentation
 
