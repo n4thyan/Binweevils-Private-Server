@@ -1,8 +1,31 @@
 # Security Notes
 
-This document lists security issues found during the foundation audit.
+This document lists security issues found during the foundation and runtime audit.
 
-The current repo should be treated as a local/preservation import, not something ready for public VPS deployment.
+The current repo should still be treated as a local/preservation import, not something ready for public VPS deployment.
+
+## Fixed or hardened during Phase 5
+
+### Logout/session-key bypass hardening
+
+Phase 5 fixed the session-key exploit class reported by CoDCrafted.
+
+The hardening passes now:
+
+- rotate `users.sessionKey` on logout instead of clearing it to an empty string
+- rotate `users.loginKey` during logout as well
+- clear blank `sessionId` and `weevil_name` cookies early in the PHP bootstrap
+- reject blank usernames and blank session keys inside `confirmSessionKey()` before any database match can succeed
+
+Expected failures:
+
+```txt
+confirmSessionKey('some_user', '')
+confirmSessionKey('', 'some_key')
+confirmSessionKey('', '')
+```
+
+These checks should stay in place even if the auth system is later rewritten.
 
 ## Current high-risk areas
 
@@ -16,15 +39,20 @@ Required future fix:
 - never commit real account passwords
 - ship optional local demo credentials only in a clearly marked dev seed
 
-### Static session/login keys
+### Static session/login keys in old imported data
 
-The imported `users` rows contain static `sessionKey` and `loginKey` values.
+The original imported `users` rows contain static `sessionKey` and `loginKey` values.
+
+Progress so far:
+
+- logout now rotates session/login keys instead of leaving blank values
+- blank session checks are rejected defensively
 
 Required future fix:
 
-- generate session/login keys at runtime
-- rotate tokens on login/logout
-- store session data separately from core user profile data
+- generate all session/login keys at runtime
+- store active session state separately from core user profile data
+- remove old imported key material from any default clean seed path
 
 ### Hardcoded token response
 
@@ -40,17 +68,23 @@ Required future fix:
 
 ### Hardcoded database config
 
-`server/db.js` currently uses local database values directly in code.
+Legacy defaults still exist for old local XAMPP compatibility.
+
+Progress so far:
+
+- Node config has environment override support
+- PHP database config has environment override support
+- old localhost defaults are preserved only as local fallback values
 
 Required future fix:
 
-- use environment variables
+- keep using environment variables for real deployments
 - keep `.env.example` as a template only
 - never commit real `.env` files
 
 ### Request body logging
 
-Some auth/profile routes currently log request bodies.
+Some auth/profile routes may still log request bodies.
 
 Required future fix:
 
@@ -73,6 +107,7 @@ Required before public hosting:
 - configure HTTPS properly
 - add rate limiting to auth endpoints
 - add basic abuse/moderation controls
+- add proper admin/moderation audit logging
 
 ## Local-only assumptions
 
@@ -104,5 +139,6 @@ real credentials are never committed.
 4. Remove old seeded user rows from default SQL.
 5. Replace plain-text passwords.
 6. Remove static token/session values.
-7. Add input validation and rate limiting.
-8. Review public deployment separately.
+7. Keep blank-session rejection in the auth checker.
+8. Add input validation and rate limiting.
+9. Review public deployment separately.
