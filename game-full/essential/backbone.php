@@ -3,6 +3,14 @@
     
     if(session_status() === PHP_SESSION_NONE)
     session_start();
+
+    foreach(['sessionId', 'weevil_name'] as $bw_cookie_name) {
+        if(isset($_COOKIE[$bw_cookie_name]) && trim((string) $_COOKIE[$bw_cookie_name]) === '') {
+            unset($_COOKIE[$bw_cookie_name]);
+            setcookie($bw_cookie_name, '', time() - 86400, '/');
+        }
+    }
+    unset($bw_cookie_name);
     
     header("X-XSS-Protection: 1; mode=block");
     header("X-Content-Type-Options: nosniff");
