@@ -4,15 +4,15 @@ This roadmap keeps the current working experience safe while the repo is cleaned
 
 ## Overall Progress
 
-Current phase: Phase 5 is close to finished. Phase 6 has started through the Ruffle socket proxy proof and small gameplay/progression compatibility passes.
+Current phase: Phase 6 has started. Phase 5 is complete for the current local boot milestone.
 
 ```text
 Phase 1 Foundation: merged
 Phase 2 Audit: merged
 Phase 3 Config Cleanup: merged
 Phase 4 Database Cleanup and Split: merged
-Phase 5 Runtime Bootstrap and Database Modernisation Audit: close to finished
-Phase 6 Launcher, Play Flow, and Compatibility Features: started
+Phase 5 Runtime Bootstrap and Database Modernisation Audit: complete for current local boot milestone
+Phase 6 Launcher, Play Flow, Compatibility Features, and Database Rewrite Planning: started
 Phase 7 Tooling: not started
 Phase 8 Public Polish: not started
 ```
@@ -103,11 +103,11 @@ database/README.md
 
 ## Phase 5: Runtime Bootstrap and Database Modernisation Audit
 
-Status: close to finished
+Status: complete for current local boot milestone
 
-Phase 5 is focused on making the clean database path usable by the runtime without blindly importing old account/player data.
+Phase 5 focused on making the clean database path usable by the runtime without blindly importing old account/player data.
 
-Completed so far:
+Completed:
 
 - [x] Add runtime data modernisation notes
 - [x] Add runtime schema debt report
@@ -141,8 +141,10 @@ Completed so far:
 - [x] Credit CoDCrafted for finding the session-key exploit class
 - [x] Allow banked XP to apply multiple levels in one pass up to level 80
 - [x] Add prestige progression after level 80 with scaled thresholds
+- [x] Confirm no extra boot-critical compatibility shim is needed for the proven local boot path right now
+- [x] Move full database normalisation into the next rewrite track behind compatibility adapters
 
-Current Phase 5 finish line:
+Phase 5 finish line:
 
 - [x] Clean schema imports on a modern local MySQL/MariaDB path
 - [x] Fresh local account can be created without old player/staff/demo rows
@@ -152,18 +154,8 @@ Current Phase 5 finish line:
 - [x] Missing old features are documented as future work instead of being treated as core blockers
 - [x] Session-key exploit class has been hardened against
 - [x] XP progression now supports banked XP and prestige after level 80
-- [ ] Add only tiny boot-critical compatibility shims if a missing endpoint blocks boot
-- [ ] Keep full database normalisation behind later compatibility adapters
-
-Known database debt still present:
-
-- [ ] Packed buddy/list storage such as comma-separated names
-- [ ] Username-based links instead of stable numeric relationships
-- [ ] Mixed account, player, inventory, and runtime state
-- [ ] Inconsistent owner column names across runtime tables
-- [ ] Legacy date/default values in the old schema shape
-- [ ] Missing indexes/foreign keys beyond the narrow bootstrap layer
-- [ ] Starter state requirements for clean first boot may still grow as more screens are tested
+- [x] No known missing endpoint currently blocks the proven local boot path
+- [x] Database normalisation is explicitly deferred behind compatibility adapters
 
 Known future feature gaps, not Phase 5 blockers:
 
@@ -175,16 +167,7 @@ Known future feature gaps, not Phase 5 blockers:
 - [ ] Optional mini-game endpoints
 - [ ] Shop/payment/activation-style extras
 
-Next Phase 5 targets:
-
-- [x] Add local/manual first-boot trace plan
-- [x] Run local/manual first-boot trace enough to prove Nest / room boot
-- [x] Add session hardening follow-ups after exploit discovery
-- [x] Add XP quality-of-life and prestige progression passes
-- [ ] Add minimal boot-critical compatibility shims only if needed
-- [ ] Keep achievements/bin pets/custom systems for a later feature phase
-
-## Phase 6: Launcher, Play Flow, and Compatibility Features
+## Phase 6: Launcher, Play Flow, Compatibility Features, and Database Rewrite Planning
 
 Status: started
 
@@ -194,14 +177,39 @@ Status: started
 - [x] Explore Ruffle support enough to prove local boot
 - [x] Add first gameplay compatibility pass for banked XP level-ups
 - [x] Add prestige progression after level 80
+- [x] Add database normalisation rewrite plan
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
+- [ ] Start database adapter boundary work
+
+Database rewrite track:
+
+- [x] Document database normalisation debt and adapter-first rule
+- [ ] Add database adapter boundary docs and naming rules
+- [ ] Add read-only user lookup adapter
+- [ ] Add social list adapter plan for packed buddy/list storage
+- [ ] Add clean social relationship table beside the old table
+- [ ] Add dual-write for one safe relationship type
+- [ ] Move social reads behind the adapter without changing old client response shapes
+- [ ] Repeat adapter pattern for sessions/auth, progression/economy, inventory, and nest state
+
+Known database debt to handle in this track:
+
+- [ ] Packed buddy/list storage such as comma-separated names
+- [ ] Username-based links instead of stable numeric relationships
+- [ ] Mixed account, player, inventory, and runtime state
+- [ ] Inconsistent owner column names across runtime tables
+- [ ] Legacy date/default values in the old schema shape
+- [ ] Missing indexes/foreign keys beyond the narrow bootstrap layer
+- [ ] Starter state requirements for clean first boot may still grow as more screens are tested
 
 Recommended branches:
 
 ```text
 electron/launcher-identity
 launcher/ruffle-experiment
+database/adapter-boundary
+database/social-links-adapter
 feature/achievements-api
 feature/bin-pets-api
 ```
