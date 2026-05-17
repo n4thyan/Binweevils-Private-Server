@@ -162,7 +162,7 @@ The review confirms the endpoint already uses the auth compatibility helper, but
 
 ## Clean first-boot review
 
-The current Phase 5 pass documents the immediate post-login boot boundary:
+The clean first-boot review documents the immediate post-login boot boundary:
 
 ```text
 docs/runtime/clean-first-boot-review.md
@@ -170,9 +170,19 @@ docs/runtime/clean-first-boot-review.md
 
 The review confirms `game-full/game.php` mainly checks the session cookies/session bridge and embeds the Flash runtime. It does not directly prove nest, inventory, hats, tasks, or progress rows are required. Those should only be added after PHP endpoint, SWF, or socket traces prove the exact missing-row dependency.
 
+## First-boot trace runbook
+
+The current Phase 5 pass adds the manual trace procedure for the first real clean-account boot attempt:
+
+```text
+docs/runtime/first-boot-trace-runbook.md
+```
+
+The runbook explains how to capture browser console output, network requests, PHP logs, and Node/socket logs so starter rows can be added from evidence rather than guesses.
+
 ## Next safe pass after this
 
-After the clean first-boot review lands, the next safest step is a local/manual boot trace plan or a tiny endpoint-adjacent cleanup that avoids connector-filtered content.
+After the first-boot trace runbook lands, the next safest step is to run a local clean-account boot trace and use the first real error to decide whether a minimal local fixture or compatibility adapter is needed.
 
 ## Later Phase 5 work
 
