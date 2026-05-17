@@ -11,8 +11,8 @@ Phase 1 Foundation: merged
 Phase 2 Audit: merged
 Phase 3 Config Cleanup: merged
 Phase 4 Database Cleanup and Split: merged
-Phase 5 Runtime Bootstrap and Database Modernisation Audit: in progress
-Phase 6 Launcher and Play Flow: not started
+Phase 5 Runtime Bootstrap and Database Modernisation Audit: close to finished
+Phase 6 Launcher and Play Flow: started with Ruffle socket proxy proof
 Phase 7 Tooling: not started
 Phase 8 Public Polish: not started
 ```
@@ -103,7 +103,7 @@ database/README.md
 
 ## Phase 5: Runtime Bootstrap and Database Modernisation Audit
 
-Status: in progress
+Status: close to finished
 
 Phase 5 is focused on making the clean database path usable by the runtime without blindly importing old account/player data.
 
@@ -133,6 +133,20 @@ Completed so far:
 - [x] Add clean login endpoint review
 - [x] Add clean first-boot review
 - [x] Add first-boot trace runbook
+- [x] Prove clean local database plus local account plus login path
+- [x] Prove Ruffle/browser boot reaches the starting Nest / room view
+- [x] Add current runtime status note
+
+Current Phase 5 finish line:
+
+- [x] Clean schema imports on a modern local MySQL/MariaDB path
+- [x] Fresh local account can be created without old player/staff/demo rows
+- [x] PHP login/session path works with the clean local account
+- [x] Browser/Ruffle path can load the SWF
+- [x] Ruffle socket proxy can bridge to the local Node game socket
+- [x] Missing old features are documented as future work instead of being treated as core blockers
+- [ ] Add only tiny boot-critical compatibility shims if a missing endpoint blocks boot
+- [ ] Keep full database normalisation behind later compatibility adapters
 
 Known database debt still present:
 
@@ -142,26 +156,34 @@ Known database debt still present:
 - [ ] Inconsistent owner column names across runtime tables
 - [ ] Legacy date/default values in the old schema shape
 - [ ] Missing indexes/foreign keys beyond the narrow bootstrap layer
-- [ ] Starter state requirements for clean first boot still unknown
+- [ ] Starter state requirements for clean first boot may still grow as more screens are tested
+
+Known future feature gaps, not Phase 5 blockers:
+
+- [ ] Achievements
+- [ ] Bin pets
+- [ ] Optional invite/account status endpoints
+- [ ] Old analytics service calls
+- [ ] Old advert service calls
+- [ ] Optional mini-game endpoints
+- [ ] Shop/payment/activation-style extras
 
 Next Phase 5 targets:
 
-- [ ] Add login decision/update helper once connector/local workflow allows it
-- [ ] Add clean login endpoint smoke test
 - [x] Add local/manual first-boot trace plan
-- [ ] Run local/manual first-boot trace
-- [ ] Map missing first-boot rows from real runtime errors
-- [ ] Add minimal starter fixtures only when runtime evidence proves they are needed
-- [ ] Keep full database normalisation behind compatibility adapters
+- [x] Run local/manual first-boot trace enough to prove Nest / room boot
+- [ ] Add minimal boot-critical compatibility shims only if needed
+- [ ] Keep achievements/bin pets/custom systems for a later feature phase
 
 ## Phase 6: Launcher and Play Flow
 
-Status: not started
+Status: started
 
 - [ ] Document existing Electron launcher
 - [ ] Clean Electron package identity
-- [ ] Add browser launch notes
-- [ ] Explore Ruffle support
+- [x] Add browser/Ruffle socket proxy notes
+- [x] Explore Ruffle support enough to prove local boot
+- [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
 
 Recommended branches:
@@ -171,14 +193,17 @@ electron/launcher-identity
 launcher/ruffle-experiment
 ```
 
-## Phase 7: Tooling
+## Phase 7: Missing Gameplay APIs and Tooling
 
 Status: not started
 
+- [ ] Rebuild achievements properly
+- [ ] Rebuild bin pets properly
 - [ ] Add setup scripts
 - [ ] Add database reset scripts
 - [ ] Add local dev start scripts
 - [ ] Add basic checks for missing config
+- [ ] Add optional custom gameplay features only after the core path is stable
 
 ## Phase 8: Public Polish
 
@@ -199,6 +224,7 @@ Status: not started
 - Do not normalise packed tables directly under the old runtime without a compatibility layer
 - Do not rewrite the backend in one giant pass
 - Do not remove credits from documentation
+- Do not chase every old incomplete feature during the core boot phase
 
 ## Working Rule
 
