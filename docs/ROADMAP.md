@@ -178,15 +178,15 @@ Status: started
 - [x] Add first gameplay compatibility pass for banked XP level-ups
 - [x] Add prestige progression after level 80
 - [x] Add database normalisation rewrite plan
+- [x] Start database adapter boundary work
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
-- [ ] Start database adapter boundary work
 
 Database rewrite track:
 
 - [x] Document database normalisation debt and adapter-first rule
-- [ ] Add database adapter boundary docs and naming rules
-- [ ] Add read-only user lookup adapter
+- [x] Add database adapter boundary docs and naming rules
+- [x] Add read-only user lookup adapter
 - [ ] Add social list adapter plan for packed buddy/list storage
 - [ ] Add clean social relationship table beside the old table
 - [ ] Add dual-write for one safe relationship type
