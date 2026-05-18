@@ -3,6 +3,7 @@
 const WebSocket = require('ws');
 var wss;
 var Weevil = require("./Weevil");
+var socialLinks = require("./socialLinks");
 var cookie = require('cookie');
 const https = require('https');
 const fs = require('fs');
@@ -127,10 +128,18 @@ class BinWeevilsWeb {
                     weevil.socket.send(JSON.stringify({"nest_news":[{"image":"weevilWorld_09_06_17_App-min.png", "app_link":"https:\/\/discord.gg/bWRHynAEZ9", "browser_link":"https:\/\/discord.gg/bWRHynAEZ9", "new":1, "news_date":"2021-02-11 15:16"}], "httpCode":200, "responseCode":1, "cn":"nest-news"}));
                     return;
                 case "friends/send-request":
-                    var sentRequest = await weevil.sendBuddyRequest(JSON.parse(dataStr.split('friends/send-request')[1])["buddy_idx"]);
+                    var sendRequestData = JSON.parse(dataStr.split('friends/send-request')[1]);
+                    var sentRequest = await weevil.sendBuddyRequest(sendRequestData["buddy_idx"]);
                     if(sentRequest) {
+                        var targetWeevilData = await weevil.searchWeevilByIdx(sendRequestData["buddy_idx"]);
+
+                        if(targetWeevilData != null) {
+                            var targetWeevil = JSON.parse(targetWeevilData);
+                            await socialLinks.recordPendingBuddyRequest(weevil.nickname, targetWeevil["username"]);
+                        }
+
                         weevil.socket.send(JSON.stringify({"httpCode":200, "responseCode":1, "cn":"friends.send-request"}));
-                        this.sendBuddyRequestReport(weevil, JSON.parse(dataStr.split('friends/send-request')[1])["buddy_idx"]);
+                        this.sendBuddyRequestReport(weevil, sendRequestData["buddy_idx"]);
                     }
                     else {
                         weevil.socket.send(JSON.stringify({"httpCode":200, "responseCode":2, "cn":"friends.send-request"}));
