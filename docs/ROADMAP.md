@@ -179,6 +179,9 @@ Status: started
 - [x] Add prestige progression after level 80
 - [x] Add database normalisation rewrite plan
 - [x] Start database adapter boundary work
+- [x] Add runtime feature readiness audit after first gameplay testing
+- [ ] Add map/location compatibility audit
+- [ ] Add shop purchase pipeline audit
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
 
@@ -191,10 +194,22 @@ Database rewrite track:
 - [x] Add read-only social packed-list parser helper
 - [x] Add clean social relationship table beside the old table
 - [x] Add dry-run social links backfill helper
-- [ ] Run local/dev social links backfill
-- [ ] Add dual-write for one safe relationship type
+- [x] Run local/dev social links backfill dry-run
+- [x] Add dual-write for one safe relationship type
 - [ ] Move social reads behind the adapter without changing old client response shapes
 - [ ] Repeat adapter pattern for sessions/auth, progression/economy, inventory, and nest state
+
+Feature compatibility track:
+
+- [ ] Map old/new location IDs and locationDefinitions files
+- [ ] Fix or seed map travel so old map locations work where possible
+- [ ] Fix random Nest teleporter so it chooses from valid target locations instead of always Shopping Mall
+- [ ] Trace shop Error 999 purchase path for hats/furniture
+- [ ] Confirm catalogue/reference seed rows needed for shop purchases
+- [ ] Trace Weevil Wheels completion reward path for Mulch, XP, and trophy insert
+- [ ] Trace Lab's Lab / Daily Brainstrain endpoint and reward dependencies
+- [ ] Map current Buddy Tablet dependency and plan OG buddy list/mailbox DM restoration
+- [ ] Review rewardcodes and redeemedcodes before adding beta tester codes
 
 Known database debt to handle in this track:
 
