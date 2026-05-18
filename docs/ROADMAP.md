@@ -181,16 +181,17 @@ Status: started
 - [x] Start database adapter boundary work
 - [x] Add runtime feature readiness audit after first gameplay testing
 - [x] Add map/location compatibility notes
-- [x] Default normal map config to newer Bin map while keeping old map assets
+- [x] Keep both Old Bin and New Bin map paths available after local testing showed both can work
 - [x] Add pre-VPS testing plan
 - [x] Document switch to sanitised legacy-compatible runtime database for private testing
 - [x] Keep password/session hardening as non-negotiable during old database compatibility work
 - [x] Add relaxed chat/runtime command patch for private testing
-- [x] Support simple chat commands with both `!` and `/` prefixes
-- [x] Block invisible/control characters while allowing normal punctuation and numbers in chat
-- [x] Align DEV URL paths with the newer-bin map default
+- [x] Support simple chat commands with a safe `cmd` word prefix
+- [x] Keep invisible/control character blocking while relaxing normal swearing/profanity policy
+- [x] Add legacy beta database sanitiser migration and runbook
+- [x] Allow guarded `beta_` usernames in the account bootstrap tool
 - [ ] Add random Nest teleporter allow-list fix
-- [ ] Add shop purchase pipeline audit
+- [ ] Test shop purchase pipeline against `bwps_beta`
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
 
@@ -206,19 +207,20 @@ Database compatibility track:
 - [x] Run local/dev social links backfill dry-run
 - [x] Add dual-write for one safe relationship type
 - [x] Decide that the practical private-test database should be old-DB-compatible and sanitised, not minimal-only
-- [ ] Add sanitiser/runbook for old database beta setup
+- [x] Add sanitiser/runbook for old database beta setup
+- [ ] Run local `bwps_beta` setup from old `bwps.sql`
 - [ ] Move social reads behind the adapter without changing old client response shapes
 - [ ] Repeat adapter pattern for sessions/auth, progression/economy, inventory, and nest state
 
 Feature compatibility track:
 
 - [x] Map old/new location IDs and locationDefinitions files
-- [x] Decide to use newer-bin map as the normal private-test map
-- [x] Default the normal `map` path to the newer map SWF
 - [x] Confirm New Bin locations generally work during local testing
+- [x] Confirm Old Bin path can also work during local testing
+- [x] Keep both map paths available for now instead of removing the selector
 - [ ] Fix random Nest teleporter so it chooses from valid target locations instead of always Shopping Mall
-- [ ] Trace shop Error 999 purchase path for hats/furniture
-- [ ] Confirm catalogue/reference seed rows needed for shop purchases
+- [ ] Trace shop Error 999 purchase path for hats/furniture against the legacy beta DB
+- [ ] Confirm catalogue/reference rows needed for shop purchases are present in `bwps_beta`
 - [ ] Trace Weevil Wheels completion reward path for Mulch, XP, and trophy insert
 - [ ] Trace Lab's Lab / Daily Brainstrain endpoint and reward dependencies
 - [ ] Map current Buddy Tablet dependency and plan OG buddy list/mailbox DM restoration
@@ -244,6 +246,7 @@ database/adapter-boundary
 database/social-links-adapter
 feature/achievements-api
 feature/bin-pets-api
+feature/legacy-beta-db-setup
 feature/pre-vps-chat-map-polish
 ```
 
@@ -275,6 +278,7 @@ Status: not started
 - Do not move SWF files blindly
 - Do not mass rename PHP endpoints
 - Do not delete old XML/config files until mapped
+- Do not remove the Old Bin/New Bin map flow while both paths are working locally
 - Do not normalise packed tables directly under the old runtime without a compatibility layer
 - Do not weaken password/session security while using the old database shape
 - Do not rewrite the backend in one giant pass
