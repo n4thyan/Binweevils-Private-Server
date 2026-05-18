@@ -14,6 +14,8 @@ passwords, or production/private player data.
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
 import os
 import re
 import secrets
@@ -112,12 +114,6 @@ def validate_plan(plan: LocalAccountPlan) -> list[str]:
     if plan.execute and not shutil.which("mysql"):
         errors.append("--execute requires the mysql CLI to be installed and available on PATH.")
 
-    if plan.execute and not shutil.which("php"):
-        errors.append("--execute requires the php CLI to be installed and available on PATH for password_hash().")
-
-    if plan.output_sql and not shutil.which("php"):
-        errors.append("--output-sql requires the php CLI to be installed and available on PATH for password_hash().")
-
     return errors
 
 
@@ -125,29 +121,14 @@ def sql_quote(value: str) -> str:
     return "'" + value.replace("\\", "\\\\").replace("'", "''") + "'"
 
 
-def build_modern_hash(password: str) -> str:
-    php_code = """
-$plain = stream_get_contents(STDIN);
-$plain = preg_replace('/\r?\n$/', '', $plain);
-echo password_hash($plain, PASSWORD_DEFAULT);
-""".strip()
-
-    result = subprocess.run(
-        ["php", "-r", php_code],
-        input=password,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-
-    if result.returncode != 0:
-        raise RuntimeError(f"php password_hash() failed: {result.stderr.strip()}")
-
-    stored_value = result.stdout.strip()
-    if not stored_value:
-        raise RuntimeError("php password_hash() returned an empty value")
-    return stored_value
+def build_legacy_scramble(username: str, password: str) -> str:
+    key = b"?F5-#b$8M*e!5eR4"
+    password_bytes = password.encode("utf-8")
+    username_bytes = username.encode("utf-8")
+    hash1 = hashlib.sha1(password_bytes).digest()
+    hash2_input = username_bytes + password_bytes + key + hashlib.sha1(hash1).digest()
+    hash2_mask = hashlib.sha1(hash2_input).digest()
+    return base64.b64encode(bytes(a ^ b for a, b in zip(hash1, hash2_mask))).decode("ascii")
 
 
 def build_account_sql(plan: LocalAccountPlan, stored_password: str) -> str:
@@ -260,20 +241,20 @@ def main() -> int:
         print("No database writes were performed. Pass --output-sql or --execute to generate/apply SQL.")
         return 0
 
-    stored_password = build_modern_hash(os.environ[plan.password_env])
+    stored_password = build_legacy_scramble(plan.username, os.environ[plan.password_env])
     sql = build_account_sql(plan, stored_password)
 
     if plan.output_sql:
         with open(plan.output_sql, "w", encoding="utf-8", newline="\n") as handle:
             handle.write(sql)
-        print(f"Wrote account SQL to {plan.output_sql}")
+        print(f"Wrote SQL to {plan.output_sql}")
 
     if plan.execute:
         print("Executing account bootstrap SQL through mysql CLI...")
-        return_code = run_mysql(db, sql)
-        if return_code != 0:
-            print("ERROR: mysql CLI execution failed", file=sys.stderr)
-            return return_code
+        exit_code = run_mysql(db, sql)
+        if exit_code != 0:
+            print(f"ERROR: mysql CLI exited with status {exit_code}", file=sys.stderr)
+            return exit_code
         print("Account bootstrap SQL executed.")
 
     return 0
