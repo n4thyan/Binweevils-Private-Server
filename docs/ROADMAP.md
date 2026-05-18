@@ -189,7 +189,7 @@ Database rewrite track:
 - [x] Add read-only user lookup adapter
 - [x] Add social list adapter plan for packed buddy/list storage
 - [x] Add read-only social packed-list parser helper
-- [ ] Add clean social relationship table beside the old table
+- [x] Add clean social relationship table beside the old table
 - [ ] Add dual-write for one safe relationship type
 - [ ] Move social reads behind the adapter without changing old client response shapes
 - [ ] Repeat adapter pattern for sessions/auth, progression/economy, inventory, and nest state
