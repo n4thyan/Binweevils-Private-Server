@@ -6,6 +6,7 @@ const CHAT_MAX_LENGTH = 70;
 const COMMAND_PREFIXES = ['!', '/'];
 const INVISIBLE_OR_CONTROL_CHARS = /[\u0000-\u001F\u007F-\u009F\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206F\u2800\u3164\uFE00-\uFE0F\uFEFF]/u;
 const SAFE_CHAT_CHARS = /^[\u0020-\u007E\u00A1-\u00AC\u00AE-\u00FF€£]+$/u;
+const WORD_COMMANDS = ['help', 'commands', 'ping', 'online', 'room', 'modhelp'];
 
 for (const language of FILTER_LANGUAGES) {
     try {
@@ -83,17 +84,60 @@ function findOnlineWeevil(name, weevilList, socketIdList) {
     return null;
 }
 
-function handleCommand(weevil, message, weevilList, socketIdList) {
+function parseCommand(message) {
+    const lower = message.toLowerCase();
     const prefix = message.charAt(0);
-    if (!COMMAND_PREFIXES.includes(prefix)) return false;
 
-    const parts = message.slice(1).trim().split(/\s+/).filter(Boolean);
-    const command = (parts.shift() || '').toLowerCase();
+    if (COMMAND_PREFIXES.includes(prefix)) {
+        const parts = message.slice(1).trim().split(/\s+/).filter(Boolean);
+        return {
+            command: (parts.shift() || '').toLowerCase(),
+            parts,
+            style: 'prefix'
+        };
+    }
+
+    const parts = message.trim().split(/\s+/).filter(Boolean);
+    const first = (parts.shift() || '').toLowerCase();
+
+    if (first === 'cmd') {
+        return {
+            command: (parts.shift() || '').toLowerCase(),
+            parts,
+            style: 'word'
+        };
+    }
+
+    if (WORD_COMMANDS.includes(lower)) {
+        return {
+            command: lower,
+            parts: [],
+            style: 'word'
+        };
+    }
+
+    if (lower.startsWith('where ')) {
+        return {
+            command: 'where',
+            parts: message.slice(6).trim().split(/\s+/).filter(Boolean),
+            style: 'word'
+        };
+    }
+
+    return null;
+}
+
+function handleCommand(weevil, message, weevilList, socketIdList) {
+    const parsed = parseCommand(message);
+    if (!parsed || !parsed.command) return false;
+
+    const command = parsed.command;
+    const parts = parsed.parts;
 
     switch (command) {
         case 'help':
         case 'commands':
-            weevil.modMsg('Commands: !help, /help, !online, /online, !room, /room, !where <weevil>, /where <weevil>.');
+            weevil.modMsg('Commands: help, ping, online, room, where weevil, cmd help. Symbols like slash or exclamation may not work in the old SWF chat box.');
             break;
         case 'ping':
             weevil.modMsg('Pong.');
@@ -107,7 +151,7 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
         case 'where': {
             const name = parts.join(' ');
             if (!name) {
-                weevil.modMsg('Usage: !where <weevil>');
+                weevil.modMsg('Usage: where weevilname');
                 break;
             }
 
@@ -122,15 +166,15 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
         }
         case 'modhelp':
             if (weevil.isModerator == '1') {
-                weevil.modMsg('Mod commands: !warn <weevil> <message>, !kick <weevil>.');
+                weevil.modMsg('Mod commands: cmd warn weevil message, cmd kick weevil. Prefix versions also work if the SWF allows them.');
             }
             else {
-                weevil.modMsg('Unknown command. Try !help.');
+                weevil.modMsg('Unknown command. Try help.');
             }
             break;
         case 'warn': {
             if (weevil.isModerator != '1') {
-                weevil.modMsg('Unknown command. Try !help.');
+                weevil.modMsg('Unknown command. Try help.');
                 break;
             }
 
@@ -139,7 +183,7 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
             const target = targetName ? findOnlineWeevil(targetName, weevilList, socketIdList) : null;
 
             if (!target) {
-                weevil.modMsg('Usage: !warn <weevil> <message>');
+                weevil.modMsg('Usage: cmd warn weevilname message');
                 break;
             }
 
@@ -150,7 +194,7 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
         }
         case 'kick': {
             if (weevil.isModerator != '1') {
-                weevil.modMsg('Unknown command. Try !help.');
+                weevil.modMsg('Unknown command. Try help.');
                 break;
             }
 
@@ -158,7 +202,7 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
             const target = targetName ? findOnlineWeevil(targetName, weevilList, socketIdList) : null;
 
             if (!target) {
-                weevil.modMsg('Usage: !kick <weevil>');
+                weevil.modMsg('Usage: cmd kick weevilname');
                 break;
             }
 
@@ -169,11 +213,11 @@ function handleCommand(weevil, message, weevilList, socketIdList) {
             break;
         }
         default:
-            weevil.modMsg('Unknown command. Try !help.');
+            weevil.modMsg('Unknown command. Try help.');
             break;
     }
 
-    console.log('[CHAT_COMMAND][' + weevil.nickname + '] ' + message);
+    console.log('[CHAT_COMMAND][' + parsed.style + '][' + weevil.nickname + '] ' + message);
     return true;
 }
 
@@ -227,5 +271,6 @@ Weevil.prototype.sendPublicMessage = function(data, weevilList = undefined, sock
 module.exports = {
     CHAT_MAX_LENGTH,
     FILTER_LANGUAGES,
-    COMMAND_PREFIXES
+    COMMAND_PREFIXES,
+    WORD_COMMANDS
 };
