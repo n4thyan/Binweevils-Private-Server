@@ -1,8 +1,6 @@
-# Local Account Bootstrap
+# Local/Beta Account Bootstrap
 
-Phase 5 adds a guarded local-only account bootstrap path for clean database testing.
-
-This is for disposable/local databases only.
+This tool creates guarded fresh accounts for local and private beta databases.
 
 It must not be used to import old users, old moderator accounts, old celebrity accounts, live data, or production rows.
 
@@ -14,37 +12,24 @@ tools/create_local_account.py
 
 ## What it creates
 
-The tool creates the minimum rows currently needed for login/bootstrap review:
+The tool creates the starter rows currently needed for login/bootstrap review:
 
 ```text
 users
 buddylist
 ```
 
-It deliberately does not create:
+It deliberately does not import old private-server accounts, old passwords, old session keys, old inventory, old progress, or old production/player state.
 
-```text
-nest
-nestinfo
-weevilitems
-weevilhats
-gardeninventory
-progress rows
-achievement rows
-game stats
-pets
-old user rows
-old staff/mod/celebrity rows
-```
-
-Those should only be added later if a runtime endpoint proves they are required.
+For the legacy-compatible beta database, shop/game/catalogue/reference data should come from the sanitised old database import, not from old user rows.
 
 ## Username rules
 
-During Phase 5, usernames must start with:
+Allowed prefixes:
 
 ```text
 local_
+beta_
 ```
 
 Good examples:
@@ -52,6 +37,8 @@ Good examples:
 ```text
 local_admin
 local_demo
+beta_friend1
+beta_friend2
 ```
 
 ## Password handling
@@ -65,7 +52,7 @@ The tool uses the local PHP CLI to generate a modern `password_hash()` value so 
 ```bash
 LOCAL_BW_PASSWORD="change-this-local-password" \
 python tools/create_local_account.py \
-  --database-url mysql://root:password@127.0.0.1/bwps_clean \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
   --username local_demo \
   --password-from-env LOCAL_BW_PASSWORD
 ```
@@ -77,7 +64,7 @@ This validates inputs only. It does not write SQL or touch the database.
 ```bash
 LOCAL_BW_PASSWORD="change-this-local-password" \
 python tools/create_local_account.py \
-  --database-url mysql://root:password@127.0.0.1/bwps_clean \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
   --username local_demo \
   --password-from-env LOCAL_BW_PASSWORD \
   --output-sql /tmp/local_demo.sql
@@ -99,7 +86,7 @@ on PATH.
 ```bash
 LOCAL_BW_PASSWORD="change-this-local-password" \
 python tools/create_local_account.py \
-  --database-url mysql://root:password@127.0.0.1/bwps_clean \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
   --username local_demo \
   --password-from-env LOCAL_BW_PASSWORD \
   --execute
@@ -110,10 +97,30 @@ python tools/create_local_account.py \
 ```bash
 LOCAL_BW_PASSWORD="change-this-local-password" \
 python tools/create_local_account.py \
-  --database-url mysql://root:password@127.0.0.1/bwps_clean \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
   --username local_admin \
   --password-from-env LOCAL_BW_PASSWORD \
   --moderator \
+  --execute
+```
+
+## Beta tester examples
+
+```bash
+LOCAL_BW_PASSWORD="change-this-local-password" \
+python tools/create_local_account.py \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
+  --username beta_friend1 \
+  --password-from-env LOCAL_BW_PASSWORD \
+  --execute
+```
+
+```bash
+LOCAL_BW_PASSWORD="change-this-local-password" \
+python tools/create_local_account.py \
+  --database-url mysql://root:password@127.0.0.1/bwps_beta \
+  --username beta_friend2 \
+  --password-from-env LOCAL_BW_PASSWORD \
   --execute
 ```
 
@@ -125,14 +132,16 @@ The generated SQL:
 uses a transaction
 skips creation if the user already exists
 creates an empty buddylist row if one does not exist
-uses local-bootstrap marker values for regIP/loginIP
-leaves nest/inventory/progress/player state empty
+uses guarded-bootstrap marker values for regIP/loginIP
+uses fresh session/login keys
+uses a modern password_hash() value
+leaves old inventory/progress/player state empty
 ```
 
 The tool refuses:
 
 ```text
-non-local usernames
+usernames without local_ or beta_
 short local passwords
 missing password environment variable
 unsupported database URL schemes
@@ -141,12 +150,13 @@ execute mode without php/mysql on PATH
 
 ## Next runtime check
 
-After creating `local_demo`, test:
+After creating accounts, test:
 
 ```text
-registration path still creates hashed users
 login path accepts helper-created users
-first game boot does not require nest/inventory starter rows
+first game boot works
+chat works
+shop/game/reward behaviour uses the legacy-compatible reference rows
 ```
 
-If the first boot fails due to missing starter data, add only the exact missing row type in a later PR.
+If a feature fails because a fresh user is missing a starter row, add the smallest exact missing row type in a later PR.
