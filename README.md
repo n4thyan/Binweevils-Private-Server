@@ -10,7 +10,7 @@ This is not the original Bin Weevils Private Server, and it is not claiming owne
 
 The repository now contains a preserved working legacy base plus a growing clean rewrite support layer around it.
 
-Phases 1 to 5 are complete for the current local boot milestone. Phase 6 has started through the Ruffle/socket-proxy proof, small compatibility feature passes, and database rewrite planning.
+Phases 1 to 5 are complete for the current local boot milestone. Phase 6 has started through the Ruffle/socket-proxy proof, small compatibility feature passes, database rewrite planning, and first gameplay feature-readiness testing.
 
 Recent progress includes:
 
@@ -31,8 +31,11 @@ Recent progress includes:
 - Banked XP level-up support up to level 80
 - Prestige progression after level 80 with scaled thresholds
 - Database normalisation rewrite planning with an adapter-first rule
+- Read-only identity and social-list adapters
+- Clean `user_social_links` migration and first friend-request dual-write helper
+- Runtime feature-readiness audit after first gameplay testing
 
-The clean local account path can now create a fresh `local_demo` account in a disposable MySQL database and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
+The clean local account path can now create fresh local test accounts in `bwps_clean` and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
 
 The core local boot target has also been proven:
 
@@ -40,7 +43,19 @@ The core local boot target has also been proven:
 clean local database -> fresh local account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
 ```
 
-The project is still not production-ready. The game runtime, database relationships, old packed-list tables, starter player state, missing gameplay APIs, and endpoint behaviour still need careful compatibility work.
+The project is still not production-ready. The current clean database is a bootable baseline, not a full gameplay-complete database yet. Several legacy systems still need compatibility work, reference-data seeds, or endpoint restoration before private testing can be treated as stable.
+
+Known gameplay compatibility gaps now being tracked include:
+
+- Some old map locations do not currently load as expected
+- Map/location routing may be using newer-bin equivalents or fallback targets
+- The Nest random teleporter currently falls back to Shopping Mall instead of choosing a valid random target
+- Shop buying currently returns Error 999 for hats/furniture
+- Default starter apparel can render, but the purchase/catalogue/inventory write path still needs audit
+- Weevil Wheels can be played, but completion does not yet award Mulch, XP, or nest trophies
+- Lab's Lab / Daily Brainstrain needs endpoint and reward-flow audit
+- The current Buddy Tablet flow is unwanted long-term and should later be replaced by the OG buddy list plus Nest mailbox DM flow
+- The friend request button did not emit the expected `friends/send-request` packet during first local testing, so the issue is currently client/feature wiring rather than the new clean social table itself
 
 ## Original Project and Credits
 
@@ -74,6 +89,7 @@ The goals are:
 - Restore missing or rough gameplay systems gradually
 - Rewrite backend pieces gradually without breaking Flash compatibility
 - Normalise database debt behind compatibility adapters
+- Build clean reference-data seed packs instead of blindly importing dirty old runtime data
 
 ## What This Rewrite Is Not
 
@@ -110,7 +126,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for more detail.
 Preserve first. Modernise second. Rewrite only when the old behaviour is understood.
 ```
 
-This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, and old CDN-style URLs.
+This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, SWF paths, and old CDN-style URLs.
 
 ## Database Rewrite Rule
 
@@ -144,6 +160,7 @@ Current runtime and database rewrite docs:
 
 - [Phase 5 plan](docs/phase-5-plan.md)
 - [Current runtime status](docs/runtime/current-runtime-status.md)
+- [Runtime feature readiness audit](docs/runtime/feature-readiness-audit.md)
 - [Runtime boot dependency map](docs/runtime/runtime-boot-dependency-map.md)
 - [Runtime table usage audit](docs/runtime/runtime-table-usage-audit.md)
 - [PHP runtime syntax check](docs/runtime/php-runtime-syntax-check.md)
@@ -151,6 +168,9 @@ Current runtime and database rewrite docs:
 - [Runtime data modernisation notes](docs/database/runtime-data-modernisation-notes.md)
 - [Runtime schema debt report](docs/database/runtime-schema-debt-report.md)
 - [Database normalisation rewrite plan](docs/database/database-normalisation-rewrite-plan.md)
+- [Database adapter boundary](docs/database/database-adapter-boundary.md)
+- [Social list adapter plan](docs/database/social-list-adapter-plan.md)
+- [Social links backfill runbook](docs/database/social-links-backfill.md)
 - [Users password column notes](docs/database/users-column.md)
 - [Local account bootstrap notes](docs/database/local-account-bootstrap.md)
 - [Local account database smoke test](docs/database/local-account-db-smoke-test.md)
@@ -197,6 +217,7 @@ Current focus:
 - Add only boot-critical compatibility shims when needed
 - Keep full database normalisation behind compatibility adapters
 - Rebuild missing gameplay systems in small, isolated passes
+- Build clean seed/reference packs from the old database only after review
 - Keep security hardening visible in docs
 
 Recent gameplay/runtime passes:
@@ -206,10 +227,16 @@ Recent gameplay/runtime passes:
 - Prestige progression can continue after level 80
 - Lifetime XP is kept instead of being reset on prestige
 - Prestige thresholds scale upward per prestige count
+- First gameplay testing has identified map/location, shop purchase, game reward, Buddy Tablet/mailbox, and random teleporter compatibility gaps
 
 Future passes:
 
+- Map/location compatibility audit
+- Random Nest teleporter target fix
+- Shop purchase pipeline audit
+- Game reward pipeline audit for Mulch, XP, and trophies
 - Cleaner repeatable Ruffle/browser start flow
+- Electron launcher cleanup and packaging review
 - Achievements API rebuild
 - Bin pets API rebuild
 - Admin and moderation tooling
