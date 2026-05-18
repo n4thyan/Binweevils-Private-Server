@@ -1,3 +1,5 @@
+require('./chatRuntimePatch');
+
 var BinWeevils = require("./BinWeevils");
 var BinWeevilsWeb = require("./BinWeevilsWeb");
 var config = require("./config");
