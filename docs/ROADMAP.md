@@ -12,7 +12,7 @@ Phase 2 Audit: merged
 Phase 3 Config Cleanup: merged
 Phase 4 Database Cleanup and Split: merged
 Phase 5 Runtime Bootstrap and Database Modernisation Audit: complete for current local boot milestone
-Phase 6 Launcher, Play Flow, Compatibility Features, and Database Rewrite Planning: started
+Phase 6 Launcher, Play Flow, Compatibility Features, and Private Testing Prep: started
 Phase 7 Tooling: not started
 Phase 8 Public Polish: not started
 ```
@@ -167,7 +167,7 @@ Known future feature gaps, not Phase 5 blockers:
 - [ ] Optional mini-game endpoints
 - [ ] Shop/payment/activation-style extras
 
-## Phase 6: Launcher, Play Flow, Compatibility Features, and Database Rewrite Planning
+## Phase 6: Launcher, Play Flow, Compatibility Features, and Private Testing Prep
 
 Status: started
 
@@ -182,12 +182,19 @@ Status: started
 - [x] Add runtime feature readiness audit after first gameplay testing
 - [x] Add map/location compatibility notes
 - [x] Default normal map config to newer Bin map while keeping old map assets
+- [x] Add pre-VPS testing plan
+- [x] Document switch to sanitised legacy-compatible runtime database for private testing
+- [x] Keep password/session hardening as non-negotiable during old database compatibility work
+- [x] Add relaxed chat/runtime command patch for private testing
+- [x] Support simple chat commands with both `!` and `/` prefixes
+- [x] Block invisible/control characters while allowing normal punctuation and numbers in chat
+- [x] Align DEV URL paths with the newer-bin map default
 - [ ] Add random Nest teleporter allow-list fix
 - [ ] Add shop purchase pipeline audit
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
 
-Database rewrite track:
+Database compatibility track:
 
 - [x] Document database normalisation debt and adapter-first rule
 - [x] Add database adapter boundary docs and naming rules
@@ -198,6 +205,8 @@ Database rewrite track:
 - [x] Add dry-run social links backfill helper
 - [x] Run local/dev social links backfill dry-run
 - [x] Add dual-write for one safe relationship type
+- [x] Decide that the practical private-test database should be old-DB-compatible and sanitised, not minimal-only
+- [ ] Add sanitiser/runbook for old database beta setup
 - [ ] Move social reads behind the adapter without changing old client response shapes
 - [ ] Repeat adapter pattern for sessions/auth, progression/economy, inventory, and nest state
 
@@ -206,7 +215,7 @@ Feature compatibility track:
 - [x] Map old/new location IDs and locationDefinitions files
 - [x] Decide to use newer-bin map as the normal private-test map
 - [x] Default the normal `map` path to the newer map SWF
-- [ ] Test key newer-bin locations after merge
+- [x] Confirm New Bin locations generally work during local testing
 - [ ] Fix random Nest teleporter so it chooses from valid target locations instead of always Shopping Mall
 - [ ] Trace shop Error 999 purchase path for hats/furniture
 - [ ] Confirm catalogue/reference seed rows needed for shop purchases
@@ -214,6 +223,7 @@ Feature compatibility track:
 - [ ] Trace Lab's Lab / Daily Brainstrain endpoint and reward dependencies
 - [ ] Map current Buddy Tablet dependency and plan OG buddy list/mailbox DM restoration
 - [ ] Review rewardcodes and redeemedcodes before adding beta tester codes
+- [ ] Set up basic admin dashboard access safely for private testing
 
 Known database debt to handle in this track:
 
@@ -234,6 +244,7 @@ database/adapter-boundary
 database/social-links-adapter
 feature/achievements-api
 feature/bin-pets-api
+feature/pre-vps-chat-map-polish
 ```
 
 ## Phase 7: Missing Gameplay APIs and Tooling
@@ -265,6 +276,7 @@ Status: not started
 - Do not mass rename PHP endpoints
 - Do not delete old XML/config files until mapped
 - Do not normalise packed tables directly under the old runtime without a compatibility layer
+- Do not weaken password/session security while using the old database shape
 - Do not rewrite the backend in one giant pass
 - Do not remove credits from documentation
 - Do not chase every old incomplete feature during the core boot phase

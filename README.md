@@ -10,7 +10,7 @@ This is not the original Bin Weevils Private Server, and it is not claiming owne
 
 The repository now contains a preserved working legacy base plus a growing clean rewrite support layer around it.
 
-Phases 1 to 5 are complete for the current local boot milestone. Phase 6 has started through the Ruffle/socket-proxy proof, small compatibility feature passes, database rewrite planning, and first gameplay feature-readiness testing.
+Phases 1 to 5 are complete for the current local boot milestone. Phase 6 has started through the Ruffle/socket-proxy proof, small compatibility feature passes, database rewrite planning, first gameplay feature-readiness testing, and pre-VPS private testing prep.
 
 Recent progress includes:
 
@@ -34,8 +34,10 @@ Recent progress includes:
 - Read-only identity and social-list adapters
 - Clean `user_social_links` migration and first friend-request dual-write helper
 - Runtime feature-readiness audit after first gameplay testing
+- Newer-bin map default path for the normal URL config
+- Pre-VPS chat policy and command prep
 
-The clean local account path can now create fresh local test accounts in `bwps_clean` and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
+The clean local account path can create fresh local test accounts in `bwps_clean` and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
 
 The core local boot target has also been proven:
 
@@ -43,12 +45,12 @@ The core local boot target has also been proven:
 clean local database -> fresh local account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
 ```
 
-The project is still not production-ready. The current clean database is a bootable baseline, not a full gameplay-complete database yet. Several legacy systems still need compatibility work, reference-data seeds, or endpoint restoration before private testing can be treated as stable.
+The current practical direction has changed for private testing: the live/testing runtime should use a sanitised legacy-compatible database rather than a tiny minimal clean database. The old database shape is still the safest compatibility contract for the Flash client, PHP endpoints, Node server, shops, games, rewards, and catalogue systems.
+
+That does not mean bringing back unsafe old auth. Password/session security stays on the newer hardened path.
 
 Known gameplay compatibility gaps now being tracked include:
 
-- Some old map locations do not currently load as expected
-- Map/location routing may be using newer-bin equivalents or fallback targets
 - The Nest random teleporter currently falls back to Shopping Mall instead of choosing a valid random target
 - Shop buying currently returns Error 999 for hats/furniture
 - Default starter apparel can render, but the purchase/catalogue/inventory write path still needs audit
@@ -80,8 +82,9 @@ The goals are:
 - Document how the current files fit together
 - Make local setup easier to follow
 - Remove hardcoded secrets and unsafe defaults over time
-- Split database schema from old runtime/player data
-- Replace old private-server staff/player seed data with clean demo/local data
+- Keep hashed password/session hardening while restoring gameplay compatibility
+- Use a sanitised legacy-compatible runtime database for private testing
+- Replace old private-server staff/player seed data with clean beta/local data
 - Add guarded local bootstrap tools
 - Build smoke tests before changing fragile runtime behaviour
 - Modernise the launcher and developer flow
@@ -89,7 +92,7 @@ The goals are:
 - Restore missing or rough gameplay systems gradually
 - Rewrite backend pieces gradually without breaking Flash compatibility
 - Normalise database debt behind compatibility adapters
-- Build clean reference-data seed packs instead of blindly importing dirty old runtime data
+- Clean and rework old database areas in smaller passes instead of one full rewrite
 
 ## What This Rewrite Is Not
 
@@ -128,14 +131,17 @@ Preserve first. Modernise second. Rewrite only when the old behaviour is underst
 
 This matters because the Flash client may depend on exact folder names, endpoint names, filenames, XML paths, SWF paths, and old CDN-style URLs.
 
-## Database Rewrite Rule
+## Database Compatibility Rule
 
 ```txt
-Do not normalise old runtime tables directly underneath the Flash client.
-Add compatibility adapters first, then move reads/writes gradually.
+The old database shape is the runtime compatibility contract for now.
+Sanitise old private/player rows.
+Keep useful reference/game data.
+Add adapters before moving reads/writes to cleaner tables.
+Do not weaken password/session security.
 ```
 
-See [docs/database/database-normalisation-rewrite-plan.md](docs/database/database-normalisation-rewrite-plan.md).
+See [docs/runtime/pre-vps-testing-plan.md](docs/runtime/pre-vps-testing-plan.md) and [docs/database/database-normalisation-rewrite-plan.md](docs/database/database-normalisation-rewrite-plan.md).
 
 ## Documentation
 
@@ -161,6 +167,7 @@ Current runtime and database rewrite docs:
 - [Phase 5 plan](docs/phase-5-plan.md)
 - [Current runtime status](docs/runtime/current-runtime-status.md)
 - [Runtime feature readiness audit](docs/runtime/feature-readiness-audit.md)
+- [Pre-VPS testing plan](docs/runtime/pre-vps-testing-plan.md)
 - [Runtime boot dependency map](docs/runtime/runtime-boot-dependency-map.md)
 - [Runtime table usage audit](docs/runtime/runtime-table-usage-audit.md)
 - [PHP runtime syntax check](docs/runtime/php-runtime-syntax-check.md)
@@ -185,7 +192,7 @@ Current runtime and database rewrite docs:
 
 Full setup instructions are still being written.
 
-For now, treat this repo as a working imported base plus rewrite scaffolding. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, the imported database dump or clean schema path, and the existing legacy file paths.
+For now, treat this repo as a working imported base plus rewrite scaffolding. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, a sanitised legacy-compatible database, and the existing legacy file paths.
 
 See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) for the current local setup notes.
 
@@ -193,7 +200,7 @@ Future setup docs will be split into:
 
 - Windows/XAMPP setup
 - Linux/VPS setup
-- Clean database import/reset notes
+- Legacy-compatible beta database setup
 - Local development flow
 - Launcher/browser/Ruffle notes
 
@@ -208,16 +215,17 @@ Current progress:
 - Phase 3 Config cleanup: merged
 - Phase 4 Database cleanup/split: merged
 - Phase 5 Runtime bootstrap and database modernisation audit: complete for current local boot milestone
-- Phase 6 Launcher, play flow, compatibility features, and database rewrite planning: started
+- Phase 6 Launcher, play flow, compatibility features, and private testing prep: started
 
 Current focus:
 
 - Keep the old runtime compatible
-- Keep the clean local boot path stable
-- Add only boot-critical compatibility shims when needed
+- Use a sanitised old database as the practical feature-testing base
+- Keep clean password/session hardening
+- Make chat usable for private testers
+- Add simple chat commands
 - Keep full database normalisation behind compatibility adapters
 - Rebuild missing gameplay systems in small, isolated passes
-- Build clean seed/reference packs from the old database only after review
 - Keep security hardening visible in docs
 
 Recent gameplay/runtime passes:
@@ -227,20 +235,21 @@ Recent gameplay/runtime passes:
 - Prestige progression can continue after level 80
 - Lifetime XP is kept instead of being reset on prestige
 - Prestige thresholds scale upward per prestige count
-- First gameplay testing has identified map/location, shop purchase, game reward, Buddy Tablet/mailbox, and random teleporter compatibility gaps
+- First gameplay testing has identified shop purchase, game reward, Buddy Tablet/mailbox, and random teleporter compatibility gaps
+- Normal URL path config now defaults map to the newer Bin map
 
 Future passes:
 
-- Map/location compatibility audit
+- Sanitised legacy-compatible beta database setup
 - Random Nest teleporter target fix
 - Shop purchase pipeline audit
 - Game reward pipeline audit for Mulch, XP, and trophies
+- Daily Brainstrain / Lab's Lab reward audit
 - Cleaner repeatable Ruffle/browser start flow
 - Electron launcher cleanup and packaging review
-- Achievements API rebuild
-- Bin pets API rebuild
-- Admin and moderation tooling
-- Safer local setup scripts
+- Admin and moderation dashboard polish
+- Reward/beta tester code setup
+- Safer local/VPS setup scripts
 - Server/runtime module rewrite
 
 ## Disclaimer
