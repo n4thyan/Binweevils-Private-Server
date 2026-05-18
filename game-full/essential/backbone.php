@@ -29,6 +29,7 @@
 	include_once(dirname(__FILE__) . '/config.php');
 	include_once(dirname(__FILE__) . '/internal.php');
 	include_once(dirname(__FILE__) . '/identity_adapter.php');
+	include_once(dirname(__FILE__) . '/social_adapter.php');
 	include_once(dirname(__FILE__) . '/prestige.php');
 	include_once(dirname(__FILE__) . '/protections.php');
     include_once(dirname(__FILE__) . '/aes256.php');
