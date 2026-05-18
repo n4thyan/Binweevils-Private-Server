@@ -1,6 +1,6 @@
 # Current Runtime Status
 
-This note records the current local runtime position after the clean database, auth compatibility, session hardening, Ruffle socket proxy, banked XP, and prestige passes.
+This note records the current local runtime position after the clean database, auth compatibility, session hardening, Ruffle socket proxy, banked XP, prestige, database adapter, and first feature-readiness passes.
 
 ## Current local milestone
 
@@ -12,7 +12,7 @@ The current target is:
 Clean local database -> fresh local account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
 ```
 
-That path has now been proven locally with a clean `local_demo` account against `bwps_clean`.
+That path has now been proven locally with clean local accounts against `bwps_clean`.
 
 This means the core boot path is working well enough to continue the rewrite from a known local baseline.
 
@@ -21,7 +21,7 @@ This means the core boot path is working well enough to continue the rewrite fro
 Current local trace has shown:
 
 - The clean schema path can be imported into a modern XAMPP/MariaDB setup.
-- A guarded local account can be created without importing old player/staff/demo rows.
+- Guarded local accounts can be created without importing old player/staff/demo rows.
 - PHP login can update session/login fields for the local account.
 - `game.php` can be reached after login.
 - `/mainDEV663.swf` must be served from the web root for the current embedded SWF path.
@@ -32,6 +32,44 @@ Current local trace has shown:
 - Blank usernames and blank session keys are rejected by `confirmSessionKey()`.
 - Banked XP can apply multiple level-ups in one pass up to level 80.
 - Prestige progression exists after level 80 using lifetime XP, visible level reset, and scaled thresholds.
+- Read-only identity and social-list adapters now exist for the database rewrite track.
+- A clean `user_social_links` table exists beside the legacy `buddylist` table.
+- First friend-request dual-write support exists, although first gameplay testing showed the client did not emit the expected friend-request packet yet.
+
+## Current gameplay compatibility position
+
+The clean runtime is a bootable baseline. It is not yet a full gameplay-complete server.
+
+First local gameplay testing has shown this pattern:
+
+```text
+UI loads
+        ↓
+old client/server expects legacy reference data, old SWF/config routing, or old endpoint behaviour
+        ↓
+clean DB only has the narrow boot/account baseline
+        ↓
+feature silently fails, falls back, returns an old error, or behaves incompletely
+```
+
+Known examples:
+
+- Some old map locations do not currently load as expected.
+- Map/location routing appears to fall back to newer-bin equivalents in some cases.
+- The Nest random teleporter currently sends the player outside Shopping Mall instead of choosing a valid random target.
+- Shop buying returns Error 999 for hats/furniture.
+- Starter/default apparel can display, including the default top hat, so apparel rendering itself is not completely broken.
+- The issue with hats/furniture is currently treated as purchase/catalogue/inventory write flow, not a full apparel-rendering failure.
+- Weevil Wheels can be played, but completion does not yet award Mulch, XP, or nest trophies.
+- Lab's Lab / Daily Brainstrain needs endpoint and reward-flow audit.
+- The current Buddy Tablet flow is not the desired long-term UX.
+- Future social UX should restore the OG buddy list button and mailbox DM flow from the Nest mailbox instead of relying on the Buddy Tablet.
+
+See:
+
+```text
+docs/runtime/feature-readiness-audit.md
+```
 
 ## Security hardening note
 
@@ -117,13 +155,15 @@ Treat these as core blockers:
 - A missing local endpoint fully stops the boot path.
 - A security regression allows blank session keys to authenticate.
 
-Treat these as future feature gaps unless they block boot:
+Treat these as feature compatibility work unless they block boot:
 
-- Achievements returning an incomplete response shape.
-- Bin pets missing or partially implemented.
-- Optional panels showing empty state.
-- External analytics or advert failures.
-- Old promotional or account extras not existing locally.
+- Map locations are missing, remapped, or falling back.
+- Shop buying returns Error 999.
+- Game completion does not award Mulch, XP, or trophies.
+- Buddy/social buttons work inconsistently.
+- Buddy Tablet opens where the OG mailbox/DM flow should eventually be restored.
+- External analytics or advert failures appear in the console.
+- Old promotional or account extras do not exist locally.
 
 ## Database status
 
@@ -138,6 +178,11 @@ It has completed the important groundwork:
 - CI smoke tests cover the clean account bootstrap path.
 - Major schema debt is documented.
 - Prestige migration exists as a small runtime feature migration.
+- Identity adapter exists for stable numeric user lookup.
+- Social packed-list adapter exists for legacy `buddylist` parsing.
+- Clean `user_social_links` migration exists beside the old table.
+- Dry-run social backfill helper exists.
+- First friend-request dual-write helper exists.
 
 Known database debt remains for a later normalisation phase:
 
@@ -146,18 +191,20 @@ Known database debt remains for a later normalisation phase:
 - Mixed account, inventory, social, and runtime state.
 - Inconsistent owner columns.
 - Missing indexes and foreign keys outside the narrow bootstrap layer.
+- Missing or incomplete clean reference/starter data for several gameplay systems.
 
-These should be fixed behind compatibility adapters, not by breaking the old SWF-facing runtime in one large pass.
+These should be fixed behind compatibility adapters and reviewed seed packs, not by breaking the old SWF-facing runtime in one large pass.
 
 ## Current rule
 
 For the rest of this phase:
 
 ```text
-Do not chase every old missing feature.
+Do not chase every old missing feature blindly.
 Keep the core boot path stable.
 Document incomplete systems clearly.
 Stub only when a missing endpoint blocks boot.
-Save proper feature rebuilding for later phases.
+Use the old database as a reference source, not as dirty production seed data.
+Restore feature compatibility in small passes.
 Keep security fixes visible and credited.
 ```
