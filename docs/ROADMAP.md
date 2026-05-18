@@ -180,7 +180,9 @@ Status: started
 - [x] Add database normalisation rewrite plan
 - [x] Start database adapter boundary work
 - [x] Add runtime feature readiness audit after first gameplay testing
-- [ ] Add map/location compatibility audit
+- [x] Add map/location compatibility notes
+- [x] Default normal map config to newer Bin map while keeping old map assets
+- [ ] Add random Nest teleporter allow-list fix
 - [ ] Add shop purchase pipeline audit
 - [ ] Turn the local Ruffle flow into a cleaner repeatable setup
 - [ ] Keep the original working launcher until a replacement is tested
@@ -201,8 +203,10 @@ Database rewrite track:
 
 Feature compatibility track:
 
-- [ ] Map old/new location IDs and locationDefinitions files
-- [ ] Fix or seed map travel so old map locations work where possible
+- [x] Map old/new location IDs and locationDefinitions files
+- [x] Decide to use newer-bin map as the normal private-test map
+- [x] Default the normal `map` path to the newer map SWF
+- [ ] Test key newer-bin locations after merge
 - [ ] Fix random Nest teleporter so it chooses from valid target locations instead of always Shopping Mall
 - [ ] Trace shop Error 999 purchase path for hats/furniture
 - [ ] Confirm catalogue/reference seed rows needed for shop purchases
