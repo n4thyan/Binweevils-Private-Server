@@ -90,19 +90,37 @@ Packed list parsing should:
 
 Do not kick, delete, or auto-repair old social data during read-only parsing.
 
-## Future clean table
+## Clean table added beside legacy table
 
-Later, add a clean table beside `buddylist`:
+The clean table now exists as a migration, but it does not replace `buddylist` yet:
+
+```text
+migrations/2026_05_18_add_user_social_links.sql
+```
+
+Table:
 
 ```text
 user_social_links
 - id
 - owner_user_id
 - target_user_id
+- target_legacy_username
 - relation_type
 - status
+- source
 - created_at
 - updated_at
+```
+
+Current status:
+
+```text
+migration exists
+no automatic backfill yet
+no dual-write yet
+old buddylist remains source of truth
+old SWF-facing output is unchanged
 ```
 
 Recommended constraints later, after write flow is understood:
@@ -120,8 +138,8 @@ Do not add aggressive foreign keys until account deletion, rename, local seed, a
 
 Suggested order:
 
-1. Add read-only parser helper.
-2. Add clean table migration beside old table.
+1. Add read-only parser helper. Done.
+2. Add clean table migration beside old table. Done.
 3. Backfill local/dev data only.
 4. Dual-write one safe relation type.
 5. Keep reads from old table until dual-write is proven.
