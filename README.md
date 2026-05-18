@@ -20,7 +20,7 @@ Recent progress includes:
 - PHP syntax checks
 - Auth readiness checks
 - PHP auth compatibility helpers for login/register
-- A guarded local account bootstrap tool
+- A guarded local/beta account bootstrap tool
 - A disposable MySQL account smoke test in GitHub Actions
 - A MySQL 8 schema import-copy builder for smoke tests
 - Local auth verification and login endpoint review notes
@@ -34,30 +34,30 @@ Recent progress includes:
 - Read-only identity and social-list adapters
 - Clean `user_social_links` migration and first friend-request dual-write helper
 - Runtime feature-readiness audit after first gameplay testing
-- Newer-bin map default path for the normal URL config
 - Pre-VPS chat policy and command prep
+- A legacy-compatible beta database setup path for private testing
 
-The clean local account path can create fresh local test accounts in `bwps_clean` and confirm the minimum `users` and `buddylist` rows exist. It deliberately does not create old users, old moderator names, old celebrity accounts, or imported production/player state.
+The clean local account path proved the minimum login/boot chain, but wider gameplay needs the old runtime reference data. The practical private-test path is now a sanitised legacy-compatible database, usually called `bwps_beta`, built from the old database shape with old user/private/runtime rows wiped.
 
-The core local boot target has also been proven:
+The core local boot target has been proven:
 
 ```txt
-clean local database -> fresh local account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
+local/beta database -> fresh guarded account -> PHP login/session -> game.php -> Ruffle SWF load -> socket proxy -> starting Nest / room state
 ```
 
-The current practical direction has changed for private testing: the live/testing runtime should use a sanitised legacy-compatible database rather than a tiny minimal clean database. The old database shape is still the safest compatibility contract for the Flash client, PHP endpoints, Node server, shops, games, rewards, and catalogue systems.
-
-That does not mean bringing back unsafe old auth. Password/session security stays on the newer hardened path.
+Password/session security stays on the newer hardened path. Using the old database shape for compatibility does not mean bringing back old plaintext/demo passwords or unsafe session behaviour.
 
 Known gameplay compatibility gaps now being tracked include:
 
 - The Nest random teleporter currently falls back to Shopping Mall instead of choosing a valid random target
-- Shop buying currently returns Error 999 for hats/furniture
+- Shop buying currently returns Error 999 for hats/furniture until the legacy-compatible beta data path is tested
 - Default starter apparel can render, but the purchase/catalogue/inventory write path still needs audit
 - Weevil Wheels can be played, but completion does not yet award Mulch, XP, or nest trophies
 - Lab's Lab / Daily Brainstrain needs endpoint and reward-flow audit
 - The current Buddy Tablet flow is unwanted long-term and should later be replaced by the OG buddy list plus Nest mailbox DM flow
 - The friend request button did not emit the expected `friends/send-request` packet during first local testing, so the issue is currently client/feature wiring rather than the new clean social table itself
+
+Map note: local testing later showed both Old Bin and New Bin paths can work, so both maps should stay available for now. Do not remove the selector just to simplify things while testing is still early.
 
 ## Original Project and Credits
 
@@ -85,7 +85,7 @@ The goals are:
 - Keep hashed password/session hardening while restoring gameplay compatibility
 - Use a sanitised legacy-compatible runtime database for private testing
 - Replace old private-server staff/player seed data with clean beta/local data
-- Add guarded local bootstrap tools
+- Add guarded local/beta bootstrap tools
 - Build smoke tests before changing fragile runtime behaviour
 - Modernise the launcher and developer flow
 - Harden known unsafe legacy behaviours
@@ -114,7 +114,7 @@ game-full/     Preserved Flash/site compatibility layer
 server/        Node/socket/private server layer
 database/      Clean schema split, key layer, and future seed/reset structure
 migrations/    Runtime database migrations added during the rewrite
-tools/         Audit, compatibility, and local bootstrap helper scripts
+tools/         Audit, compatibility, and local/bootstrap helper scripts
 .github/       CI checks and disposable database smoke tests
 bwps.sql       Original imported database dump kept for reference
 .env.example   Environment/config template
@@ -141,7 +141,7 @@ Add adapters before moving reads/writes to cleaner tables.
 Do not weaken password/session security.
 ```
 
-See [docs/runtime/pre-vps-testing-plan.md](docs/runtime/pre-vps-testing-plan.md) and [docs/database/database-normalisation-rewrite-plan.md](docs/database/database-normalisation-rewrite-plan.md).
+See [docs/database/legacy-beta-database-setup.md](docs/database/legacy-beta-database-setup.md), [docs/runtime/pre-vps-testing-plan.md](docs/runtime/pre-vps-testing-plan.md), and [docs/database/database-normalisation-rewrite-plan.md](docs/database/database-normalisation-rewrite-plan.md).
 
 ## Documentation
 
@@ -168,6 +168,7 @@ Current runtime and database rewrite docs:
 - [Current runtime status](docs/runtime/current-runtime-status.md)
 - [Runtime feature readiness audit](docs/runtime/feature-readiness-audit.md)
 - [Pre-VPS testing plan](docs/runtime/pre-vps-testing-plan.md)
+- [Legacy beta database setup](docs/database/legacy-beta-database-setup.md)
 - [Runtime boot dependency map](docs/runtime/runtime-boot-dependency-map.md)
 - [Runtime table usage audit](docs/runtime/runtime-table-usage-audit.md)
 - [PHP runtime syntax check](docs/runtime/php-runtime-syntax-check.md)
@@ -179,7 +180,7 @@ Current runtime and database rewrite docs:
 - [Social list adapter plan](docs/database/social-list-adapter-plan.md)
 - [Social links backfill runbook](docs/database/social-links-backfill.md)
 - [Users password column notes](docs/database/users-column.md)
-- [Local account bootstrap notes](docs/database/local-account-bootstrap.md)
+- [Local/beta account bootstrap notes](docs/database/local-account-bootstrap.md)
 - [Local account database smoke test](docs/database/local-account-db-smoke-test.md)
 - [MySQL 8 schema copy tool](docs/database/mysql8-schema-copy-tool.md)
 - [Verification database smoke test plan](docs/database/verification-db-smoke-test.md)
@@ -194,7 +195,7 @@ Full setup instructions are still being written.
 
 For now, treat this repo as a working imported base plus rewrite scaffolding. Local setup may require a web server, PHP, MySQL/MariaDB, Node.js, a sanitised legacy-compatible database, and the existing legacy file paths.
 
-See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) for the current local setup notes.
+See [docs/SETUP_LOCAL.md](docs/SETUP_LOCAL.md) and [docs/database/legacy-beta-database-setup.md](docs/database/legacy-beta-database-setup.md) for the current local setup notes.
 
 Future setup docs will be split into:
 
@@ -236,11 +237,11 @@ Recent gameplay/runtime passes:
 - Lifetime XP is kept instead of being reset on prestige
 - Prestige thresholds scale upward per prestige count
 - First gameplay testing has identified shop purchase, game reward, Buddy Tablet/mailbox, and random teleporter compatibility gaps
-- Normal URL path config now defaults map to the newer Bin map
+- Both Old Bin and New Bin map paths have been seen working locally, so both stay available for now
 
 Future passes:
 
-- Sanitised legacy-compatible beta database setup
+- Sanitised legacy-compatible beta database setup test
 - Random Nest teleporter target fix
 - Shop purchase pipeline audit
 - Game reward pipeline audit for Mulch, XP, and trophies
