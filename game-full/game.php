@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <?php
 error_reporting(0);
 include('essential/backbone.php');
@@ -33,6 +33,7 @@ $uag = $headers['User-Agent'];
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 $loginPath = htmlspecialchars($scheme . '://' . $host . '/', ENT_QUOTES, 'UTF-8');
+$defaultZone = '127-0-0-1:9339';
 ?>
 <html>
 <head>
@@ -163,7 +164,7 @@ $loginPath = htmlspecialchars($scheme . '://' . $host . '/', ENT_QUOTES, 'UTF-8'
 
             echo '<div id="containerGame" style="height: 650px;"><center><object type="application/x-shockwave-flash" id="flashContentObject" data="/mainDEV663.swf?ver=1" style="width: 940px;height:650px;">
                 <param name="movie" value="/mainDEV663.swf?ver=1"/>
-                <param name="FlashVars" value="cluster=uk&loginPath=' . $loginPath . '&autoBin=false&zone=" />
+                <param name="FlashVars" value="cluster=uk&loginPath=' . $loginPath . '&autoBin=true&zone=' . $defaultZone . '" />
 
                 <param name="allowFullScreen" value="true"/>
                 <param name="wmode" value="opaque"/>
