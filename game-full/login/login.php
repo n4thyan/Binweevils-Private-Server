@@ -64,7 +64,11 @@ function logout() {
         $res = $q->get_result();
         
         if($res = $res->fetch_array()) {
-            $db->query("UPDATE users SET sessionKey = '', loginKey = '' WHERE id = " . $res['id'] . ";");
+            $invalidSessionKey = generateSessionKey();
+            $invalidLoginKey = generateLogKey();
+            $update = $db->prepare("UPDATE users SET sessionKey = ?, loginKey = ? WHERE id = ?;");
+            $update->bind_param('ssi', $invalidSessionKey, $invalidLoginKey, $res['id']);
+            $update->execute();
         }
     }
 

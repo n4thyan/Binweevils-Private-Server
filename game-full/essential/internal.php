@@ -237,6 +237,10 @@
 	
 	function confirmSessionKey($username, $key)
 	{
+		if(trim((string)$username) === '' || trim((string)$key) === '') {
+		    return false;
+		}
+
 		$db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 		$q = $db->prepare("SELECT active FROM users WHERE username = ? AND sessionKey = ? LIMIT 1;");
 		$q->bind_param('ss', $username, $key);
