@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <?php
 error_reporting(0);
 include('essential/backbone.php');
@@ -30,6 +30,9 @@ function getRequestHeaders() {
 
 $headers = getRequestHeaders();
 $uag = $headers['User-Agent'];
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$loginPath = htmlspecialchars($scheme . '://' . $host . '/', ENT_QUOTES, 'UTF-8');
 ?>
 <html>
 <head>
@@ -49,6 +52,19 @@ $uag = $headers['User-Agent'];
 	<link href="../assets/css/modal-fx.min.css" rel="stylesheet">
 	    <link rel="stylesheet" href="../discord-invite/discordInvite.css"/>
     <script src="../discord-invite/discordInvite.js?<?php echo time(); ?>"></script>
+    <script>
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.RufflePlayer.config = {
+            socketProxy: [
+                {
+                    host: "127.0.0.1",
+                    port: 9339,
+                    proxyUrl: "ws://localhost:3993",
+                }
+            ]
+        };
+    </script>
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 	<script src="https://kit.fontawesome.com/4a71c0ba56.js">
 	</script>
     <script src="https://kit.fontawesome.com/4a71c0ba56.js">
@@ -147,7 +163,7 @@ $uag = $headers['User-Agent'];
 
             echo '<div id="containerGame" style="height: 650px;"><center><object type="application/x-shockwave-flash" id="flashContentObject" data="/mainDEV663.swf?ver=1" style="width: 940px;height:650px;">
                 <param name="movie" value="/mainDEV663.swf?ver=1"/>
-                <param name="FlashVars" value="cluster=uk&loginPath=http://localhost/&autoBin=false&zone=" />
+                <param name="FlashVars" value="cluster=uk&loginPath=' . $loginPath . '&autoBin=false&zone=" />
 
                 <param name="allowFullScreen" value="true"/>
                 <param name="wmode" value="opaque"/>
