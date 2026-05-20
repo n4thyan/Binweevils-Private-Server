@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Bin Weevils Private Server - Privacy</title>
+    <title>Bin Weevils Private Server - Credits</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/assets/css/bwps-site-refresh.css" rel="stylesheet" type="text/css">
 </head>
@@ -13,21 +13,21 @@
 <a class="bwps-nav-link " href="/blog/">Blog</a>
 <a class="bwps-nav-link " href="/help/">Help</a>
 <a class="bwps-nav-link " href="/play/">Play</a>
-<a class="bwps-nav-link is-active" href="/legal/">Legal</a>
+<a class="bwps-nav-link " href="/legal/">Legal</a>
         </nav>
     </header>
 
     <main class="bwps-page-shell">
         <section class="bwps-page-card bwps-page-hero">
             <p class="bwps-kicker">Bin Weevils Private Server</p>
-            <h1>Privacy</h1>
-            <p>This local/private-server build is intended for controlled testing. Avoid using real passwords or personal details in test accounts.</p>
+            <h1>Credits</h1>
+            <p>This project exists because of the original Bin Weevils game, the KnowYourKnot source, and the private-server preservation work that came before it.</p>
         </section>
 
         <section class="bwps-card-grid">
-            <article class="bwps-mini-card"><h2>Local testing</h2><p>Use test accounts and test data while developing locally.</p></article>
-<article class="bwps-mini-card"><h2>Accounts</h2><p>Password hashing and hardening can be expanded later, but for now this should be treated as a development stack.</p></article>
-<article class="bwps-mini-card"><h2>Admin access</h2><p>Admin tools should stay private and protected before any public VPS deployment.</p></article>
+            <article class="bwps-mini-card"><h2>Original source</h2><p>Based on the KnowYourKnot/Binweevils private-server source.</p></article>
+<article class="bwps-mini-card"><h2>Original game</h2><p>Credit to the original Bin Weevils creators, artists and developers.</p></article>
+<article class="bwps-mini-card"><h2>Current adaptation</h2><p>Maintained as an OG working stack with tested custom features, local setup improvements and documentation.</p></article>
         </section>
     </main>
 
