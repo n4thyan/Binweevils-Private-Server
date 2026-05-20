@@ -1,0 +1,309 @@
+/*
+  Bin Weevils Private Server visual refresh.
+  Site/admin presentation only. No game client, DB or server logic.
+*/
+
+html,
+body {
+    font-family: "Open Sans", Arial, sans-serif;
+}
+
+body {
+    background-color: #64d8ff;
+}
+
+.navbar-bg,
+.box.cta,
+#login-play-form {
+    box-shadow: 0 12px 24px rgba(0, 70, 90, .22), inset 0 2px 0 rgba(255, 255, 255, .45);
+}
+
+.navbar-bg {
+    border: 3px solid #118c00;
+    border-radius: 999px;
+    background: linear-gradient(#baff57, #42c914 48%, #178e00);
+}
+
+.tabs.is-right a {
+    color: #fff;
+    font-weight: 800;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, .28);
+}
+
+.tabs.is-right li.is-active a,
+.tabs.is-right a:hover {
+    background: rgba(255, 255, 255, .18);
+    border-radius: 999px;
+    color: #fff;
+}
+
+.login-container {
+    filter: drop-shadow(0 18px 32px rgba(0, 90, 90, .25));
+}
+
+#login-play-form {
+    border: 4px solid #29a1cc;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #f2fbff, #d9f0f9);
+}
+
+#login-play-form .login-payment-input {
+    box-shadow: inset 0 2px 5px rgba(0, 75, 120, .12);
+}
+
+.download-section {
+    top: 188px !important;
+}
+
+.download-section h1 {
+    font-size: 24px;
+    line-height: 1.05;
+    font-weight: 900;
+    text-shadow: 0 2px 0 rgba(255,255,255,.8);
+}
+
+.bwps-home-copy {
+    margin: 10px auto 0;
+    max-width: 285px;
+    color: #00528c;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.download-buttons {
+    top: 320px !important;
+}
+
+.bwps-yellow-btn,
+.button {
+    border: 3px solid #0c9ed3;
+    border-radius: 999px;
+    background: linear-gradient(#fff7b6, #ffd743);
+    color: #00528c;
+    font-weight: 900;
+    box-shadow: 0 4px 0 rgba(176, 122, 0, .25);
+}
+
+.bwps-yellow-btn i {
+    margin-right: 8px;
+}
+
+.box.cta {
+    border: 3px solid #0c9ed3;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .9);
+}
+
+.footer {
+    background: rgba(5, 78, 34, .82);
+    color: #fff;
+}
+
+.footer p {
+    margin-bottom: 4px;
+}
+
+.bwps-admin-note {
+    margin-top: -8px;
+    margin-bottom: 18px;
+    color: #95d7ff;
+    font-size: 13px;
+}
+
+.login-bg {
+    background:
+        radial-gradient(circle at top, rgba(255,255,255,.14), rgba(255,255,255,0) 35%),
+        linear-gradient(180deg, #006fa8, #043c55) !important;
+}
+
+.auth .card {
+    border: 3px solid #29a1cc;
+    border-radius: 18px;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, .35);
+}
+
+.auth .btn-primary,
+.enter-btn {
+    border-radius: 999px !important;
+    background: linear-gradient(#baff57, #29b908) !important;
+    border: 0 !important;
+    color: #fff !important;
+    font-weight: 800;
+}
+
+
+/* Public page refresh */
+.bwps-page {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.5), rgba(255,255,255,0) 18%),
+        radial-gradient(circle at 86% 20%, rgba(255,255,255,.45), rgba(255,255,255,0) 15%),
+        linear-gradient(180deg, #38bff2 0%, #75dd31 72%, #177c03 100%);
+    color: #00528c;
+}
+
+.bwps-page-header {
+    padding: 28px 16px 12px;
+    text-align: center;
+}
+
+.bwps-nav-bar {
+    display: inline-flex;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 3px solid #118c00;
+    border-radius: 999px;
+    background: linear-gradient(#baff57, #42c914 48%, #178e00);
+    box-shadow: 0 10px 22px rgba(0, 70, 90, .22), inset 0 2px 0 rgba(255, 255, 255, .45);
+}
+
+.bwps-nav-link {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 900;
+    text-decoration: none;
+    text-shadow: 0 2px 2px rgba(0,0,0,.28);
+}
+
+.bwps-nav-link:hover,
+.bwps-nav-link.is-active {
+    background: rgba(255,255,255,.2);
+}
+
+.bwps-page-shell {
+    width: min(980px, calc(100% - 32px));
+    margin: 24px auto 40px;
+}
+
+.bwps-page-card {
+    border: 4px solid #20a8d8;
+    border-radius: 28px;
+    background: rgba(239, 251, 255, .94);
+    box-shadow: 0 18px 38px rgba(0, 80, 110, .28), inset 0 2px 0 rgba(255,255,255,.8);
+}
+
+.bwps-page-hero {
+    padding: 34px;
+    text-align: center;
+}
+
+.bwps-page-hero h1 {
+    margin: 0 0 12px;
+    color: #004f88;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: .95;
+    text-shadow: 0 3px 0 rgba(255,255,255,.9);
+}
+
+.bwps-page-hero p {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.bwps-kicker {
+    margin: 0 0 10px !important;
+    color: #1b9700;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.bwps-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.bwps-mini-card {
+    padding: 22px;
+    border: 3px solid #20a8d8;
+    border-radius: 22px;
+    background: rgba(255,255,255,.9);
+    box-shadow: 0 10px 22px rgba(0, 80, 110, .18);
+}
+
+.bwps-mini-card h2 {
+    margin: 0 0 10px;
+    color: #008b00;
+    font-size: 24px;
+    line-height: 1.05;
+}
+
+.bwps-mini-card p {
+    margin: 0 0 12px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.bwps-big-button,
+.bwps-small-button {
+    display: inline-block;
+    border: 3px solid #0c9ed3;
+    border-radius: 999px;
+    background: linear-gradient(#fff7b6, #ffd743);
+    color: #00528c;
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow: 0 4px 0 rgba(176, 122, 0, .25);
+}
+
+.bwps-big-button {
+    padding: 14px 28px;
+    font-size: 20px;
+}
+
+.bwps-small-button {
+    padding: 10px 18px;
+}
+
+.bwps-page-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: min(6vw, 70px);
+    padding: 22px;
+    border-top: 3px solid #20a8d8;
+    background: rgba(239, 251, 255, .9);
+    color: #167800;
+    font-weight: 900;
+}
+
+.bwps-page-footer a {
+    color: #167800;
+    text-decoration: none;
+}
+
+.bwps-page-footer a:hover {
+    text-decoration: underline;
+}
+
+.bwps-footer-mark {
+    font-size: 28px;
+}
+
+@media (max-width: 760px) {
+    .bwps-nav-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: 24px;
+    }
+
+    .bwps-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bwps-page-footer {
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+}

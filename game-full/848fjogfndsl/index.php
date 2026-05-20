@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>BWR Admin</title>
+    <title>Bin Weevils PS - Admin</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="panel/assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="panel/assets/vendors/css/vendor.bundle.base.css">
@@ -15,6 +15,7 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="panel/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/bwps-site-refresh.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="panel/assets/images/favicon.png" />
     <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
@@ -28,7 +29,8 @@
           <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
-                <h3 class="card-title text-left mb-3">Login</h3>
+                <h3 class="card-title text-left mb-3">Admin Panel</h3>
+                <p class="bwps-admin-note">Private moderator access for the OG working stack.</p>
                 <form>
                   <div class="form-group">
                     <label>Username</label>
@@ -75,7 +77,7 @@ if(isset($_POST['login'])){
         session_start();
         $_SESSION['admin'] = $_POST['username'];
         $_SESSION['adminPassword'] = scramblePassword($_POST['username'], $_POST['password']);
-        header('Location: https://play.binweevils.net/848fjogfndsl/panel');
+        header('Location: /848fjogfndsl/panel');
     }
     else{
         if(UserLogin($_POST['username'], scramblePassword($_POST['username'], $_POST['password'])) == true){
