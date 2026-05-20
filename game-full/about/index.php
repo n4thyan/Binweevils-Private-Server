@@ -1,42 +1,199 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>Bin Weevils Private Server - About</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/assets/css/bwps-site-refresh.css" rel="stylesheet" type="text/css">
+	<meta charset="utf-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<title>About - Bin Weevils Private Server</title>
+	<link href="/assets/images/weevil.png" rel="shortcut icon" type="image/x-icon">
+	<meta content="A community Bin Weevils private server with classic gameplay, Ruffle support and custom features." name="description">
+	<meta content="#22b305" name="theme-color">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link href="/assets/css/bulma.min.css" rel="stylesheet">
+	<link href="/assets/css/login.css?2" rel="stylesheet" type="text/css">
+	<link href="/assets/css/bwps-site-refresh.css" rel="stylesheet" type="text/css">
+	<link href="/assets/css/modal-fx.min.css" rel="stylesheet">
 </head>
-<body class="bwps-page">
-    <header class="bwps-page-header">
-        <nav class="bwps-nav-bar">
-            <a class="bwps-nav-link is-active" href="/">Home</a>
-<a class="bwps-nav-link " href="/blog/">Blog</a>
-<a class="bwps-nav-link " href="/help/">Help</a>
-<a class="bwps-nav-link " href="/play/">Play</a>
-<a class="bwps-nav-link " href="/legal/">Legal</a>
-        </nav>
-    </header>
+<body>
 
-    <main class="bwps-page-shell">
-        <section class="bwps-page-card bwps-page-hero">
-            <p class="bwps-kicker">Bin Weevils Private Server</p>
-            <h1>About This Project</h1>
-            <p>A practical adaptation of the KnowYourKnot Binweevils private server, keeping the original game as the base while adding tested improvements.</p>
-        </section>
+	<section class="hero is-info is-medium is-bold">
+		<div class="hero-head">
+			<nav class="navbar">
+				<div class="container">
+					<span class="navbar-burger burger" data-target="navbarMenu"><span></span> <span></span> <span></span></span>
+				</div>
+				<div class="navbar-menu" id="navbarMenu">
+					<div class="navbar-end">
+						<div class="navbar-bg">
+							<div class="tabs is-right">
+								<ul>
+									<li><a href="/">Home</a></li>
+									<li><a href="/blog/">Blog</a></li>
+									<li><a href="/help/">Help</a></li>
+									<li><a href="/play/">Play</a></li>
+									<li><a href="/legal/">Legal</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</section>
 
-        <section class="bwps-card-grid">
-            <article class="bwps-mini-card"><h2>What this is</h2><p>An unofficial private-server recovery and development stack.</p></article>
-<article class="bwps-mini-card"><h2>What this is not</h2><p>It is not a full clean-room remake and it is not trying to replace the original source.</p></article>
-<article class="bwps-mini-card"><h2>Current focus</h2><p>Working game first, careful features second, visual polish third.</p></article>
-        </section>
-    </main>
 
-    <footer class="bwps-page-footer">
-        <a href="/privacy/">Privacy</a>
-        <a href="/about/">About Us</a>
-        <span class="bwps-footer-mark">🌱</span>
-        <a href="/848fjogfndsl/">Admin</a>
-        <a href="/credits/">Credits</a>
-    </footer>
+	<div class="central-container bwps-homepage-page">
+		<img alt="" class="login-container" src="/assets/images/login/mainContainerBG.png">
+		<img alt="" class="img-guys" src="/assets/images/login/Tink_Clott.png">
+
+		<div class="download-section bwps-page-heading">
+			<p class="bwps-kicker">ABOUT</p>
+			<h1>About</h1>
+			<p class="bwps-home-copy">A community Bin Weevils private server with classic gameplay and custom features.</p>
+		</div>
+
+		<div class="download-buttons bwps-page-button-row">
+			<a href="https://github.com/n4thyan/Binweevils-Private-Server"><button class="button bwps-yellow-btn">View GitHub</button></a>
+		</div>
+
+		<div class="bwps-page-card-stack">
+<div class="bwps-home-card">
+					<h2>Classic feel</h2>
+					<p>The goal is to keep the original Bin Weevils feel while making the project easier to run and test.</p>
+				</div>
+<div class="bwps-home-card">
+					<h2>Current features</h2>
+					<p>Ruffle support, relaxed chat, moderator commands, XP banking and prestige progression.</p>
+				</div>
+<div class="bwps-home-card">
+					<h2>Public testing</h2>
+					<p>The site is being prepared so friends and testers can join from the VPS.</p>
+				</div>
+		</div>
+	</div>
+
+
+	<div class="box cta">
+		<p class="has-text-centered"></p>
+		<nav class="level">
+			<p class="level-item has-text-centered"><a class="link is-info" href="/privacy/">Privacy</a></p>
+			<p class="level-item has-text-centered"><a class="link is-info" href="https://github.com/n4thyan/Binweevils-Private-Server" target="_blank" rel="noopener">GitHub</a></p>
+			<p class="level-item has-text-centered"><img alt="" src="/assets/images/weevil.png" style="height: 30px;"></p>
+			<p class="level-item has-text-centered"><a class="link is-info" href="/credits/">Credits</a></p>
+			<p class="level-item has-text-centered"><a class="link is-info" href="/848fjogfndsl/">Admin</a></p>
+		</nav>
+		<p></p>
+	</div>
+
+
+	<footer class="footer">
+		<div class="content has-text-centered">
+			<p>A community Bin Weevils private server with classic gameplay, Ruffle support, relaxed chat, XP banking, prestige progression and more coming soon.</p>
+			<p>Based on the original KnowYourKnot source. Full credit to the original private-server authors and original Bin Weevils creators.</p>
+		</div>
+		<script src="/assets/js/bulma.js"></script>
+	</footer>
+
+
+	<style>
+		html, body {
+			background: url("/assets/images/background.png") no-repeat center center fixed;
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center center;
+			min-height: 100%;
+		}
+		.hero.is-info.is-bold {
+			background: transparent;
+		}
+		.login-container {
+			margin: 50px auto 0;
+		}
+		.central-container {
+			position: relative;
+			width: 941px;
+			margin: 0 auto;
+		}
+		.img-guys {
+			position: absolute;
+			top: 20px;
+			left: 15px;
+		}
+		.download-section {
+			position: absolute;
+			top: 190px;
+			left: 35px;
+			height: 300px;
+			width: 310px;
+			text-align: center;
+		}
+		.download-buttons {
+			position: absolute;
+			top: 330px;
+			left: 35px;
+			height: 300px;
+			width: 310px;
+			text-align: center;
+		}
+		h1 {
+			font-size: 18px;
+			font-family: Burbank Small Bold;
+			color: #00528c;
+		}
+		h2 {
+			font-size: 18px;
+			font-family: Burbank Small Bold;
+			color: #008000;
+			margin: 0 0 4px;
+		}
+		.button {
+			font-family: Burbank Small Bold;
+		}
+		.box.cta {
+			margin-top: 50px;
+		}
+		.bwps-page-heading h1 {
+			font-size: 24px;
+			line-height: 1.05;
+			margin-bottom: 12px;
+		}
+		.bwps-kicker {
+			font-family: Burbank Small Bold;
+			font-size: 13px;
+			letter-spacing: 1px;
+			color: #008000;
+			margin-bottom: 6px;
+		}
+		.bwps-home-copy {
+			font-family: Burbank Small Bold;
+			color: #00528c;
+			font-size: 14px;
+			line-height: 1.2;
+		}
+		.bwps-page-card-stack {
+			position: absolute;
+			top: 95px;
+			left: 390px;
+			width: 505px;
+		}
+		.bwps-home-card {
+			background: rgba(229, 244, 250, 0.92);
+			border-radius: 10px;
+			padding: 12px 16px;
+			margin-bottom: 10px;
+		}
+		.bwps-home-card p {
+			font-family: Burbank Small Bold;
+			color: #00528c;
+			font-size: 14px;
+			line-height: 1.2;
+			margin: 0;
+		}
+		.footer {
+			padding-top: 2rem;
+			padding-bottom: 2rem;
+		}
+	</style>
 </body>
 </html>

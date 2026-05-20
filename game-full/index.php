@@ -75,8 +75,8 @@ $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
         <img alt="" class="img-guys" src="/assets/images/login/Tink_Clott.png">
 
 		<div class="download-section">
-			<h1>Welcome to the OG Working Stack</h1>
-			<p class="bwps-home-copy">Still Bin Weevils at heart, now cleaned up with Ruffle support, commands, reward codes, OG level thresholds, XP banking and prestige.</p>
+			<h1>Welcome to Bin Weevils Private Server</h1>
+			<p class="bwps-home-copy">Classic Bin Weevils gameplay with Ruffle support, relaxed chat, moderator commands, XP banking, prestige and more custom features on the way.</p>
 		</div>
 		<div class="download-buttons">
 			<a href="/register"><button class="button bwps-yellow-btn"><i aria-hidden="true" class="fa fa-user-plus"></i> Register</button></a> <a href="/game.php"><button class="button bwps-yellow-btn"><i aria-hidden="true" class="fa fa-play"></i> Play</button></a>
@@ -105,25 +105,28 @@ $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
 	</div>
 
 
+	
 	<div class="box cta">
 		<p class="has-text-centered"></p>
 		<nav class="level">
-			<p class="level-item has-text-centered"><a class="link is-info" href="privacy.html">Privacy</a></p>
-			<p class="level-item has-text-centered"><a class="link is-info" href="about.html">About Us</a></p>
+			<p class="level-item has-text-centered"><a class="link is-info" href="/privacy/">Privacy</a></p>
+			<p class="level-item has-text-centered"><a class="link is-info" href="https://github.com/n4thyan/Binweevils-Private-Server" target="_blank" rel="noopener">GitHub</a></p>
 			<p class="level-item has-text-centered"><img alt="" src="/assets/images/weevil.png" style="height: 30px;"></p>
 			<p class="level-item has-text-centered"><a class="link is-info" href="/credits/">Credits</a></p>
 			<p class="level-item has-text-centered"><a class="link is-info" href="/848fjogfndsl/">Admin</a></p>
 		</nav>
 		<p></p>
 	</div>
+
+	
 	<footer class="footer">
 		<div class="content has-text-centered">
-			<p>This is an unofficial Bin Weevils private-server adaptation for preservation, local testing, and custom community features.</p>
+			<p>A community Bin Weevils private server with classic gameplay, Ruffle support, relaxed chat, XP banking, prestige progression and more coming soon.</p>
 			<p>Based on the original KnowYourKnot source. Full credit to the original private-server authors and original Bin Weevils creators.</p>
 		</div>
-		<script src="../assets/js/bulma.js">
-		</script>
+		<script src="/assets/js/bulma.js"></script>
 	</footer>
+
 	<style>
 	             html, body {
 				   background: url("/assets/images/background.png") no-repeat center center fixed;
