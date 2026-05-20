@@ -20,6 +20,7 @@
 
 	include_once(dirname(__FILE__) . '/config.php');
 	include_once(dirname(__FILE__) . '/internal.php');
+	include_once(dirname(__FILE__) . '/prestige.php');
 	include_once(dirname(__FILE__) . '/protections.php'); // Their anti reverse-engineer system rewritten!
     include_once(dirname(__FILE__) . '/aes256.php');
     include_once(dirname(__FILE__) . '/funcs.php');
