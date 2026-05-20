@@ -307,3 +307,291 @@ body {
         gap: 18px;
     }
 }
+
+/* Homepage-matched public shell pages */
+html,
+body {
+    background: url("/assets/images/background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+.hero.is-info.is-bold {
+    background: transparent;
+}
+
+.bwps-shell-page {
+    height: 560px;
+}
+
+.bwps-shell-page .login-container {
+    margin: 50px auto 0;
+}
+
+.bwps-shell-page .img-guys {
+    position: absolute;
+    top: 20px;
+    left: 15px;
+}
+
+.bwps-shell-left {
+    top: 188px !important;
+}
+
+.bwps-shell-left h1 {
+    font-size: 24px;
+    line-height: 1.05;
+}
+
+.bwps-shell-kicker {
+    margin: 0 0 8px;
+    color: #008b00;
+    font-family: "Burbank Small Bold", "Open Sans", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.bwps-shell-button-wrap {
+    margin-top: 18px;
+}
+
+.bwps-shell-main {
+    position: absolute;
+    top: 88px;
+    left: 370px;
+    width: 520px;
+    height: 382px;
+    padding: 24px 28px;
+    overflow: hidden;
+    color: #00528c;
+    text-align: left;
+}
+
+.bwps-shell-main h1 {
+    margin: 0 0 10px;
+    color: #00528c;
+    font-family: "Burbank Small Bold", "Open Sans", Arial, sans-serif;
+    font-size: 34px;
+    line-height: .95;
+    text-shadow: 0 2px 0 rgba(255,255,255,.9);
+}
+
+.bwps-shell-intro {
+    margin: 0 0 14px;
+    max-width: 470px;
+    color: #00528c;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.bwps-shell-points {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.bwps-shell-point {
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(229, 244, 250, .72);
+}
+
+.bwps-shell-point h2 {
+    margin: 0 0 2px;
+    color: #008b00;
+    font-family: "Burbank Small Bold", "Open Sans", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.05;
+}
+
+.bwps-shell-point p {
+    margin: 0;
+    color: #00528c;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.bwps-shell-footer-nav {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 980px) {
+    .central-container {
+        transform: scale(.86);
+        transform-origin: top center;
+        margin-bottom: -70px;
+    }
+}
+
+/* final shared page layout fix */
+html,
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.bwps-page,
+.site-page,
+.page-wrap,
+main {
+  box-sizing: border-box;
+}
+
+.bwps-page,
+.site-page {
+  min-height: 960px;
+}
+
+.bwps-panel,
+.bwps-home-panel,
+.bwps-content-panel,
+.site-panel,
+.page-panel {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.bwps-footer,
+.site-footer,
+footer {
+  clear: both;
+}
+
+.bwps-footer a,
+.site-footer a,
+footer a {
+  white-space: nowrap;
+}
+
+.bwps-footer p,
+.site-footer p,
+footer p {
+  overflow-wrap: normal;
+}
+
+.bwps-footer .level,
+.site-footer .level,
+footer .level {
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .bwps-page,
+  .site-page {
+    min-height: auto;
+  }
+
+  .bwps-footer .level,
+  .site-footer .level,
+  footer .level {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+  }
+}
+
+
+/* Final layout polish: keep subpages aligned like the homepage */
+.bwps-page-body {
+  min-height: 100vh;
+  background-position: center top;
+  background-size: cover;
+  overflow-x: hidden;
+}
+
+.bwps-page-wrap,
+.bwps-content-wrap,
+.bwps-main-wrap,
+.bwps-page-main {
+  width: 100%;
+  max-width: 1060px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.bwps-page-hero,
+.bwps-page-card,
+.bwps-content-panel,
+.bwps-panel,
+.bwps-shell-panel {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.bwps-page-title,
+.bwps-page-kicker {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bwps-page-title,
+.bwps-page-kicker,
+.bwps-page-lede {
+  text-align: center;
+}
+
+.bwps-page-card,
+.bwps-content-panel,
+.bwps-panel {
+  max-width: 920px;
+}
+
+.bwps-footer-links,
+.box.cta,
+.cta {
+  max-width: 1180px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.bwps-page-extra,
+.bwps-lower-feature,
+.bwps-secondary-strip {
+  display: none !important;
+}
+
+.footer {
+  margin-top: 34px;
+}
+
+@media (max-width: 900px) {
+  .bwps-page-wrap,
+  .bwps-content-wrap,
+  .bwps-main-wrap,
+  .bwps-page-main {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+/* Homepage clone footer click fix */
+.box.cta {
+    position: relative !important;
+    z-index: 9999 !important;
+}
+
+.box.cta a,
+.box.cta .level,
+.box.cta .level-item {
+    position: relative !important;
+    z-index: 10000 !important;
+    pointer-events: auto !important;
+}
+
+.footer {
+    position: relative !important;
+    z-index: 9998 !important;
+}
