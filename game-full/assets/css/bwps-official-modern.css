@@ -1,0 +1,231 @@
+/*
+  Bin Weevils Private Server official-modern web theme pass.
+  Uses existing ripped/source assets only. No game client, server, database or SWF logic.
+
+  Intended to load after bwps-site-refresh.css on public website pages.
+*/
+
+:root {
+    --bw-blue: #139bd3;
+    --bw-blue-dark: #006aa4;
+    --bw-green: #62c92f;
+    --bw-green-dark: #258b00;
+    --bw-yellow: #ffe66a;
+    --bw-orange: #f28a12;
+    --bw-brown: #7a4308;
+    --bw-cream: #fff4b9;
+    --bw-panel: rgba(255, 246, 182, .96);
+    --bw-shadow: rgba(74, 47, 0, .28);
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body,
+.bwps-page,
+.bwps-page-body,
+.hero.is-info.is-bold {
+    background-color: #65cf36;
+    background-image:
+        radial-gradient(circle at 14% 15%, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 15%),
+        radial-gradient(circle at 83% 18%, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 16%),
+        linear-gradient(180deg, #38c6f4 0%, #6ee03f 56%, #37aa13 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    color: #673700;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(18, 100, 0, .24), rgba(18, 100, 0, 0) 14%, rgba(18, 100, 0, 0) 86%, rgba(18, 100, 0, .24));
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 100%, rgba(25, 92, 0, .22), rgba(25, 92, 0, 0) 46%);
+}
+
+/* keep the site modern, but closer to late-era official Bin Weevils panels */
+.bwps-page-shell,
+.bwps-page-wrap,
+.bwps-main-wrap,
+.bwps-content-wrap,
+.central-container {
+    max-width: 1080px;
+}
+
+.navbar-bg,
+.bwps-nav-bar {
+    border: 3px solid #8b560a !important;
+    background: linear-gradient(#fff58a 0%, #ffd646 42%, #f19516 100%) !important;
+    box-shadow:
+        0 6px 0 rgba(107, 63, 0, .36),
+        0 18px 28px rgba(0, 96, 0, .18),
+        inset 0 2px 0 rgba(255, 255, 255, .72) !important;
+}
+
+.tabs.is-right a,
+.bwps-nav-link {
+    color: #5b3100 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .75) !important;
+}
+
+.tabs.is-right li.is-active a,
+.tabs.is-right a:hover,
+.bwps-nav-link.is-active,
+.bwps-nav-link:hover {
+    background: rgba(255, 255, 255, .28) !important;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .32);
+}
+
+.bwps-page-card,
+.bwps-content-panel,
+.bwps-panel,
+.bwps-shell-panel,
+#login-play-form,
+.box.cta {
+    border: 4px solid #8b560a !important;
+    border-radius: 28px !important;
+    background:
+        linear-gradient(180deg, rgba(255, 211, 69, .96), rgba(244, 137, 18, .96)) !important;
+    box-shadow:
+        0 7px 0 #6b4009,
+        0 20px 34px rgba(43, 96, 0, .32),
+        inset 0 2px 0 rgba(255, 255, 255, .55) !important;
+    color: #5c3300;
+}
+
+.bwps-page-card::before,
+.bwps-content-panel::before,
+.bwps-panel::before,
+.bwps-shell-panel::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin: 14px 16px 0;
+    border-top: 2px solid rgba(255, 255, 255, .42);
+}
+
+.bwps-page-hero h1,
+.bwps-shell-main h1,
+.download-section h1,
+.bwps-mini-card h2,
+.bwps-shell-point h2 {
+    color: #fff6c8 !important;
+    text-shadow: 0 3px 0 #7a4308, 0 5px 10px rgba(74, 47, 0, .28) !important;
+}
+
+.bwps-kicker,
+.bwps-shell-kicker {
+    color: #0d7b00 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .65);
+}
+
+.bwps-page-hero p,
+.bwps-shell-intro,
+.bwps-shell-point p,
+.bwps-mini-card p,
+.bwps-home-copy {
+    color: #5a3200 !important;
+}
+
+.bwps-mini-card,
+.bwps-shell-point,
+.login-card,
+.auth .card {
+    border: 3px solid #c97a0c !important;
+    border-radius: 20px !important;
+    background: rgba(255, 246, 190, .92) !important;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, .68), 0 8px 18px rgba(89, 55, 0, .14) !important;
+}
+
+input,
+.input,
+.login-payment-input {
+    border: 3px solid #9b5f0a !important;
+    border-radius: 14px !important;
+    background: #fffdf0 !important;
+    color: #3d2500 !important;
+    box-shadow: inset 0 2px 6px rgba(80, 45, 0, .18) !important;
+}
+
+.bwps-yellow-btn,
+.bwps-big-button,
+.bwps-small-button,
+.button,
+.enter-btn,
+.auth .btn-primary {
+    border: 3px solid #8b560a !important;
+    border-radius: 999px !important;
+    background: linear-gradient(#fff58a, #ffd642 45%, #f09a16) !important;
+    color: #5a3200 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .8) !important;
+    box-shadow: 0 5px 0 #8b560a, inset 0 2px 0 rgba(255,255,255,.6) !important;
+}
+
+.bwps-yellow-btn:hover,
+.bwps-big-button:hover,
+.bwps-small-button:hover,
+.button:hover,
+.enter-btn:hover,
+.auth .btn-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.bwps-page-footer,
+.bwps-footer-links,
+.box.cta,
+.site-footer,
+.footer {
+    border-color: #8b560a !important;
+    background: rgba(255, 246, 190, .92) !important;
+    color: #5a3200 !important;
+}
+
+.bwps-page-footer a,
+.bwps-footer-links a,
+.box.cta a,
+.site-footer a,
+.footer a {
+    color: #5a3200 !important;
+    font-weight: 900;
+}
+
+.footer {
+    background: rgba(15, 105, 22, .86) !important;
+    color: #fff8cb !important;
+}
+
+.footer p,
+.footer strong {
+    color: #fff8cb !important;
+}
+
+@media (max-width: 760px) {
+    .navbar-bg,
+    .bwps-nav-bar {
+        border-radius: 24px !important;
+    }
+
+    .bwps-page-card,
+    .bwps-content-panel,
+    .bwps-panel,
+    .bwps-shell-panel,
+    #login-play-form,
+    .box.cta {
+        border-radius: 22px !important;
+    }
+}
