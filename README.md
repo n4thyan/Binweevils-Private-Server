@@ -4,86 +4,114 @@ An unofficial Bin Weevils private-server recovery and development project.
 
 This repo is based on the original KnowYourKnot Binweevils private-server source and keeps that original project as the ground truth. The aim is not to replace the game with a random remake, and it is not a full clean-room rewrite. The current direction is simple: keep the original working game intact, then add careful, tested improvements on top.
 
-The current stable stack has the original Flash game running locally with Ruffle/socket proxy support, restored login flow, chat commands, XP banking, prestige, OG level thresholds, reward codes, and a few quality-of-life fixes.
+The current stable stack has the original Flash game running locally with Ruffle/socket proxy support, restored login flow, chat commands, XP banking, prestige, OG level thresholds, reward codes, and quality-of-life fixes.
+
+This project is unofficial and is not affiliated with Bin Weevils, 55 Pixels, Nickelodeon, or any original rights holder.
 
 ## Project status
 
-Current working branch:
+Stable working branch:
 
 ```text
 stable/og-working-stack
 ```
 
-Latest known-good checkpoint:
+Current active feature branch:
+
+```text
+feature/weevil-editor-random-colours
+```
+
+Latest known-good stable checkpoint:
 
 ```text
 working-og-reward-codes
 ```
 
-This branch is the safest base for local testing, VPS deployment, and future feature work.
+Current feature work is focused on the original SWF Weevil editor, especially the colour randomiser and the backend validation needed to save those new colours properly.
 
-## Credits
+## Current progress
 
-Original base source:
+The local OG stack is working with:
 
-- KnowYourKnot/Binweevils
-- Original private-server work credited in the upstream README to Smiley / Darkk and HDWEEVIL
+* XAMPP Apache and MySQL.
+* Node game server on port `9339`.
+* Python websockify bridge on port `3993`.
+* Ruffle client support.
+* Login and server select working locally.
+* The original SWF-based game running through the local stack.
 
-This repo builds on that base and documents the recovery work, fixes, and new features added during the current rebuild.
+Current merged or working features include:
 
-## Scope
+* Blank session-key auth bypass fix.
+* Ruffle socket proxy support.
+* Relaxed client chat input restrictions.
+* Chat commands and command prefixes.
+* Admin and moderator chat commands.
+* Banked XP multi-level progression.
+* Prestige progression system.
+* Original-style 80-level XP thresholds.
+* Random nest teleporter destinations.
+* Working starter reward/redeem codes.
+* Database seed scripts for level thresholds and starter reward codes.
+* Safer recovery workflow with stable tags and backups.
+* Patched Weevil editor SWF with a larger random colour pool.
 
-This project is focused on an OG-first working private server.
+## Weevil editor colour work
 
-The rules for the current rebuild are:
+The Weevil editor SWF is located at:
 
-- Use the KnowYourKnot source as the ground truth.
-- Keep the original database structure unless a feature absolutely needs a small migration.
-- Do not clean, restructure, or replace the original database just for tidiness.
-- Make small feature branches.
-- Test each feature in-game before merging.
-- Tag stable checkpoints before moving on.
-- Back up the repo, htdocs, and database after each proven feature.
+```text
+game-full\cdn.binw.net\externalUIs\weevilChanger.swf
+```
 
-The game is currently still Flash/SWF-based, with Ruffle used to run the client in a modern browser. Long-term HTML5 work can happen separately, but this repo is currently about preserving and improving the working OG stack first.
+The patched script/class is:
 
-## What has been added in this rebuild
+```text
+com.binweevils.reg.PartsList
+```
 
-Current merged features include:
+The current patch expands the editor’s Random button colour pool, giving much more variety than the original small colour set.
 
-- Blank session-key auth bypass fix.
-- Ruffle socket proxy support.
-- Relaxed client chat input restrictions.
-- Chat commands and command prefixes.
-- Admin and moderator chat commands.
-- Banked XP multi-level progression.
-- Prestige progression system.
-- Original-style 80-level XP thresholds.
-- Random nest teleporter destinations.
-- Working starter reward/redeem codes.
-- Database seed scripts for level thresholds and starter reward codes.
-- Safer recovery workflow with stable tags and backups.
+The patched SWF has been tested locally. The new colours appear correctly when clicking Random in the Weevil editor.
 
-## What this project is not
+### Current blocker
 
-This is not:
+The new colours currently render in the editor, but saving/applying them still needs backend validation work.
 
-- an official Bin Weevils product,
-- affiliated with Bin Weevils, 55 Pixels, Nickelodeon, or any original rights holder,
-- a claim of ownership over the original game or assets,
-- a from-scratch modern MMO engine,
-- a database cleanup experiment.
+The likely blocker is:
 
-It is a preservation/private-server development project intended for local development, educational use, and archival-style experimentation.
+```text
+game-full\essential\internal.php
+```
+
+Specifically:
+
+```php
+function isDefValid($weevilDef)
+```
+
+The current validator uses indexed colour arrays. The patched SWF can now generate colour indexes outside the older expected range, so the backend may reject the new definition even though the editor displays it correctly.
+
+The planned fix is to update colour-index validation without disabling the rest of the safety checks.
+
+The goal is:
+
+* Keep the existing 18-digit weevil definition format.
+* Keep body, head, legs, antennae, eyes, and part validation intact.
+* Expand accepted colour indexes to match the patched SWF palette.
+* Avoid a blanket `return true` unless only used temporarily for testing.
+* Keep malformed or broken weevil definitions blocked.
 
 ## Local setup
 
 ### Requirements
 
-- XAMPP with Apache and MySQL
-- Node.js
-- Python, for running `websockify`
-- A local clone of this repository
+* XAMPP with Apache and MySQL
+* Node.js
+* Python
+* Python `websockify`
+* A local clone of this repository
 
 ### Basic setup
 
@@ -103,7 +131,7 @@ cd C:\Users\pc\Desktop\Binweevils-OG\server
 npm i
 ```
 
-6. Install Electron dependencies if you still want to use the Electron client:
+6. Install Electron dependencies if using the Electron client:
 
 ```powershell
 cd C:\Users\pc\Desktop\Binweevils-OG\electron
@@ -121,16 +149,66 @@ cd C:\Users\pc\Desktop\Binweevils-OG\server
 node Main.js
 ```
 
-Start the socket proxy in another PowerShell window:
+Expected output:
+
+```text
+Server running on port 9339
+```
+
+Start the Ruffle/WebSocket bridge in another PowerShell window:
 
 ```powershell
+cd C:\Users\pc\Desktop\Binweevils-OG
 py -m websockify 3993 127.0.0.1:9339
+```
+
+Expected output:
+
+```text
+Listen on :3993
+proxying from :3993 to 127.0.0.1:9339
+```
+
+If using Electron, start it in a third PowerShell window:
+
+```powershell
+cd C:\Users\pc\Desktop\Binweevils-OG\electron
+npm.cmd start
 ```
 
 Then open:
 
 ```text
 http://localhost/
+```
+
+## Ruffle and socket notes
+
+The local Ruffle/WebSocket setup uses port `3993`, not `9001`.
+
+The SWF/Ruffle client attempts to connect to:
+
+```text
+ws://localhost:3993/
+```
+
+The websockify bridge forwards that traffic to the Node game server on:
+
+```text
+127.0.0.1:9339
+```
+
+If the game reaches server select and then kicks back out, check that both ports are listening:
+
+```powershell
+Test-NetConnection 127.0.0.1 -Port 9339
+Test-NetConnection 127.0.0.1 -Port 3993
+```
+
+Both should return:
+
+```text
+TcpTestSucceeded : True
 ```
 
 ## Database notes
@@ -186,19 +264,76 @@ git pull origin stable/og-working-stack
 git status
 ```
 
+For the current colour editor work, use:
+
+```powershell
+cd C:\Users\pc\Desktop\Binweevils-OG
+git switch feature/weevil-editor-random-colours
+git pull
+git status
+```
+
+## Safe workflow
+
+Before editing SWFs, PHP, database files, or server code:
+
+1. Make a local backup.
+2. Work on a feature branch.
+3. Test locally in-game.
+4. Commit only the intended files.
+5. Push the branch.
+6. Tag stable checkpoints only after the feature is proven.
+
+Avoid `git add .` when there are temporary backups or unrelated modified files in the tree.
+
 ## Planned future work
 
 Likely future work includes:
 
-- applying the external event-system fixes,
-- site customisation before VPS deployment,
-- public-facing landing page polish,
-- more redeem codes and reward mappings,
-- shop/catalogue fixes,
-- persistent moderation logs,
-- moderator-only big weevil command once the scale API/client packet behaviour is confirmed,
-- continued OG bug fixes.
+* Finish the Weevil editor colour randomiser backend validation.
+* Update `isDefValid()` so expanded colour indexes save safely.
+* Test applied/saved random colours in-game.
+* Back up and tag the completed colour patch.
+* Apply the external event-system fixes.
+* Continue site customisation before VPS deployment.
+* Polish the public-facing landing page.
+* Add more redeem codes and reward mappings.
+* Fix shop/catalogue behaviour.
+* Add persistent moderation logs.
+* Add moderator-only big weevil command once the scale API/client packet behaviour is confirmed.
+* Continue OG bug fixes.
+* Package local changes for VPS deployment once local behaviour is stable.
+
+## What this project is not
+
+This is not:
+
+* an official Bin Weevils product,
+* affiliated with Bin Weevils, 55 Pixels, Nickelodeon, or any original rights holder,
+* a claim of ownership over the original game or assets,
+* a from-scratch modern MMO engine,
+* a database cleanup experiment.
+
+It is a preservation/private-server development project intended for local development, educational use, and archival-style experimentation.
+
+## Credits
+
+Original base source:
+
+* **Smiley / KnowYourKnot** for the original Binweevils private-server source this repo is based on.
+* Original private-server work credited in the upstream README to Smiley / Darkk and HDWEEVIL.
+
+Additional thanks:
+
+* **Codcrafted** for the session-key exploit find.
+* **Bandit** for the Ruffle support method.
+
+This repo builds on the original base and documents the recovery work, fixes, and new features added during the current rebuild.
 
 ## Disclaimer
 
-This project is unofficial and is not affiliated with or endorsed by the original Bin Weevils team, 55 Pixels, Nickelodeon, or any related rights holder. It is maintained as a private-server preservation and development project.
+This project is unofficial and is not affiliated with or endorsed by the original Bin Weevils team, 55 Pixels, Nickelodeon, or any related rights holder.
+
+It is maintained as a private-server preservation and development project.
+
+Do not use this project to impersonate official services, mislead users, collect real user data, or abuse security issues.
